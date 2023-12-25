@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:on_demand_grocery/src/features/authentication/provider/on_boarding_provider.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding_screen/on_boarding_screen.dart';
-import 'package:on_demand_grocery/src/features/authentication/views/splash/splash_screen.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 int? isviewed;
@@ -14,18 +16,10 @@ void main() async {
     SystemUiMode.manual,
     overlays: SystemUiOverlay.values,
   );
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   isviewed = prefs.getInt('onBoard');
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  runApp(MaterialApp(
-    title: 'On demand Grocery',
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      useMaterial3: true,
-    ),
-    home: const MyApp(),
-  ));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -36,29 +30,44 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  startTime() {
-    FlutterNativeSplash.remove();
-    var duration = const Duration(seconds: 5);
-    return Timer(duration, navigationPage);
-  }
-
-  void navigationPage() {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => isviewed != 0
-                ? const OnboardingScreen()
-                : const LoginScreen()));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    startTime();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return const SplashScreen();
+    return MaterialApp(
+      title: 'On demand Grocery',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+      ),
+      home: AnimatedSplashScreen(
+        splashIconSize: 5000,
+        duration: 5000,
+        splash: Center(
+            child: Image.asset(
+          "assets/logos/grofast_splash.gif",
+          gaplessPlayback: true,
+          fit: BoxFit.fill,
+          height: 400,
+          width: 400,
+        )),
+        nextScreen: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) => OnboardingProvider()),
+          ],
+          child: Consumer<OnboardingProvider>(
+            builder: (context, onboardingProvider, child) {
+              if (onboardingProvider.isLoading ?? false) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (onboardingProvider.isViewed ?? true) {
+                return const OnboardingScreen();
+              } else {
+                return const LoginScreen();
+              }
+            },
+          ),
+        ),
+        splashTransition: SplashTransition.fadeTransition,
+        pageTransitionType: PageTransitionType.fade,
+      ),
+    );
   }
 }

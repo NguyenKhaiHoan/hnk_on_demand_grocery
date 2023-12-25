@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:on_demand_grocery/src/constants/colors.dart';
+import 'package:on_demand_grocery/src/constants/text_strings.dart';
+import 'package:on_demand_grocery/src/features/authentication/views/on_boarding_screen/widgets/on_boarding_page_widget.dart';
 
-class OnboardingContent {
-  String image = "";
-  String title = "";
-  String discription = "";
+class OnboardingModel {
+  String image;
+  String title;
+  String discription;
+  Color backgroundColor;
 
-  OnboardingContent({
+  OnboardingModel({
     required this.image,
     required this.title,
     required this.discription,
+    required this.backgroundColor,
   });
 }
 
-List<OnboardingContent> contentsList = [
-  OnboardingContent(
-    title: "Ưu đãi ngập tràn",
-    image: 'assets/images/on_boarding_screen/on_boarding_1.jpg',
-    discription:
-        "Thỏa thích mua sắm hàng tạp hóa với các ưu đãi tuyệt vời, hấp dẫn",
-  ),
-  OnboardingContent(
-    title: 'Đặt hàng nhanh chóng',
-    image: 'assets/images/on_boarding_screen/on_boarding_2.jpg',
-    discription:
-        "Đơn giản hóa đặt hàng và theo dõi tình trạng đơn hàng mọi lúc mọi nơi",
-  ),
-  OnboardingContent(
-    title: 'Giao hàng an toàn',
-    image: 'assets/images/on_boarding_screen/on_boarding_3.jpg',
-    discription: "Hàng hóa giao đến tận nhà, đảm bảo tươi ngon và an toàn nhất",
-  ),
+final contentsList = [
+  OnboardingPageWidget(
+      onboardingModel: OnboardingModel(
+    title: hOnboardingTitle1,
+    image: 'assets/images/on_boarding_screen/on_boarding_1.png',
+    discription: hOnboardingDiscription1,
+    backgroundColor: hWhiteColor,
+  )),
+  OnboardingPageWidget(
+      onboardingModel: OnboardingModel(
+    title: hOnboardingTitle2,
+    image: 'assets/images/on_boarding_screen/on_boarding_2.png',
+    discription: hOnboardingDiscription2,
+    backgroundColor: hWhiteColor,
+  )),
+  OnboardingPageWidget(
+      onboardingModel: OnboardingModel(
+          title: hOnboardingTitle3,
+          image: 'assets/images/on_boarding_screen/on_boarding_3.png',
+          discription: hOnboardingDiscription3,
+          backgroundColor: hWhiteColor)),
 ];

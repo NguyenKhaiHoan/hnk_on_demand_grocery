@@ -11,7 +11,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text("Xin chào"),
+      child: Text("Chào mứng quay trở lại"),
     );
   }
 }
