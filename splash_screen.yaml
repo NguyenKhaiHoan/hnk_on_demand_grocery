@@ -1,12 +1,6 @@
 flutter_native_splash:
   color: "#ffffff"
-  image: assets/logos/grofast.png
+  image: assets/logos/grofast_splash.gif
   android_12:
-    image: assets/logos/grofast.png
-    fullscreen: true
-    android_gravity: center
-    ios_content_mode: center
-  fullscreen: true
-  android_gravity: center
-  ios_content_mode: center
-  web: false
+    image: assets/logos/grofast_splash.gif
+  web: true

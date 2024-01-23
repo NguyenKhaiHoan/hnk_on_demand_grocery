@@ -2,6 +2,7 @@
     <application
         android:label="on_demand_grocery"
         android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

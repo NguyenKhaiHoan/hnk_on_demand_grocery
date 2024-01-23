@@ -1,15 +1,15 @@
-import 'dart:async';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:on_demand_grocery/src/features/authentication/provider/on_boarding_provider.dart';
-import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
-import 'package:on_demand_grocery/src/features/authentication/views/on_boarding_screen/on_boarding_screen.dart';
+import 'package:get/get.dart';
+import 'package:on_demand_grocery/firebase_options.dart';
+import 'package:on_demand_grocery/src/bindings/app_bindings.dart';
+import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
+import 'package:on_demand_grocery/src/routes/app_pages.dart';
+import 'package:on_demand_grocery/src/utils/theme/app_theme.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-int? isviewed;
+import 'package:responsive_framework/responsive_framework.dart';
 
 void main() async {
   SystemChrome.setEnabledSystemUIMode(
@@ -17,8 +17,9 @@ void main() async {
     overlays: SystemUiOverlay.values,
   );
   WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  isviewed = prefs.getInt('onBoard');
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -32,11 +33,20 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      initialBinding: HAppBinding(),
       title: 'On demand Grocery',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
+      theme: HAppTheme().lightTheme,
+      getPages: HAppPages.pages,
+      builder: (context, child) => ResponsiveBreakpoints.builder(
+        child: child!,
+        breakpoints: [
+          const Breakpoint(start: 0, end: 450, name: MOBILE),
+          const Breakpoint(start: 451, end: 800, name: TABLET),
+          const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+          const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
+        ],
       ),
       home: AnimatedSplashScreen(
         splashIconSize: 5000,
@@ -49,22 +59,7 @@ class _MyAppState extends State<MyApp> {
           height: 400,
           width: 400,
         )),
-        nextScreen: MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (context) => OnboardingProvider()),
-          ],
-          child: Consumer<OnboardingProvider>(
-            builder: (context, onboardingProvider, child) {
-              if (onboardingProvider.isLoading ?? false) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (onboardingProvider.isViewed ?? true) {
-                return const OnboardingScreen();
-              } else {
-                return const LoginScreen();
-              }
-            },
-          ),
-        ),
+        nextScreen: const OnboardingScreen(),
         splashTransition: SplashTransition.fadeTransition,
         pageTransitionType: PageTransitionType.fade,
       ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:on_demand_grocery/src/constants/colors.dart';
-import 'package:on_demand_grocery/src/constants/text_strings.dart';
-import 'package:on_demand_grocery/src/features/authentication/views/on_boarding_screen/widgets/on_boarding_page_widget.dart';
+import 'package:on_demand_grocery/src/constants/app_assets.dart';
+import 'package:on_demand_grocery/src/constants/app_colors.dart';
+import 'package:on_demand_grocery/src/constants/app_titles.dart';
+import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/widgets/on_boarding_page_widget.dart';
 
 class OnboardingModel {
   String image;
@@ -20,22 +21,23 @@ class OnboardingModel {
 final contentsList = [
   OnboardingPageWidget(
       onboardingModel: OnboardingModel(
-    title: hOnboardingTitle1,
-    image: 'assets/images/on_boarding_screen/on_boarding_1.png',
-    discription: hOnboardingDiscription1,
-    backgroundColor: hWhiteColor,
+    title: HAppText.hOnboarding1Title,
+    image: HAppAsset.onboarding1Image,
+    discription: HAppText.hOnboarding1Discription,
+    backgroundColor: HAppColor.hBackgroundColor,
   )),
   OnboardingPageWidget(
       onboardingModel: OnboardingModel(
-    title: hOnboardingTitle2,
-    image: 'assets/images/on_boarding_screen/on_boarding_2.png',
-    discription: hOnboardingDiscription2,
-    backgroundColor: hWhiteColor,
+    title: HAppText.hOnboarding2Title,
+    image: HAppAsset.onboarding2Image,
+    discription: HAppText.hOnboarding2Discription,
+    backgroundColor: HAppColor.hBackgroundColor,
   )),
   OnboardingPageWidget(
       onboardingModel: OnboardingModel(
-          title: hOnboardingTitle3,
-          image: 'assets/images/on_boarding_screen/on_boarding_3.png',
-          discription: hOnboardingDiscription3,
-          backgroundColor: hWhiteColor)),
+    title: HAppText.hOnboarding3Title,
+    image: HAppAsset.onboarding3Image,
+    discription: HAppText.hOnboarding3Discription,
+    backgroundColor: HAppColor.hBackgroundColor,
+  )),
 ];
