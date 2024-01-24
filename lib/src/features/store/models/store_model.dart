@@ -59,7 +59,7 @@ final listStore = [
   ),
   StoreModel(
     imgStore:
-        'https://www.logolynx.com/images/logolynx/a6/a6ccd40284b94998629b222d5c4d343b.jpeg',
+        'https://th.bing.com/th/id/OIP.OHV7oMOukqYB6oasPVI0YQHaFG?rs=1&pid=ImgDetMain',
     imgBackground:
         'https://th.bing.com/th/id/OIP.gbNq0tbBDUmCdwM6d2MOrwHaE7?w=227&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
     name: 'Aeon Mall',

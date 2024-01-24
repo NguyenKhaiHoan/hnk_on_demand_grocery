@@ -7,8 +7,20 @@ class HomeController extends GetxController {
   final CarouselController controller = CarouselController();
   var currentIndex = 0.obs;
 
+  var reminder = true.obs;
+
   onPageChanged(int index) {
     currentIndex.value = index;
+    update();
+  }
+
+  closeReminder() {
+    reminder.value = false;
+    update();
+  }
+
+  openReminder() {
+    reminder.value = true;
     update();
   }
 }

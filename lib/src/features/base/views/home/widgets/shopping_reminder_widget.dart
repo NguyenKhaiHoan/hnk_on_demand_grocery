@@ -1,13 +1,17 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/base/controllers/home_controller.dart';
 import 'package:on_demand_grocery/src/features/base/views/home/widgets/product_list_stack.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class ShoppingReminderWidget extends StatelessWidget {
   ShoppingReminderWidget({super.key});
+
+  final homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +20,7 @@ class ShoppingReminderWidget extends StatelessWidget {
           color: HAppColor.hWhiteColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(width: 2, color: HAppColor.hBlueSecondaryColor)),
-      padding: EdgeInsets.fromLTRB(16, 20, 16, 20),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: Column(children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -25,19 +29,21 @@ class ShoppingReminderWidget extends StatelessWidget {
               "Tiếp tục mua sắm",
               style: HAppStyle.heading4Style,
             ),
-            Icon(
-              EvaIcons.closeCircle,
-              size: 20,
-              color: HAppColor.hGreyColor,
-            )
+            GestureDetector(
+                onTap: () => homeController.closeReminder(),
+                child: Icon(
+                  EvaIcons.closeCircle,
+                  size: 20,
+                  color: HAppColor.hGreyColor,
+                ))
           ],
         ),
-        gapH12,
+        gapH6,
         Text(
           "Giỏ hàng của bạn đang chờ bạn. Bạn còn chần chừ gì nữa? Hãy tiếp tục mua sắm và khám phá những sản phẩm tuyệt vời khác!",
           style: HAppStyle.paragraph3Regular,
         ),
-        gapH20,
+        gapH10,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

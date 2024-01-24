@@ -8,9 +8,11 @@ import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/product/models/product_models.dart';
 
 class ProductItemScreen extends StatelessWidget {
-  const ProductItemScreen({super.key, required this.model});
+  ProductItemScreen({super.key, required this.model});
 
   final ProductItem model;
+
+  var dragController = DraggableScrollableController();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,9 @@ class ProductItemScreen extends StatelessWidget {
           ),
           AppBar(
             forceMaterialTransparency: true,
-            backgroundColor: HAppColor.hTransparentColor,
+            backgroundColor: dragController.pixels != 80
+                ? HAppColor.hTransparentColor
+                : HAppColor.hBackgroundColor,
             toolbarHeight: 80,
             leading: Align(
               alignment: Alignment.centerLeft,
@@ -39,7 +43,7 @@ class ProductItemScreen extends StatelessWidget {
                     )),
               ),
             ),
-            actions: const [
+            actions: [
               Padding(
                 padding: hAppDefaultPaddingR,
                 child: CartCircle(),
@@ -54,6 +58,7 @@ class ProductItemScreen extends StatelessWidget {
 
   scroll() {
     return DraggableScrollableSheet(
+        controller: dragController,
         initialChildSize: 0.6,
         maxChildSize: 1.0 - 80 / HAppSize.deviceHeight,
         minChildSize: 0.6,

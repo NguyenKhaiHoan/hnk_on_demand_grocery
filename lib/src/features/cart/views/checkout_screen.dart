@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/cart/views/product_cart.dart';
@@ -54,7 +55,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Thay đổi địa chỉ",
+                      "Thông tin giao hàng",
                       style: HAppStyle.heading4Style,
                     ),
                     Text(
@@ -67,44 +68,53 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 gapH16,
                 Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                           width: 1.5, color: HAppColor.hGreyColorShade300)),
                   padding:
                       EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Nơi làm việc",
+                        "Nguyễn Khải Hoàn",
                         style: HAppStyle.label2Bold,
                       ),
-                      gapH4,
+                      gapH8,
                       Row(
                         children: [
-                          gapW6,
+                          gapW8,
                           Icon(
-                            EvaIcons.phone,
+                            EvaIcons.phoneOutline,
                             size: 20,
                           ),
-                          gapW4,
-                          Text("+84 388 586 955",
-                              style: HAppStyle.paragraph3Regular
+                          gapW8,
+                          Text("0388586955",
+                              style: HAppStyle.paragraph2Regular
                                   .copyWith(overflow: TextOverflow.ellipsis))
                         ],
                       ),
-                      gapH4,
+                      gapH8,
                       Row(
                         children: [
                           gapW6,
-                          Icon(EvaIcons.pinOutline),
-                          gapW4,
-                          Text(
-                            "Đại học quốc gia Hà nỘi, Cầu Giấy",
-                            style: HAppStyle.paragraph3Regular
-                                .copyWith(overflow: TextOverflow.ellipsis),
+                          Icon(EvaIcons.homeOutline),
+                          gapW8,
+                          Expanded(
+                            child: Text(
+                              "Số nhà 25, Ngõ 143, Đường Chiến Thắng, Xã Tân Triều, Huyện Thanh Trì, Hà Nội",
+                              style: HAppStyle.paragraph2Regular,
+                            ),
                           )
                         ],
+                      ),
+                      Divider(
+                        color: HAppColor.hGreyColorShade300,
+                      ),
+                      gapH4,
+                      Text(
+                        "Thứ 5, 25 - 1 - 2024",
                       )
                     ],
                   ),
@@ -115,15 +125,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Phương thức thanh toán",
-                      style: HAppStyle.heading4Style,
-                    ),
-                  ],
+                Text(
+                  "Phương thức thanh toán",
+                  style: HAppStyle.heading4Style,
                 ),
                 gapH16,
                 Container(
@@ -134,52 +138,38 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   padding:
                       EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Radio<String>(
-                            value: 'Cash',
-                            groupValue: _selected,
-                            onChanged: (value) {
-                              setState(() {
-                                _selected = value!;
-                              });
-                            },
-                          ),
-                          gapW4,
-                          Text('Tiền Mặt')
-                        ],
+                      RadioListTile<String>(
+                        contentPadding: EdgeInsets.zero,
+                        visualDensity: const VisualDensity(
+                            horizontal: VisualDensity.minimumDensity,
+                            vertical: VisualDensity.minimumDensity),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        value: 'Cash',
+                        groupValue: _selected,
+                        activeColor: HAppColor.hBluePrimaryColor,
+                        onChanged: (value) {
+                          setState(() {
+                            _selected = value!;
+                          });
+                        },
+                        title: Text("Trả tiền khi nhận hàng"),
                       ),
-                      Row(
-                        children: [
-                          Radio<String>(
-                            value: 'MoMo',
-                            groupValue: _selected,
-                            onChanged: (value) {
-                              setState(() {
-                                _selected = value!;
-                              });
-                            },
-                          ),
-                          gapW4,
-                          Text('Ví điện tử MoMo')
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Radio<String>(
-                            value: 'ApplePay',
-                            groupValue: _selected,
-                            onChanged: (value) {
-                              setState(() {
-                                _selected = value!;
-                              });
-                            },
-                          ),
-                          gapW4,
-                          Text('Apple Pay')
-                        ],
+                      RadioListTile<String>(
+                        activeColor: HAppColor.hBluePrimaryColor,
+                        contentPadding: EdgeInsets.zero,
+                        visualDensity: const VisualDensity(
+                            horizontal: VisualDensity.minimumDensity,
+                            vertical: VisualDensity.minimumDensity),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        value: 'Momo',
+                        groupValue: _selected,
+                        onChanged: (value) {
+                          setState(() {
+                            _selected = value!;
+                          });
+                        },
+                        title: Text("Ví điện tử Momo"),
                       ),
                     ],
                   ),
@@ -195,7 +185,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Chi tiết",
+                      "Chi tiết đơn hàng",
                       style: HAppStyle.heading4Style,
                     ),
                   ],
@@ -207,107 +197,157 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       border: Border.all(
                           width: 1.5, color: HAppColor.hGreyColorShade300)),
                   padding:
-                      EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                      EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Tổng cộng (1 sản phẩm)'),
+                          Text('Tiền hàng (3 sản phẩm)'),
                           Text('1.500.000₫'),
                         ],
                       ),
-                      gapH10,
+                      Divider(
+                        color: HAppColor.hGreyColorShade300,
+                      ),
+                      gapH6,
+                      Row(children: [
+                        Expanded(
+                          child: SizedBox(
+                            height: 70,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 3,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Container(
+                                  height: 70.0,
+                                  width: 70.0,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                              'https://th.bing.com/th/id/OIP.A1JjNu8jIRxaTJHbD_EtFwHaIJ?rs=1&pid=ImgDetMain'),
+                                          fit: BoxFit.cover)),
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) => gapW10,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 10),
+                          child: GestureDetector(
+                            onTap: () => Get.back(),
+                            child: Icon(Icons.arrow_forward_ios),
+                          ),
+                        )
+                      ]),
+                      gapH16,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Phí giao hàng'),
-                          Text('50.000₫'),
+                          Text('100.000₫'),
                         ],
                       ),
                       gapH10,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Tổng cộng: ',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text('Giảm giá phí giao hàng'),
+                          Text('-50.000₫'),
+                        ],
+                      ),
+                      gapH10,
+                      Divider(
+                        color: HAppColor.hGreyColorShade300,
+                      ),
+                      gapH4,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Tổng cộng', style: HAppStyle.label2Bold),
                           Text('1.550.000₫',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: HAppStyle.label2Bold.copyWith(
+                                  color: HAppColor.hBluePrimaryColor)),
                         ],
                       ),
                     ],
                   ),
-                )
+                ),
+                gapH24
               ],
             ),
           ]),
         ),
       ),
-      // bottomNavigationBar: Container(
-      //   color: HAppColor.hBackgroundColor,
-      //   padding: EdgeInsets.fromLTRB(hAppDefaultPadding, 5, 24, 10),
-      //   child: Column(children: [
-      //     Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         Text(
-      //           "3 Sản phẩm",
-      //           style: HAppStyle.label3Regular,
-      //         ),
-      //         Row(
-      //           children: [
-      //             Text("Tiền hàng: ", style: HAppStyle.label3Regular),
-      //             gapW6,
-      //             Text(
-      //               "1.500.000 ₫",
-      //               style: HAppStyle.heading4Style,
-      //             )
-      //           ],
-      //         )
-      //       ],
-      //     ),
-      //     ElevatedButton(
-      //       child: Text(
-      //         "Thanh toán",
-      //         style:
-      //             HAppStyle.label3Bold.copyWith(color: HAppColor.hWhiteColor),
-      //       ),
-      //       onPressed: () {},
-      //       style: ElevatedButton.styleFrom(
-      //         backgroundColor: HAppColor.hBluePrimaryColor,
-      //       ),
-      //     )
-      //   ]),
-      // ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.fromLTRB(24, 10, 24, 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.fromLTRB(
+            hAppDefaultPadding, 20, hAppDefaultPadding, 16),
+        decoration: BoxDecoration(
+          color: HAppColor.hBackgroundColor,
+          boxShadow: [
+            BoxShadow(
+              offset: const Offset(0, -15),
+              blurRadius: 20,
+              color: Color.fromARGB(255, 0, 0, 0).withOpacity(0.1),
+            )
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Text(
-                  "Tổng cộng:  ",
-                  style: HAppStyle.paragraph3Regular,
+                Icon(
+                  Icons.discount_outlined,
+                  color: HAppColor.hBluePrimaryColor,
                 ),
+                gapW12,
                 Text(
-                  "1.550.000 ₫",
-                  style: HAppStyle.heading5Style,
+                  "Áp dụng mã giảm giá",
+                  style: HAppStyle.label2Bold,
+                ),
+                Spacer(),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 12,
                 )
               ],
             ),
-            ElevatedButton(
-              child: Text(
-                "Đặt hàng",
-                style:
-                    HAppStyle.label3Bold.copyWith(color: HAppColor.hWhiteColor),
-              ),
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: HAppColor.hBluePrimaryColor,
-              ),
-            )
+            gapH24,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text.rich(
+                  TextSpan(
+                    text: "Tổng cộng:\n",
+                    children: [
+                      TextSpan(
+                        text: "1.550.000₫",
+                        style: HAppStyle.heading4Style
+                            .copyWith(color: HAppColor.hBluePrimaryColor),
+                      ),
+                    ],
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Đặt hàng",
+                    style: HAppStyle.label2Bold
+                        .copyWith(color: HAppColor.hWhiteColor),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(HAppSize.deviceWidth * 0.45, 40),
+                    backgroundColor: HAppColor.hBluePrimaryColor,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

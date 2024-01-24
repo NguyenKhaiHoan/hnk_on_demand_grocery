@@ -43,8 +43,8 @@ class ProductItemWidget extends StatelessWidget {
               ),
               storeIcon
                   ? Positioned(
-                      bottom: 10,
-                      right: 10,
+                      top: 10,
+                      left: 10,
                       child: Stack(
                         children: [
                           InkWell(
@@ -68,19 +68,21 @@ class ProductItemWidget extends StatelessWidget {
                       ),
                     )
                   : Container(),
-              Positioned(
-                bottom: 10,
-                left: 10,
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: HAppColor.hRedColor),
-                  child: Text(model.salePersent,
-                      style: HAppStyle.paragraph3Regular
-                          .copyWith(color: HAppColor.hWhiteColor)),
-                ),
-              ),
+              model.salePersent != ''
+                  ? Positioned(
+                      bottom: 10,
+                      left: 10,
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: HAppColor.hRedColor),
+                        child: Text(model.salePersent,
+                            style: HAppStyle.paragraph3Regular
+                                .copyWith(color: HAppColor.hWhiteColor)),
+                      ),
+                    )
+                  : Container(),
               Positioned(
                 top: 10,
                 right: 10,
@@ -153,17 +155,54 @@ class ProductItemWidget extends StatelessWidget {
                     )
                   ]),
             ),
-            gapH2,
+            Spacer(),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Text(
-                    model.price,
-                    style: HAppStyle.label3Bold
-                        .copyWith(color: HAppColor.hBluePrimaryColor),
-                  ),
+                  padding: EdgeInsets.only(left: 10, bottom: 10),
+                  child: model.salePersent == ''
+                      ? Center(
+                          child: Text(
+                            model.price,
+                            style: HAppStyle.label2Bold
+                                .copyWith(color: HAppColor.hBluePrimaryColor),
+                          ),
+                        )
+                      // : Column(
+                      //     mainAxisAlignment: MainAxisAlignment.end,
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     children: [
+                      //       Text(
+                      //         model.price,
+                      //         style: HAppStyle.paragraph3Bold.copyWith(
+                      //             color: HAppColor.hGreyColor,
+                      //             decoration: TextDecoration.lineThrough),
+                      //       ),
+                      //       Text(
+                      //         model.priceSale,
+                      //         style: HAppStyle.label2Bold
+                      //             .copyWith(color: HAppColor.hRedColor),
+                      //       ),
+                      //     ],
+                      //   )
+                      : Text.rich(
+                          TextSpan(
+                            style: HAppStyle.paragraph3Bold.copyWith(
+                                color: HAppColor.hGreyColor,
+                                decoration: TextDecoration.lineThrough),
+                            text: "${model.price}\n",
+                            children: [
+                              TextSpan(
+                                text: model.priceSale,
+                                style: HAppStyle.label2Bold.copyWith(
+                                    color: HAppColor.hRedColor,
+                                    decoration: TextDecoration.none),
+                              ),
+                            ],
+                          ),
+                        ),
                 ),
                 Container(
                   width: 40,

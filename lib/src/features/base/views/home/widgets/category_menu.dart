@@ -18,8 +18,8 @@ class CategoryMenu extends StatelessWidget {
       onTap: onTap,
       child: Column(children: [
         Container(
-          width: 50,
-          height: 50,
+          width: 60,
+          height: 60,
           decoration: BoxDecoration(
             color: HAppColor.hWhiteColor,
             borderRadius: BorderRadius.circular(100),
@@ -27,8 +27,8 @@ class CategoryMenu extends StatelessWidget {
           child: Center(
               child: Image.asset(
             model.image,
-            width: 30,
-            height: 30,
+            width: 40,
+            height: 40,
           )),
         ),
         gapH4,

@@ -29,7 +29,7 @@ class HomeAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
                   gapW6,
                   Text(
                     "Nơi làm việc",
-                    style: HAppStyle.heading5Style,
+                    style: HAppStyle.heading4Style,
                   ),
                   gapW4,
                   Icon(
@@ -41,13 +41,23 @@ class HomeAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
               ),
               gapH4,
               Text(
-                "Đại học quốc gia Hà Nội, Cầu giấy",
+                "Đại học Quốc Gia Hà Nội, Cầu Giấy",
                 style: HAppStyle.paragraph3Regular,
                 overflow: TextOverflow.ellipsis,
               ),
             ]),
       ),
-      actions: const [
+      actions: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            image: const DecorationImage(
+                image: AssetImage('assets/logos/logo.png'), fit: BoxFit.fill),
+          ),
+        ),
+        gapW10,
         Padding(
           padding: hAppDefaultPaddingR,
           child: CartCircle(),

@@ -105,23 +105,23 @@ class _LoginScreenState extends State<LoginScreen> {
                             onEditingComplete: () async {
                               Get.toNamed(HAppRoutes.verify);
 
-                              await FirebaseAuth.instance.verifyPhoneNumber(
-                                phoneNumber:
-                                    loginController.phoneNumberController.text +
-                                        loginController.phoneNumber.value,
-                                verificationCompleted:
-                                    (PhoneAuthCredential credential) {},
-                                verificationFailed:
-                                    (FirebaseAuthException e) {},
-                                codeSent:
-                                    (String verificationId, int? resendToken) {
-                                  loginController.verificationId.value =
-                                      verificationId;
-                                  Get.toNamed(HAppRoutes.verify);
-                                },
-                                codeAutoRetrievalTimeout:
-                                    (String verificationId) {},
-                              );
+                              // await FirebaseAuth.instance.verifyPhoneNumber(
+                              //   phoneNumber:
+                              //       loginController.phoneNumberController.text +
+                              //           loginController.phoneNumber.value,
+                              //   verificationCompleted:
+                              //       (PhoneAuthCredential credential) {},
+                              //   verificationFailed:
+                              //       (FirebaseAuthException e) {},
+                              //   codeSent:
+                              //       (String verificationId, int? resendToken) {
+                              //     loginController.verificationId.value =
+                              //         verificationId;
+                              //     Get.toNamed(HAppRoutes.verify);
+                              //   },
+                              //   codeAutoRetrievalTimeout:
+                              //       (String verificationId) {},
+                              // );
                             },
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(

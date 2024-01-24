@@ -1,12 +1,16 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:on_demand_grocery/src/common_widgets/bumble_scroll_bar_flutter.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/base/controllers/explore_controller.dart';
 import 'package:on_demand_grocery/src/features/base/controllers/home_controller.dart';
-import 'package:on_demand_grocery/src/features/base/controllers/tag_controller.dart';
+import 'package:on_demand_grocery/src/features/base/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/base/models/category_model.dart';
 import 'package:on_demand_grocery/src/features/base/models/recent_oder_model.dart';
 import 'package:on_demand_grocery/src/features/base/views/home/widgets/category_menu.dart';
@@ -27,7 +31,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final homeController = Get.put(HomeController());
-  final tagController = Get.put(TagController());
+  final rootController = Get.put(RootController());
+  final exploreController = Get.put(ExploreController());
 
   final List<String> listBanner = [
     "https://www.bigc.vn/files/banners/2022/july-trang/mega/resize-cover-blog-4.jpg",
@@ -35,10 +40,23 @@ class _HomeScreenState extends State<HomeScreen> {
     "https://scontent.fhan14-4.fna.fbcdn.net/v/t39.30808-6/279524630_4660714097366794_183406176671654681_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=3635dc&_nc_ohc=wNpQbhy-ZMgAX81nlC-&_nc_ht=scontent.fhan14-4.fna&oh=00_AfBub2gVEthDoRh-CEasB2ellsxaRuE2sDrqI8WKsCwaQQ&oe=65A89E4C",
   ];
 
+  int itemsPerRow = 7;
+  double ratio = 1;
+  late double calcHeight;
+  double widthCategory = HAppSize.deviceWidth * 1.3;
+
+  @override
+  void initState() {
+    super.initState();
+    calcHeight = (widthCategory / itemsPerRow) *
+        (categoryList.length / itemsPerRow).ceil() *
+        (1 / ratio);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
+      backgroundColor: HAppColor.hBackgroundColor,
       appBar: const HomeAppbarWidget(),
       body: LiquidPullToRefresh(
           height: 50,
@@ -74,18 +92,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     onTap: () => Get.toNamed(HAppRoutes.search)),
               ),
-              gapH12,
+              gapH16,
               Expanded(
                 child: SingleChildScrollView(
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                      gapH12,
-                      Padding(
-                        padding: hAppDefaultPaddingLR,
-                        child: ShoppingReminderWidget(),
-                      ),
-                      gapH24,
+                      Obx(() => Padding(
+                            padding: hAppDefaultPaddingLR,
+                            child: homeController.reminder.isTrue
+                                ? Column(
+                                    children: [
+                                      ShoppingReminderWidget(),
+                                      gapH16
+                                    ],
+                                  )
+                                : Container(),
+                          )),
                       CarouselSlider(
                         carouselController: homeController.controller,
                         items: listBanner
@@ -109,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               homeController.onPageChanged(index),
                         ),
                       ),
-                      gapH24,
+                      gapH16,
                       Padding(
                           padding: hAppDefaultPaddingLR,
                           child: Column(
@@ -124,8 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     "Đơn gần đây",
                                     style: HAppStyle.heading3Style,
                                   ),
-                                  TextButton(
-                                    onPressed: () {},
+                                  GestureDetector(
+                                    onTap: () {},
                                     child: Text("Xem tất cả",
                                         style: HAppStyle.paragraph3Regular
                                             .copyWith(
@@ -150,7 +173,34 @@ class _HomeScreenState extends State<HomeScreen> {
                                         const SizedBox(width: 10),
                                     itemCount: listOder.length),
                               ),
-                              gapH12,
+                              gapH16,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Danh mục",
+                                    style: HAppStyle.heading3Style,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      rootController.animateToScreen(1);
+                                      exploreController.animateToTab(0);
+                                    },
+                                    child: Text("Khám phá",
+                                        style: HAppStyle.paragraph3Regular
+                                            .copyWith(
+                                                color: HAppColor
+                                                    .hBluePrimaryColor)),
+                                  ),
+                                ],
+                              ),
+                              gapH16,
+                              CustomBumbleScrollbar(
+                                  heightContent: calcHeight + 60,
+                                  child: itemGrid()),
+                              gapH16,
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -160,8 +210,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     "Bán chạy",
                                     style: HAppStyle.heading3Style,
                                   ),
-                                  TextButton(
-                                    onPressed: () {},
+                                  GestureDetector(
+                                    onTap: () {},
                                     child: Text("Xem tất cả",
                                         style: HAppStyle.paragraph3Regular
                                             .copyWith(
@@ -170,10 +220,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   )
                                 ],
                               ),
-                              gapH12,
+                              gapH16,
                               SizedBox(
                                   width: double.infinity,
-                                  height: 286,
+                                  height: 300,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemCount: 10,
@@ -209,66 +259,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               //     ),
                               //   ),
                               // ),
-                              gapH12,
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Cửa hàng",
-                                    style: HAppStyle.heading3Style,
-                                  ),
-                                  TextButton(
-                                    onPressed: () {},
-                                    child: Text("Xem tất cả",
-                                        style: HAppStyle.paragraph3Regular
-                                            .copyWith(
-                                                color: HAppColor
-                                                    .hBluePrimaryColor)),
-                                  ),
-                                ],
-                              ),
-                              gapH12,
-
-                              // SizedBox(
-                              //   height: 42,
-                              //   child: Obx(() => ListView.separated(
-                              //       shrinkWrap: true,
-                              //       scrollDirection: Axis.horizontal,
-                              //       itemBuilder: (context, index) {
-                              //         return CustomChipWidget(
-                              //             title:
-                              //                 tagController.tags[index].title,
-                              //             active:
-                              //                 tagController.tags[index].active,
-                              //             onTap: () {
-                              //               tagController.toggleActive(index);
-                              //               setState(() {});
-                              //             });
-                              //       },
-                              //       separatorBuilder: (_, __) =>
-                              //           const SizedBox(width: 10),
-                              //       itemCount: tagController.tags.length)),
-                              // )
-
-                              GridView.count(
-                                physics: const NeverScrollableScrollPhysics(),
-                                childAspectRatio: 0.95,
-                                crossAxisCount: 4,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 20.0,
-                                shrinkWrap: true,
-                                children: List.generate(
-                                  categoryList.length,
-                                  (index) {
-                                    return CategoryMenu(
-                                      onTap: () {},
-                                      model: categoryList[index],
-                                    );
-                                  },
-                                ),
-                              ),
                               gapH24
                             ],
                           )),
@@ -276,10 +266,34 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             ],
           )),
-    ));
+    );
   }
 
   Future<void> loadingData() async {
     return await Future.delayed(const Duration(seconds: 2));
+  }
+
+  Widget itemGrid() {
+    return SizedBox(
+      width: widthCategory,
+      child: GridView.builder(
+        itemCount: categoryList.length,
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            mainAxisSpacing: 10,
+            mainAxisExtent: 82,
+            crossAxisCount: itemsPerRow,
+            childAspectRatio: ratio),
+        itemBuilder: (context, index) {
+          return CategoryMenu(
+            onTap: () {
+              rootController.animateToScreen(1);
+              exploreController.animateToTab(index + 2);
+            },
+            model: categoryList[index],
+          );
+        },
+      ),
+    );
   }
 }

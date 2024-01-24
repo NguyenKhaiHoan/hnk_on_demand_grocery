@@ -47,7 +47,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         title: Text("Tìm kiếm"),
         centerTitle: true,
-        actions: const [
+        actions: [
           Padding(
             padding: hAppDefaultPaddingR,
             child: CartCircle(),

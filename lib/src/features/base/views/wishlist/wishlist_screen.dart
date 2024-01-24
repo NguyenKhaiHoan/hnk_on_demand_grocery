@@ -49,7 +49,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
             ),
             title: const Text("Yêu thích"),
             centerTitle: true,
-            actions: const [
+            actions: [
               Padding(
                 padding: hAppDefaultPaddingR,
                 child: CartCircle(),
@@ -117,7 +117,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                     crossAxisCount: 2,
                     crossAxisSpacing: 10.0,
                     mainAxisSpacing: 10.0,
-                    mainAxisExtent: 288,
+                    mainAxisExtent: 295,
                   ),
                   itemBuilder: (BuildContext context, int index) {
                     return ProductItemWidget(

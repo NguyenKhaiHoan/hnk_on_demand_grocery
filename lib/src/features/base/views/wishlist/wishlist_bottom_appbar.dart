@@ -21,7 +21,7 @@ class WishlistBottomAppBar extends StatelessWidget
             Align(
               alignment: Alignment.centerRight,
               child: TabBar(
-                  labelStyle: HAppStyle.label4Regular,
+                  labelStyle: HAppStyle.label3Bold,
                   isScrollable: true,
                   indicatorColor: HAppColor.hBluePrimaryColor,
                   labelColor: HAppColor.hBluePrimaryColor,

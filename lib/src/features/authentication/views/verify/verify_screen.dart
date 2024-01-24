@@ -20,6 +20,19 @@ class _VerifyScreenState extends State<VerifyScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
 
   final loginController = Get.put(LoginController());
+  final pinputFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    pinputFocusNode.requestFocus();
+  }
+
+  @override
+  void dispose() {
+    pinputFocusNode.unfocus();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +100,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     ),
                     gapH40,
                     Pinput(
+                      controller: loginController.pinNumberController,
+                      focusNode: pinputFocusNode,
                       length: 6,
                       defaultPinTheme: defaultPinTheme,
                       focusedPinTheme: focusedPinTheme,
@@ -113,13 +128,13 @@ class _VerifyScreenState extends State<VerifyScreen> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10))),
                           onPressed: () async {
-                            PhoneAuthCredential credential =
-                                PhoneAuthProvider.credential(
-                                    verificationId:
-                                        loginController.verificationId.value,
-                                    smsCode: loginController.smsOtp.value);
+                            // PhoneAuthCredential credential =
+                            //     PhoneAuthProvider.credential(
+                            //         verificationId:
+                            //             loginController.verificationId.value,
+                            //         smsCode: loginController.smsOtp.value);
 
-                            await auth.signInWithCredential(credential);
+                            // await auth.signInWithCredential(credential);
                             Get.offNamed(HAppRoutes.root);
                           },
                           child: Text(

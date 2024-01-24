@@ -115,8 +115,9 @@ class RecentOrderItemWidget extends StatelessWidget {
             maxItems: 5,
             items: model.listProduct,
           ),
-          gapH12,
-          Row(
+          Expanded(
+              child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
@@ -129,7 +130,7 @@ class RecentOrderItemWidget extends StatelessWidget {
                     .copyWith(color: HAppColor.hBluePrimaryColor),
               )
             ],
-          )
+          ))
         ]),
       ),
     );

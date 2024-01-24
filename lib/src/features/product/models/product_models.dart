@@ -75,7 +75,7 @@ List<String> imgStores = [
   'https://th.bing.com/th?id=OIP.rhMcFA3HOLw-r2F4ydA2EQHaFJ&w=299&h=208&c=8&rs=1&qlt=90&o=6&dpr=1.4&pid=3.1&rm=2',
   'https://cdn.freebiesupply.com/logos/large/2x/coop-1-logo-png-transparent.png',
   'https://th.bing.com/th/id/R.b52292d9ba6ca1ab47b895ac21746eae?rik=%2fUNw5ViX6kfZQw&riu=http%3a%2f%2fthucphamduchanh.com%2fwp-content%2fuploads%2f2016%2f10%2flan-chi.jpg&ehk=l12M%2bpHOfm8KGf6QPYnVdThrh8YvwoZW5ZcmCjz1u8A%3d&risl=&pid=ImgRaw&r=0',
-  'https://www.logolynx.com/images/logolynx/a6/a6ccd40284b94998629b222d5c4d343b.jpeg'
+  'https://th.bing.com/th/id/OIP.OHV7oMOukqYB6oasPVI0YQHaFG?rs=1&pid=ImgDetMain'
       'https://th.bing.com/th?id=OIP.6nSoBQ4w_cfYoc7ANyYz-wAAAA&w=212&h=212&c=8&rs=1&qlt=90&o=6&dpr=1.4&pid=3.1&rm=2',
   'https://th.bing.com/th?id=OIP.883Dwbut3eSn63c8fjkCbwHaEd&w=322&h=193&c=8&rs=1&qlt=90&o=6&dpr=1.4&pid=3.1&rm=2'
 ];
@@ -93,17 +93,20 @@ bool randomBool() {
 }
 
 String randomSalePersent() {
-  return '${randomInt(0, 100)}%';
+  return random.nextBool() ? '${randomInt(0, 100)}%' : '';
 }
 
 String randomPriceSale(String price, String salePersent) {
   double priceNum = double.parse(price);
+  if (salePersent == '') {
+    return priceNum.toStringAsFixed(2);
+  }
   int salePersentNum =
       int.parse(salePersent.substring(0, salePersent.length - 1));
 
   double priceSaleNum = priceNum * (1 - salePersentNum / 100);
 
-  return priceSaleNum.toStringAsFixed(2);
+  return priceSaleNum.toStringAsFixed(0);
 }
 
 T randomElement<T>(List<T> list) {
@@ -115,7 +118,7 @@ final List<ProductItem> listProduct = List<ProductItem>.generate(
   (index) {
     String category = randomElement(categories);
     String name = randomElement(names);
-    String price = randomDouble(1, 1000).toStringAsFixed(2);
+    String price = randomDouble(1, 1000).toStringAsFixed(0);
     String unit = randomElement(units);
     String salePersent = randomSalePersent().toString();
     String priceSale = randomPriceSale(price, salePersent);
@@ -123,7 +126,8 @@ final List<ProductItem> listProduct = List<ProductItem>.generate(
     bool added = randomBool();
     bool isFavorite = randomBool();
     String imgStore = randomElement(imgStores);
-    price = '$price ₫';
+    price = '$price.000₫';
+    priceSale = '$priceSale.000₫';
     return ProductItem(
       category: category,
       name: name,

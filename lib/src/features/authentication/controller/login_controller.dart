@@ -9,4 +9,6 @@ class LoginController extends GetxController {
   var phoneNumber = "".obs;
   var verificationId = "".obs;
   var smsOtp = "".obs;
+
+  TextEditingController pinNumberController = TextEditingController();
 }

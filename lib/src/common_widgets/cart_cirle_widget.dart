@@ -2,17 +2,21 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
+import 'package:on_demand_grocery/src/features/base/controllers/home_controller.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 
 class CartCircle extends StatelessWidget {
-  const CartCircle({super.key});
+  CartCircle({super.key});
+
+  final homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         GestureDetector(
-          onTap: () => Get.toNamed(HAppRoutes.cart),
+          onTap: () =>
+              {Get.toNamed(HAppRoutes.cart), homeController.openReminder()},
           child: Container(
             width: 40,
             height: 40,

@@ -1,14 +1,15 @@
-import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
+import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
-import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/base/controllers/explore_controller.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class ExploreBottomAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  const ExploreBottomAppBar({super.key});
+  ExploreBottomAppBar({super.key});
+
+  final exploreController = Get.put(ExploreController());
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,8 @@ class ExploreBottomAppBar extends StatelessWidget
             Align(
               alignment: Alignment.centerRight,
               child: TabBar(
-                  labelStyle: HAppStyle.label4Regular,
+                  controller: exploreController.tabController,
+                  labelStyle: HAppStyle.label3Bold,
                   isScrollable: true,
                   indicatorColor: HAppColor.hBluePrimaryColor,
                   labelColor: HAppColor.hBluePrimaryColor,
@@ -75,7 +77,7 @@ class ExploreBottomAppBar extends StatelessWidget
                 color: HAppColor.hBackgroundColor,
                 height: 48,
                 width: 48,
-                child: Center(
+                child: const Center(
                     child: Padding(
                   padding: EdgeInsets.only(left: 10),
                   child: Icon(EvaIcons.options2Outline),
