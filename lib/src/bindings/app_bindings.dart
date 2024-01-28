@@ -1,19 +1,26 @@
 import 'package:get/get.dart';
-import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
-import 'package:on_demand_grocery/src/features/base/views/home/home_screen.dart';
-import 'package:on_demand_grocery/src/features/base/views/notification/notification_screen.dart';
-import 'package:on_demand_grocery/src/features/base/views/profile/profile_screen.dart';
-import 'package:on_demand_grocery/src/features/base/views/root/root_screen.dart';
-import 'package:on_demand_grocery/src/features/base/views/wishlist/wishlist_screen.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/login_controller.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/on_boarding_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/home_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/search_controller.dart';
 
 class HAppBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => const OnboardingScreen(), fenix: true);
-    Get.lazyPut(() => const RootScreen(), fenix: true);
-    Get.lazyPut(() => const HomeScreen(), fenix: true);
-    Get.lazyPut(() => const WishlistScreen(), fenix: true);
-    Get.lazyPut(() => const NotificationScreen(), fenix: true);
-    Get.lazyPut(() => const ProfileScreen(), fenix: true);
+    // Screens
+    Get.lazyPut(() => OnboardingController(), fenix: true);
+    Get.lazyPut(() => RootController(), fenix: true);
+    Get.lazyPut(() => HomeController(), fenix: true);
+    // Get.lazyPut(() => WishlistController(), fenix: true);
+    // Get.lazyPut(() => NotificationController(), fenix: true);
+    Get.lazyPut(() => SearchProductController(), fenix: true);
+    Get.lazyPut(() => LoginController(), fenix: true);
+    Get.lazyPut(() => ProductController(), fenix: true);
+    Get.lazyPut(() => ExploreController(), fenix: true);
+    Get.lazyPut(() => ProductController(), fenix: true);
   }
 }

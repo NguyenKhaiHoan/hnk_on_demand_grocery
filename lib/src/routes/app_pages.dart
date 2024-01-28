@@ -3,16 +3,18 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/verify/verify_screen.dart';
-import 'package:on_demand_grocery/src/features/base/views/root/root_screen.dart';
-import 'package:on_demand_grocery/src/features/cart/views/cart_screen.dart';
-import 'package:on_demand_grocery/src/features/cart/views/checkout_screen.dart';
-import 'package:on_demand_grocery/src/features/search/view/search_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/order/cart_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/order/checkout_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/order/voucher_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/product/product_item_detail.dart';
+import 'package:on_demand_grocery/src/features/shop/views/root/root_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/search/search_screen.dart';
 
 abstract class HAppPages {
   static final pages = [
     GetPage(
       name: HAppRoutes.onboarding,
-      page: () => const OnboardingScreen(),
+      page: () => OnboardingScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       transition: Transition.fadeIn,
@@ -59,6 +61,20 @@ abstract class HAppPages {
       curve: Curves.easeOut,
       transition: Transition.rightToLeftWithFade,
     ),
+    GetPage(
+      name: HAppRoutes.voucher,
+      page: () => const VoucherScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.detail,
+      page: () => ProductDetailScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.fadeIn,
+    ),
   ];
 }
 
@@ -70,4 +86,6 @@ abstract class HAppRoutes {
   static const verify = '/verify';
   static const cart = '/cart';
   static const checkout = '/checkout';
+  static const voucher = '/voucher';
+  static const detail = '/detail';
 }

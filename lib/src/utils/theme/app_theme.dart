@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
@@ -8,6 +9,10 @@ class HAppTheme {
     primaryColor: HAppColor.hBluePrimaryColor,
     splashColor: HAppColor.hTransparentColor,
     appBarTheme: const AppBarTheme(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: HAppColor.hBackgroundColor,
+          statusBarIconBrightness: Brightness.dark,
+        ),
         elevation: 0,
         surfaceTintColor: HAppColor.hTransparentColor,
         backgroundColor: HAppColor.hBackgroundColor,

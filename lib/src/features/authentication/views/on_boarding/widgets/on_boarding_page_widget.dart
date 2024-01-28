@@ -32,7 +32,8 @@ class OnboardingPageWidget extends StatelessWidget {
             Text(
               onboardingModel.discription,
               // textAlign: TextAlign.center,
-              style: HAppStyle.paragraph2Regular,
+              style: HAppStyle.paragraph1Regular
+                  .copyWith(color: HAppColor.hGreyColorShade600),
             ).animate().fade(duration: 1000.ms).slideY(curve: Curves.easeOut),
           ],
         ),

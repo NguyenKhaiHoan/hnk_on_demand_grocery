@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
           height: 400,
           width: 400,
         )),
-        nextScreen: const OnboardingScreen(),
+        nextScreen: OnboardingScreen(),
         splashTransition: SplashTransition.fadeTransition,
         pageTransitionType: PageTransitionType.fade,
       ),

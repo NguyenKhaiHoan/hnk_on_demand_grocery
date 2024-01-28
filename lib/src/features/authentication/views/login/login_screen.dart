@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
@@ -20,8 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    loginController.phoneNumberController.text = "+84";
     super.initState();
+    loginController.phoneNumberController.text = "+84";
   }
 
   @override

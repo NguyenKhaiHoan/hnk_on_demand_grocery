@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
@@ -7,7 +8,6 @@ import 'package:on_demand_grocery/src/features/authentication/controller/login_c
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:pinput/pinput.dart';
-import 'package:social_media_buttons/social_media_button.dart';
 
 class VerifyScreen extends StatefulWidget {
   const VerifyScreen({super.key});

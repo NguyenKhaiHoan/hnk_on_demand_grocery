@@ -12,23 +12,8 @@ import 'package:on_demand_grocery/src/features/authentication/models/on_boarding
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
-class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
-
-  @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
-}
-
-class _OnboardingScreenState extends State<OnboardingScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+class OnboardingScreen extends StatelessWidget {
+  OnboardingScreen({super.key});
 
   final onboardingController = Get.put(OnboardingController());
 

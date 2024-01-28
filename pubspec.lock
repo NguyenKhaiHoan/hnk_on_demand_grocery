@@ -105,6 +105,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  coupon_uikit:
+    dependency: "direct main"
+    description:
+      name: coupon_uikit
+      sha256: "3d823e0577265d029bbd4307b9eabf0b096ce183c5e75ba86a45dc746757d692"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   crypto:
     dependency: transitive
     description:
@@ -153,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
+  fade_shimmer:
+    dependency: "direct main"
+    description:
+      name: fade_shimmer
+      sha256: "7410220ba0ccfa3abef630ec64e2398b9e136fbeb6fe2f8ce86d939f46b3491e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   fake_async:
     dependency: transitive
     description:
@@ -376,6 +392,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
+  lorem_ipsum:
+    dependency: "direct main"
+    description:
+      name: lorem_ipsum
+      sha256: b018535db8525a45bbcd7a44e151480e2618e2111c5305725e3713ce7c6ba677
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   matcher:
     dependency: transitive
     description:
@@ -536,6 +560,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.1"
+  readmore:
+    dependency: "direct main"
+    description:
+      name: readmore
+      sha256: "99c2483202f7c7e98c50834d72be2b119aefecf4497ca1960ae9d5f418eb1481"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
+  rect_getter:
+    dependency: transitive
+    description:
+      name: rect_getter
+      sha256: "1c71e4ab5fb7d83d2b14a8338f979bc9ae57eefba786e7fbc91f6746dac2193d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   responsive_framework:
     dependency: "direct main"
     description:
@@ -544,6 +584,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  scroll_to_index:
+    dependency: "direct main"
+    description:
+      name: scroll_to_index
+      sha256: b707546e7500d9f070d63e5acf74fd437ec7eeeb68d3412ef7b0afada0b4f176
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -797,6 +845,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  vertical_scrollable_tabview:
+    dependency: "direct main"
+    description:
+      name: vertical_scrollable_tabview
+      sha256: a6de900ffadc23c0f26ba42522f19b9bba4d0a062a4e7413e6a7897a3c9e7425
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   web:
     dependency: transitive
     description:
