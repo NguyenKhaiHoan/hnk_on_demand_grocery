@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
@@ -18,6 +19,7 @@ class ProductCartWidget extends StatefulWidget {
 
 class _ProductCartWidgetState extends State<ProductCartWidget> {
   final productController = Get.put(ProductController());
+  final detailController = Get.put(DetailController());
 
   @override
   Widget build(BuildContext context) {
@@ -116,25 +118,33 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                         onTap: () {
                           if (widget.model.quantity > 1) {
                             widget.model.quantity--;
+                          } else if (widget.model.quantity == 1) {
+                            productController.isInCart.remove(widget.model);
+                            widget.model.quantity = 0;
                           }
                           productController.refreshAllList();
                           productController
                               .refreshList(productController.isInCart);
-
+                          productController.addMapProductInCart();
                           productController.sumProductMoney();
                           setState(() {});
                         },
                         child: Container(
-                            height: 20,
-                            width: 20,
+                            height: 25,
+                            width: 25,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
                                 color: HAppColor.hBackgroundColor),
-                            child: const Center(
-                              child: Icon(
-                                EvaIcons.minus,
-                                size: 10,
-                              ),
+                            child: Center(
+                              child: widget.model.quantity == 1
+                                  ? Icon(
+                                      EvaIcons.trashOutline,
+                                      size: 15,
+                                    )
+                                  : Icon(
+                                      EvaIcons.minus,
+                                      size: 15,
+                                    ),
                             )),
                       ),
                       gapW6,
@@ -149,19 +159,19 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                           productController.refreshAllList();
                           productController
                               .refreshList(productController.isInCart);
-                          productController.sumProductMoney();
+                          productController.addMapProductInCart();
                           setState(() {});
                         },
                         child: Container(
-                            height: 20,
-                            width: 20,
+                            height: 25,
+                            width: 25,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
                                 color: HAppColor.hBluePrimaryColor),
                             child: const Center(
                               child: Icon(
                                 EvaIcons.plus,
-                                size: 10,
+                                size: 15,
                                 color: HAppColor.hWhiteColor,
                               ),
                             )),

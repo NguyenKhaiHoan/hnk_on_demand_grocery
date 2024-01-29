@@ -1,7 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:on_demand_grocery/src/common_widgets/bumble_scroll_bar_flutter.dart';
@@ -12,7 +11,6 @@ import 'package:on_demand_grocery/src/features/shop/controllers/home_controller.
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/category_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/features/shop/models/recent_oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/category_menu.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/home_appbar_widget.dart';
@@ -33,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final homeController = Get.put(HomeController());
   final rootController = Get.put(RootController());
   final exploreController = Get.put(ExploreController());
-  final orderController = Get.put(ProductController());
+  final productController = Get.put(ProductController());
 
   late List<String> listBanner = [
     "https://www.bigc.vn/files/banners/2022/july-trang/mega/resize-cover-blog-4.jpg",
@@ -44,11 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int itemsPerRow = 7;
   double ratio = 1;
   double widthCategory = HAppSize.deviceWidth * 1.3;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Obx(() => Padding(
                             padding: hAppDefaultPaddingLR,
                             child: homeController.reminder.isTrue &&
-                                    orderController.isInCart.isNotEmpty
+                                    productController.isInCart.isNotEmpty
                                 ? Column(
                                     children: [
                                       ShoppingReminderWidget(),
@@ -229,50 +222,81 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                   width: double.infinity,
                                   height: 300,
-                                  child: GetBuilder<ProductController>(
-                                      builder: (controller) => ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount: 10,
-                                            itemBuilder:
-                                                (BuildContext context, index) {
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        0, 0, 10, 0),
-                                                child: ProductItemWidget(
-                                                  storeIcon: true,
-                                                  model: orderController
-                                                          .topSellingProducts[
-                                                      index],
-                                                  list: orderController
-                                                      .topSellingProducts,
-                                                  compare: false,
-                                                ),
-                                              );
-                                            },
-                                          ))),
-                              // SizedBox(
-                              //   height: 100,
-                              //   child: GridView.builder(
-                              //     controller: _scrollController,
-                              //     scrollDirection: Axis.horizontal,
-                              //     physics: const BouncingScrollPhysics(),
-                              //     itemCount: categoryList.length,
-                              //     itemBuilder: (context, index) {
-                              //       return CategoryMenu(
-                              //         onTap: () {},
-                              //         model: categoryList[index],
-                              //       );
-                              //     },
-                              //     gridDelegate:
-                              //         const SliverGridDelegateWithMaxCrossAxisExtent(
-                              //       maxCrossAxisExtent: 100,
-                              //       childAspectRatio: 2,
-                              //       crossAxisSpacing: 20,
-                              //       mainAxisSpacing: 20,
-                              //     ),
-                              //   ),
-                              // ),
+                                  child: Obx(() => ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: productController
+                                                    .topSellingProducts.length >
+                                                10
+                                            ? 10
+                                            : productController
+                                                .topSellingProducts.length,
+                                        itemBuilder:
+                                            (BuildContext context, index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 10, 0),
+                                            child: ProductItemWidget(
+                                              storeIcon: true,
+                                              model: productController
+                                                  .topSellingProducts[index],
+                                              list: productController
+                                                  .topSellingProducts,
+                                              compare: false,
+                                            ),
+                                          );
+                                        },
+                                      ))),
+                              gapH16,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Giảm giá",
+                                    style: HAppStyle.heading3Style,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      rootController.animateToScreen(1);
+                                      exploreController.animateToTab(1);
+                                    },
+                                    child: Text("Xem tất cả",
+                                        style: HAppStyle.paragraph3Regular
+                                            .copyWith(
+                                                color: HAppColor
+                                                    .hBluePrimaryColor)),
+                                  )
+                                ],
+                              ),
+                              gapH16,
+                              SizedBox(
+                                  width: double.infinity,
+                                  height: 300,
+                                  child: Obx(() => ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: productController
+                                                    .topSaleProducts.length >
+                                                10
+                                            ? 10
+                                            : productController
+                                                .topSaleProducts.length,
+                                        itemBuilder:
+                                            (BuildContext context, index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 10, 0),
+                                            child: ProductItemWidget(
+                                              storeIcon: true,
+                                              model: productController
+                                                  .topSaleProducts[index],
+                                              list: productController
+                                                  .topSaleProducts,
+                                              compare: false,
+                                            ),
+                                          );
+                                        },
+                                      ))),
                               gapH24
                             ],
                           )),

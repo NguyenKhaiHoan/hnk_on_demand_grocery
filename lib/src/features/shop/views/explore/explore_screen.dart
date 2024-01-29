@@ -21,7 +21,7 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   final exploreController = Get.put(ExploreController());
-  final orderController = Get.put(ProductController());
+  final productController = Get.put(ProductController());
 
   @override
   void initState() {
@@ -153,331 +153,318 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   Container(
                     margin: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount:
-                                  orderController.topSellingProducts.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model:
-                                      orderController.topSellingProducts[index],
-                                  storeIcon: true,
-                                  list: orderController.topSellingProducts,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount:
+                              productController.topSellingProducts.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model:
+                                  productController.topSellingProducts[index],
+                              storeIcon: true,
+                              list: productController.topSellingProducts,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.topSaleProducts.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.topSaleProducts[index],
-                                  storeIcon: true,
-                                  list: orderController.topSaleProducts,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.topSaleProducts.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.topSaleProducts[index],
+                              storeIcon: true,
+                              list: productController.topSaleProducts,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate1Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate1Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate1Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate1Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate1Products[index],
+                              storeIcon: true,
+                              list: productController.cate1Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate2Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate2Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate2Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate2Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate2Products[index],
+                              storeIcon: true,
+                              list: productController.cate2Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate3Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate3Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate3Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate3Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate3Products[index],
+                              storeIcon: true,
+                              list: productController.cate3Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate4Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate4Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate4Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate4Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate4Products[index],
+                              storeIcon: true,
+                              list: productController.cate4Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate5Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate5Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate5Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate5Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate5Products[index],
+                              storeIcon: true,
+                              list: productController.cate5Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate6Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate6Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate6Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate6Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate6Products[index],
+                              storeIcon: true,
+                              list: productController.cate6Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate7Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate7Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate7Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate7Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate7Products[index],
+                              storeIcon: true,
+                              list: productController.cate7Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate8Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate8Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate8Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate8Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate8Products[index],
+                              storeIcon: true,
+                              list: productController.cate8Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate9Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate9Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate9Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate9Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate9Products[index],
+                              storeIcon: true,
+                              list: productController.cate9Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate10Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate10Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate10Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate10Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate10Products[index],
+                              storeIcon: true,
+                              list: productController.cate10Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate11Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate11Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate11Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate11Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate11Products[index],
+                              storeIcon: true,
+                              list: productController.cate11Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(
                         hAppDefaultPadding, 12, hAppDefaultPadding, 0),
-                    child: GetBuilder<ProductController>(
-                        builder: (controller) => GridView.builder(
-                              itemCount: orderController.cate12Products.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 295,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemWidget(
-                                  model: orderController.cate12Products[index],
-                                  storeIcon: true,
-                                  list: orderController.cate12Products,
-                                  compare: false,
-                                );
-                              },
-                            )),
+                    child: Obx(() => GridView.builder(
+                          itemCount: productController.cate12Products.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10.0,
+                            mainAxisSpacing: 10.0,
+                            mainAxisExtent: 295,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return ProductItemWidget(
+                              model: productController.cate12Products[index],
+                              storeIcon: true,
+                              list: productController.cate12Products,
+                              compare: false,
+                            );
+                          },
+                        )),
                   ),
                 ]),
           ),
           floatingActionButton: Obx(() => exploreController.showFab.isTrue
               ? FloatingActionButton(
+                  shape: const CircleBorder(),
                   backgroundColor: HAppColor.hBluePrimaryColor,
                   child: const Icon(
                     EvaIcons.arrowIosUpward,

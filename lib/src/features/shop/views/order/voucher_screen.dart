@@ -17,7 +17,7 @@ class VoucherScreen extends StatefulWidget {
 }
 
 class _VoucherScreenState extends State<VoucherScreen> {
-  final cartController = Get.put(ProductController());
+  final productController = Get.put(ProductController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +29,13 @@ class _VoucherScreenState extends State<VoucherScreen> {
         leading: Row(children: [
           gapW24,
           GestureDetector(
-            onTap: () => Get.back(),
+            onTap: () {
+              Get.back();
+              productController.bigCValue!.value = false;
+              productController.groFastvalue!.value = false;
+              productController.voucherAppliedSubText.clear();
+              productController.voucherAppliedTextAppear!.value = false;
+            },
             child: Container(
               width: 40,
               height: 40,
@@ -123,17 +129,17 @@ class _VoucherScreenState extends State<VoucherScreen> {
                             activeColor: HAppColor.hOrangeColor,
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
-                            value: cartController.groFastvalue!.value,
+                            value: productController.groFastvalue!.value,
                             onChanged: (bool? value) {
-                              cartController.groFastvalue!.value = value!;
-                              cartController.groFastvalue!.value == true
-                                  ? cartController.voucherAppliedSubText
+                              productController.groFastvalue!.value = value!;
+                              productController.groFastvalue!.value == true
+                                  ? productController.voucherAppliedSubText
                                       .add("Giảm 100k cho khách hàng mới")
-                                  : cartController.voucherAppliedSubText
+                                  : productController.voucherAppliedSubText
                                       .remove("Giảm 100k cho khách hàng mới");
-                              cartController.voucherAppliedTextAppear!.value =
-                                  value;
-                              cartController.displayVoucherAppliedText();
+                              productController
+                                  .voucherAppliedTextAppear!.value = value;
+                              productController.displayVoucherAppliedText();
                               setState(() {});
                             }),
                         Expanded(
@@ -223,17 +229,17 @@ class _VoucherScreenState extends State<VoucherScreen> {
                             activeColor: HAppColor.hOrangeColor,
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
-                            value: cartController.bigCValue!.value,
+                            value: productController.bigCValue!.value,
                             onChanged: (bool? value) {
-                              cartController.bigCValue!.value = value!;
-                              cartController.bigCValue!.value == true
-                                  ? cartController.voucherAppliedSubText
+                              productController.bigCValue!.value = value!;
+                              productController.bigCValue!.value == true
+                                  ? productController.voucherAppliedSubText
                                       .add("Giảm 10% cho mặt hàng Trái cây")
-                                  : cartController.voucherAppliedSubText
+                                  : productController.voucherAppliedSubText
                                       .remove("Giảm 10% cho mặt hàng Trái cây");
-                              cartController.voucherAppliedTextAppear!.value =
-                                  value;
-                              cartController.displayVoucherAppliedText();
+                              productController
+                                  .voucherAppliedTextAppear!.value = value;
+                              productController.displayVoucherAppliedText();
                               setState(() {});
                             }),
                         Expanded(
@@ -342,11 +348,11 @@ class _VoucherScreenState extends State<VoucherScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            cartController.voucherAppliedTextAppear!.value
+            productController.voucherAppliedTextAppear!.value
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Text(
-                      cartController.voucherAppliedText.value,
+                      productController.voucherAppliedText.value,
                       style: HAppStyle.paragraph3Regular.copyWith(
                         color: HAppColor.hBluePrimaryColor,
                         overflow: TextOverflow.ellipsis,
@@ -357,8 +363,18 @@ class _VoucherScreenState extends State<VoucherScreen> {
                 : Container(),
             ElevatedButton(
               onPressed: () {
-                cartController.sumProductMoney();
-                Get.toNamed(HAppRoutes.cart);
+                if (productController.bigCValue!.value ||
+                    productController.groFastvalue!.value) {
+                  productController.applied.value = true;
+                  productController.sumProductMoney();
+                  Get.back();
+                } else {
+                  productController.bigCValue!.value = false;
+                  productController.groFastvalue!.value = false;
+                  productController.voucherAppliedSubText.clear();
+                  productController.voucherAppliedTextAppear!.value = false;
+                  Get.back();
+                }
               },
               child: Text(
                 "Áp dụng",

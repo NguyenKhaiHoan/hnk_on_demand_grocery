@@ -7,28 +7,26 @@ class ProductModel {
   String salePersent;
   String priceSale;
   String imgPath;
-  bool added;
-  bool isFavorite;
   String imgStore;
   String nameStore;
   String unit;
   String countBuyed;
   int quantity;
+  String status;
 
   ProductModel(
       {required this.category,
-      required this.added,
       required this.price,
       required this.salePersent,
       required this.priceSale,
       required this.imgPath,
       required this.name,
-      required this.isFavorite,
       required this.imgStore,
       required this.nameStore,
       required this.unit,
       required this.countBuyed,
-      required this.quantity});
+      required this.quantity,
+      required this.status});
 }
 
 List<String> categories = [

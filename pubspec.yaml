@@ -65,6 +65,8 @@ dependencies:
   vertical_scrollable_tabview: ^0.1.1
   scroll_to_index: ^3.0.1
   fade_shimmer: ^2.2.0
+  flutter_speed_dial: ^7.0.0
+  toastification: ^1.2.0
 
 dev_dependencies:
   flutter_test:

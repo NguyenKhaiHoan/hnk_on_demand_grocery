@@ -6,7 +6,6 @@ class DetailController extends GetxController {
   static DetailController get instance => Get.find();
 
   var dragController = DraggableScrollableController();
-  var number = 0.0.obs;
 
   var showAppBar = false.obs;
 
@@ -20,17 +19,34 @@ class DetailController extends GetxController {
     showNameInAppBar.value = value;
   }
 
-  var count = 1.obs;
+  var countText = "1".obs;
+
+  void setCount(ProductModel model) {
+    countText.value = model.quantity != 0 ? "${model.quantity}" : '1';
+  }
 
   changeCount(String operator) {
+    int count;
     if (operator == "+") {
-      count++;
+      count = int.parse(countText.value) + 1;
+      countText.value = count.toString();
     } else {
-      if (count > 1) {
-        count--;
+      if (int.parse(countText.value) > 1) {
+        count = int.parse(countText.value) - 1;
+        countText.value = count.toString();
       }
     }
   }
+
+  final scrollController = ScrollController();
+
+  final showFab = true.obs;
+
+  showFabMenu(bool value) {
+    showFab.value = value;
+  }
+
+  final notification = false.obs;
 
   calculatingDifference(ProductModel product1, String product2Price) {
     if (product1.salePersent == "") {

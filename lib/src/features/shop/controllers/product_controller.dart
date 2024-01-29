@@ -10,7 +10,6 @@ class ProductController extends GetxController {
   void onInit() {
     getAllProducts();
     getExploreProducts();
-    getIsFavoriteds();
     super.onInit();
   }
 
@@ -71,6 +70,8 @@ class ProductController extends GetxController {
 
   var allChooseBool = true.obs;
 
+  var applied = false.obs;
+
   addProductInCart(ProductModel product) {
     isInCart.addIf(!isInCart.contains(product), product);
     update();
@@ -129,7 +130,8 @@ class ProductController extends GetxController {
         if (product.imgStore == choose.imgStore && choose.value == true) {
           if (bigCValue!.value == true &&
               product.nameStore == "Big C" &&
-              product.category == "Trái cây") {
+              product.category == "Trái cây" &&
+              applied.value) {
             if (product.salePersent != "") {
               productMoney.value += (int.parse(product.priceSale
                           .substring(0, product.priceSale.length - 5)) *
@@ -157,7 +159,9 @@ class ProductController extends GetxController {
         }
       }
     }
-    if (groFastvalue!.value == true && productMoney.value >= 200) {
+    if (groFastvalue!.value == true &&
+        productMoney.value >= 200 &&
+        applied.value) {
       productMoney.value = productMoney.value - 100;
     }
   }
@@ -210,6 +214,25 @@ class ProductController extends GetxController {
   var cate12Products = <ProductModel>[].obs;
   var isFavoritedProducts = <ProductModel>[].obs;
   var comparePriceProducts = <ProductModel>[].obs;
+  var registerNotificationProducts = <ProductModel>[].obs;
+
+  addRegisterNotificationProducts(ProductModel product) {
+    if (registerNotificationProducts.contains(product)) {
+      registerNotificationProducts.remove(product);
+    } else {
+      registerNotificationProducts.add(product);
+    }
+    update();
+  }
+
+  addProductInFavorited(ProductModel product) {
+    if (isFavoritedProducts.contains(product)) {
+      isFavoritedProducts.remove(product);
+    } else {
+      isFavoritedProducts.add(product);
+    }
+    update();
+  }
 
   void getComparePriceProduct(ProductModel model) {
     if (comparePriceProducts.isNotEmpty) {
@@ -256,10 +279,5 @@ class ProductController extends GetxController {
     cate12Products.value = listProducts
         .where((product) => product.category == "Mỳ & Gạo")
         .toList();
-  }
-
-  void getIsFavoriteds() {
-    isFavoritedProducts.value =
-        listProducts.where((product) => product.isFavorite).toList();
   }
 }

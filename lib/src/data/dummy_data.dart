@@ -51,9 +51,8 @@ class DummyData {
         String salePersent = randomSalePersent().toString();
         String priceSale = randomPriceSale(price, salePersent);
         String imgPath = randomElement(imgPaths);
-        bool added = randomBool();
-        bool isFavorite = randomBool();
         String imgStore = randomElement(imgStores);
+        String status = randomInt(1, 10) <= 2 ? "Tạm hết hàng" : "";
         if (imgStore == imgStores[0]) {
           nameStore = "Big C";
         } else if (imgStore == imgStores[1]) {
@@ -79,13 +78,12 @@ class DummyData {
             salePersent: salePersent,
             priceSale: priceSale,
             imgPath: imgPath,
-            added: added,
-            isFavorite: isFavorite,
             imgStore: imgStore,
             unit: unit,
             countBuyed: countBuyed,
             nameStore: nameStore,
-            quantity: 0);
+            quantity: 0,
+            status: status);
       },
     );
     return list;

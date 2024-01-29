@@ -18,7 +18,7 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String selected = 'Tiền mặt';
-  final orderController = Get.put(ProductController());
+  final productController = Get.put(ProductController());
 
   @override
   void initState() {
@@ -225,10 +225,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Tiền hàng (${orderController.isInCart.length} sản phẩm)',
+                            'Tiền hàng (${productController.isInCart.length} sản phẩm)',
                             style: HAppStyle.label2Bold,
                           ),
-                          Text('${orderController.productMoney.value}.000₫'),
+                          Text('${productController.productMoney.value}.000₫'),
                         ],
                       ),
                       Divider(
@@ -239,7 +239,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Expanded(
                           child: ProductListStackWidget(
                             maxItems: 8,
-                            items: orderController.isInCart
+                            items: productController.isInCart
                                 .map((product) => product.imgPath)
                                 .toList(),
                           ),
@@ -259,7 +259,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           Text(
                             'Phí giao hàng',
                             style: HAppStyle.paragraph2Regular
-                                .copyWith(color: HAppColor.hGreyColor),
+                                .copyWith(color: HAppColor.hGreyColorShade600),
                           ),
                           const Text('100.000₫'),
                         ],
@@ -269,8 +269,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Giảm giá phí giao hàng',
-                              style: HAppStyle.paragraph2Regular
-                                  .copyWith(color: HAppColor.hGreyColor)),
+                              style: HAppStyle.paragraph2Regular.copyWith(
+                                  color: HAppColor.hGreyColorShade600)),
                           const Text('-50.000₫'),
                         ],
                       ),
@@ -284,7 +284,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         children: [
                           const Text('Tổng cộng', style: HAppStyle.label2Bold),
                           Text(
-                              '${orderController.productMoney.value + 50}.000₫',
+                              '${productController.productMoney.value + 50}.000₫',
                               style: HAppStyle.label2Bold.copyWith(
                                   color: HAppColor.hBluePrimaryColor)),
                         ],
@@ -316,8 +316,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GestureDetector(
-              onTap: () =>
-                  Get.toNamed(HAppRoutes.voucher, preventDuplicates: false),
+              onTap: () => Get.toNamed(HAppRoutes.voucher),
               child: Row(
                 children: [
                   const Icon(
@@ -331,11 +330,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       children: [
                         const Text("Áp dụng mã ưu đãi",
                             style: HAppStyle.paragraph1Bold),
-                        orderController.voucherAppliedTextAppear!.value
+                        productController.voucherAppliedTextAppear!.value &&
+                                productController.applied.value
                             ? Padding(
                                 padding: const EdgeInsets.only(bottom: 12),
                                 child: Text(
-                                  orderController.voucherAppliedText.value,
+                                  productController.voucherAppliedText.value,
                                   style: HAppStyle.paragraph3Regular.copyWith(
                                     color: HAppColor.hBluePrimaryColor,
                                     overflow: TextOverflow.ellipsis,
@@ -366,8 +366,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     text: "Tổng cộng:\n",
                     children: [
                       TextSpan(
-                        text: orderController.productMoney.value != 0
-                            ? "${orderController.productMoney.value + 50}.000₫"
+                        text: productController.productMoney.value != 0
+                            ? "${productController.productMoney.value + 50}.000₫"
                             : "0₫",
                         style: HAppStyle.heading4Style
                             .copyWith(color: HAppColor.hBluePrimaryColor),

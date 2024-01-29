@@ -10,7 +10,7 @@ class CartCircle extends StatelessWidget {
   CartCircle({super.key});
 
   final homeController = Get.put(HomeController());
-  final orderController = Get.put(ProductController());
+  final productController = Get.put(ProductController());
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +18,10 @@ class CartCircle extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            orderController.addMapProductInCart();
-            Get.toNamed(HAppRoutes.cart);
+            productController.addMapProductInCart();
+            print(productController.productMoney.value);
             homeController.openReminder();
+            Get.toNamed(HAppRoutes.cart);
           },
           child: Container(
             width: 40,
@@ -43,7 +44,7 @@ class CartCircle extends StatelessWidget {
           right: 0,
           child: Obx(() => AnimatedOpacity(
                 duration: const Duration(milliseconds: 300),
-                opacity: orderController.isInCart.isNotEmpty ? 1 : 0,
+                opacity: productController.isInCart.isNotEmpty ? 1 : 0,
                 child: Container(
                   width: 18,
                   height: 18,
@@ -52,29 +53,12 @@ class CartCircle extends StatelessWidget {
                       borderRadius: BorderRadius.circular(100)),
                   child: Center(
                       child: Text(
-                    "${orderController.isInCart.length}",
+                    "${productController.isInCart.length}",
                     style: const TextStyle(
                         fontSize: 10, color: HAppColor.hWhiteColor),
                   )),
                 ),
               )),
-          // child: Obx(
-          //   () => orderController.isInCart.isNotEmpty
-          //       ? Container(
-          //           width: 18,
-          //           height: 18,
-          //           decoration: BoxDecoration(
-          //               color: HAppColor.hRedColor,
-          //               borderRadius: BorderRadius.circular(100)),
-          //           child: Center(
-          //               child: Text(
-          //             "${orderController.isInCart.length}",
-          //             style: TextStyle(
-          //                 fontSize: 10, color: HAppColor.hWhiteColor),
-          //           )),
-          //         )
-          //       : Container(),
-          // ))
         )
       ],
     );

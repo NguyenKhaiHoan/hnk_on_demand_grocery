@@ -10,7 +10,7 @@ class WishlistBottomAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   WishlistBottomAppBar({super.key});
 
-  final orderController = Get.put(ProductController());
+  final productController = Get.put(ProductController());
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +27,10 @@ class WishlistBottomAppBar extends StatelessWidget
                   labelColor: HAppColor.hBluePrimaryColor,
                   unselectedLabelColor: Colors.black,
                   tabs: [
-                    Tab(
-                      text:
-                          'Sản phẩm (${orderController.isFavoritedProducts.length})',
-                    ),
+                    Obx(() => Tab(
+                          text:
+                              'Sản phẩm (${productController.isFavoritedProducts.length})',
+                        )),
                     Tab(
                       text: 'Cửa hàng (${isFavoritedStore.length})',
                     ),
