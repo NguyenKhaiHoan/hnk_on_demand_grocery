@@ -13,6 +13,7 @@ class ProductModel {
   String countBuyed;
   int quantity;
   String status;
+  String wishlistName;
 
   ProductModel(
       {required this.category,
@@ -26,7 +27,8 @@ class ProductModel {
       required this.unit,
       required this.countBuyed,
       required this.quantity,
-      required this.status});
+      required this.status,
+      required this.wishlistName});
 }
 
 List<String> categories = [

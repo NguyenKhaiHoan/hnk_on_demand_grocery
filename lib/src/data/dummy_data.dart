@@ -41,7 +41,7 @@ class DummyData {
   static List<ProductModel> getAllProducts() {
     List<ProductModel> list = [];
     list = List<ProductModel>.generate(
-      200,
+      1000,
       (index) {
         String nameStore = "";
         String category = randomElement(categories);
@@ -83,7 +83,8 @@ class DummyData {
             countBuyed: countBuyed,
             nameStore: nameStore,
             quantity: 0,
-            status: status);
+            status: status,
+            wishlistName: '');
       },
     );
     return list;

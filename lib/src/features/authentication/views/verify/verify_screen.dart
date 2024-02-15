@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
@@ -39,12 +38,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
-      textStyle: TextStyle(
+      textStyle: const TextStyle(
           fontSize: 20,
           color: Color.fromRGBO(30, 60, 87, 1),
           fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
-        border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
+        border: Border.all(color: const Color.fromRGBO(234, 239, 243, 1)),
         borderRadius: BorderRadius.circular(20),
       ),
     );
@@ -56,7 +55,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
     final submittedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration?.copyWith(
-        color: Color.fromRGBO(234, 239, 243, 1),
+        color: const Color.fromRGBO(234, 239, 243, 1),
       ),
     );
 
@@ -87,7 +86,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     gapH24,
                     const Column(
                       children: [
-                        const Text(
+                        Text(
                           "Xác minh số điện thoại của bạn",
                           style: HAppStyle.heading2Style,
                         ),
@@ -135,7 +134,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                             //         smsCode: loginController.smsOtp.value);
 
                             // await auth.signInWithCredential(credential);
-                            Get.offNamed(HAppRoutes.root);
+                            Get.offAllNamed(HAppRoutes.root);
                           },
                           child: Text(
                             "Xác thực",
@@ -146,7 +145,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     gapH24,
                     Row(
                       children: [
-                        Text(
+                        const Text(
                           "Không nhận được mã?  ",
                           style: HAppStyle.paragraph2Regular,
                         ),

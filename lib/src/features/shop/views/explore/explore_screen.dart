@@ -32,11 +32,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   scrollControllerListener() {
     if (exploreController.scrollController.offset >= 100) {
       exploreController.showFab.value = true;
@@ -107,6 +102,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   flexibleSpace: Padding(
                     padding: hAppDefaultPaddingLR,
                     child: ListView(
+                      controller: ScrollController(),
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       children: [

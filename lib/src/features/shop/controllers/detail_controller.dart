@@ -46,25 +46,41 @@ class DetailController extends GetxController {
     showFab.value = value;
   }
 
-  final notification = false.obs;
-
   calculatingDifference(ProductModel product1, String product2Price) {
     if (product1.salePersent == "") {
-      return (int.parse(
-                      product1.price.substring(0, product1.price.length - 5))) -
-                  (int.parse(
-                      product2Price.substring(0, product2Price.length - 5))) >
-              0
-          ? "Lớn hơn"
-          : "Nhỏ hơn";
+      int result =
+          (int.parse(product1.price.substring(0, product1.price.length - 5))) -
+              (int.parse(product2Price.substring(0, product2Price.length - 5)));
+      return result >= 0
+          ? result == 0
+              ? "= ${result.abs()}"
+              : "> ${result.abs()}"
+          : "< ${result.abs()}";
     } else {
-      return (int.parse(product1.priceSale
-                      .substring(0, product1.priceSale.length - 5))) -
-                  (int.parse(
-                      product2Price.substring(0, product2Price.length - 5))) >
-              0
-          ? "Lớn hơn"
-          : "Nhỏ hơn";
+      int result = (int.parse(
+              product1.priceSale.substring(0, product1.priceSale.length - 5))) -
+          (int.parse(product2Price.substring(0, product2Price.length - 5)));
+      return result >= 0
+          ? result == 0
+              ? "= ${result.abs()}"
+              : "> ${result.abs()}"
+          : "< ${result.abs()}";
     }
+  }
+
+  String comparePrice(String s) {
+    List<String> parts = s.split(" ");
+    if (parts[0] == ">") {
+      return ">";
+    } else if (parts[0] == "<") {
+      return "<";
+    } else {
+      return "=";
+    }
+  }
+
+  String comparePriceNumber(String s) {
+    List<String> parts = s.split(" ");
+    return "${parts[1]}.000₫";
   }
 }

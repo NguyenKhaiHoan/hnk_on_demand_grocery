@@ -5,47 +5,41 @@ import 'package:on_demand_grocery/src/constants/app_fonts.dart';
 class HAppStyle {
   static const heading1Style = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 40,
-    fontWeight: HAppFont.nunitoSemiBold,
+    fontWeight: HAppFont.nunitoBold,
   );
   static const heading2Style = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 32,
-    fontWeight: HAppFont.nunitoSemiBold,
+    fontWeight: HAppFont.nunitoBold,
   );
   static const heading3Style = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 24,
-    fontWeight: HAppFont.nunitoSemiBold,
+    fontWeight: HAppFont.nunitoBold,
   );
   static const heading4Style = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 18,
-    fontWeight: HAppFont.nunitoSemiBold,
+    fontWeight: HAppFont.nunitoBold,
   );
   static const heading5Style = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 14,
-    fontWeight: HAppFont.nunitoSemiBold,
+    fontWeight: HAppFont.nunitoBold,
   );
   static const paragraph1Bold = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 16,
@@ -53,7 +47,6 @@ class HAppStyle {
   );
   static const paragraph1Regular = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 16,
@@ -61,7 +54,6 @@ class HAppStyle {
   );
   static const paragraph2Bold = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 14,
@@ -69,7 +61,6 @@ class HAppStyle {
   );
   static const paragraph2Regular = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 14,
@@ -77,17 +68,14 @@ class HAppStyle {
   );
   static const paragraph3Bold = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 12,
     fontWeight: HAppFont.nunitoMedium,
   );
 
-// * p3-r (Paragraph 3 Regular)
   static const paragraph3Regular = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 12,
@@ -95,7 +83,6 @@ class HAppStyle {
   );
   static const label1Bold = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 20,
@@ -103,7 +90,6 @@ class HAppStyle {
   );
   static const label1Regular = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 20,
@@ -111,7 +97,6 @@ class HAppStyle {
   );
   static const label2Bold = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 16,
@@ -119,7 +104,6 @@ class HAppStyle {
   );
   static const label2Regular = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 16,
@@ -127,7 +111,6 @@ class HAppStyle {
   );
   static const label3Bold = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 14,
@@ -135,7 +118,6 @@ class HAppStyle {
   );
   static const label3Regular = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 14,
@@ -143,7 +125,6 @@ class HAppStyle {
   );
   static const label4Bold = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 12,
@@ -151,7 +132,6 @@ class HAppStyle {
   );
   static const label4Regular = TextStyle(
     fontStyle: FontStyle.normal,
-    // overflow: TextOverflow.ellipsis,
     color: HAppColor.hDarkColor,
     fontFamily: HAppFont.nunitoFontFamily,
     fontSize: 12,

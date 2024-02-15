@@ -48,7 +48,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     width: 1.5,
                   ),
                   color: HAppColor.hBackgroundColor),
-              child: Center(
+              child: const Center(
                 child: Icon(
                   EvaIcons.arrowBackOutline,
                 ),
@@ -376,7 +376,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.toNamed(HAppRoutes.complete);
+                    productController.removeAllProductInCart();
+                    productController.refreshAllList();
+                    productController.addMapProductInCart();
+                    productController.productMoney.value = 0;
+                  },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(HAppSize.deviceWidth * 0.45, 50),
                     backgroundColor: HAppColor.hBluePrimaryColor,

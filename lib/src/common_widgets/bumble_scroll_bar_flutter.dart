@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 
 class CustomBumbleScrollbar extends StatefulWidget {
-  CustomBumbleScrollbar({
-    Key? key,
+  const CustomBumbleScrollbar({
+    super.key,
     required this.child,
     required this.heightContent,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final double heightContent;

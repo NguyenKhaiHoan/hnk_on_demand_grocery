@@ -12,10 +12,12 @@ import 'package:on_demand_grocery/src/features/shop/controllers/product_controll
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/category_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/recent_oder_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/category_menu.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/home_appbar_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/recent_order_item_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/shopping_reminder_widget.dart';
+import 'package:on_demand_grocery/src/features/shop/views/home/widgets/store_menu.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
@@ -100,6 +102,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   )
                                 : Container(),
                           )),
+                      Padding(
+                        padding: hAppDefaultPaddingLR,
+                        child: Column(children: [
+                          CustomBumbleScrollbar(
+                              heightContent: (widthCategory / itemsPerRow) *
+                                      (categoryList.length / itemsPerRow)
+                                          .ceil() *
+                                      (1 / ratio) +
+                                  70,
+                              child: itemGrid()),
+                        ]),
+                      ),
+                      gapH16,
                       CarouselSlider(
                         carouselController: homeController.controller,
                         items: listBanner
@@ -152,6 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                 height: 240,
                                 child: ListView.separated(
+                                    controller: ScrollController(),
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: (context, index) {
@@ -160,8 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         model: listOder[index],
                                       );
                                     },
-                                    separatorBuilder: (_, __) =>
-                                        const SizedBox(width: 10),
+                                    separatorBuilder: (_, __) => gapW10,
                                     itemCount: listOder.length),
                               ),
                               gapH16,
@@ -171,15 +186,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   const Text(
-                                    "Danh mục",
+                                    "Cửa hàng",
                                     style: HAppStyle.heading3Style,
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      rootController.animateToScreen(1);
-                                      exploreController.animateToTab(0);
+                                      rootController.animateToScreen(3);
                                     },
-                                    child: Text("Khám phá",
+                                    child: Text("Xem tất cả",
                                         style: HAppStyle.paragraph3Regular
                                             .copyWith(
                                                 color: HAppColor
@@ -188,13 +202,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ],
                               ),
                               gapH16,
-                              CustomBumbleScrollbar(
-                                  heightContent: (widthCategory / itemsPerRow) *
-                                          (categoryList.length / itemsPerRow)
-                                              .ceil() *
-                                          (1 / ratio) +
-                                      60,
-                                  child: itemGrid()),
+                              SizedBox(
+                                height: 110,
+                                child: ListView.separated(
+                                    controller: ScrollController(),
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      return StoreMenu(
+                                        model: listStore[index],
+                                      );
+                                    },
+                                    separatorBuilder: (_, __) => gapW20,
+                                    itemCount: listStore.length),
+                              ),
                               gapH16,
                               Row(
                                 mainAxisAlignment:
@@ -221,8 +242,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               gapH16,
                               SizedBox(
                                   width: double.infinity,
-                                  height: 300,
+                                  height: 305,
                                   child: Obx(() => ListView.builder(
+                                        controller: ScrollController(),
                                         scrollDirection: Axis.horizontal,
                                         itemCount: productController
                                                     .topSellingProducts.length >
@@ -272,8 +294,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               gapH16,
                               SizedBox(
                                   width: double.infinity,
-                                  height: 300,
+                                  height: 305,
                                   child: Obx(() => ListView.builder(
+                                        controller: ScrollController(),
                                         scrollDirection: Axis.horizontal,
                                         itemCount: productController
                                                     .topSaleProducts.length >
@@ -308,6 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> loadingData() async {
+    setState(() {});
     return await Future.delayed(const Duration(seconds: 2));
   }
 
@@ -319,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
         shrinkWrap: true,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             mainAxisSpacing: 10,
-            mainAxisExtent: 82,
+            mainAxisExtent: 85,
             crossAxisCount: itemsPerRow,
             childAspectRatio: ratio),
         itemBuilder: (context, index) {

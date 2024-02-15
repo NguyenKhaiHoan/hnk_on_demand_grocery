@@ -67,6 +67,9 @@ dependencies:
   fade_shimmer: ^2.2.0
   flutter_speed_dial: ^7.0.0
   toastification: ^1.2.0
+  lottie: ^3.0.0
+  flutter_rating_bar: ^4.0.1
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:
@@ -98,6 +101,7 @@ flutter:
     - assets/logos/
     - assets/images/category/
     - assets/images/other/
+    - assets/gif/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
@@ -123,7 +127,11 @@ flutter:
         - asset: assets/fonts/nunito/Nunito-MediumItalic.ttf
           weight: 500
         - asset: assets/fonts/nunito/Nunito-SemiBoldItalic.ttf
-          weight: 600              
+          weight: 600
+        - asset: assets/fonts/nunito/Nunito-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/nunito/Nunito-BoldItalic.ttf
+          weight: 700              
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

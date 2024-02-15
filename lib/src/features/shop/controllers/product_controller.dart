@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/models/check_box_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
 
 class ProductController extends GetxController {
   static ProductController get instance => Get.find();
@@ -9,8 +11,53 @@ class ProductController extends GetxController {
   @override
   void onInit() {
     getAllProducts();
-    getExploreProducts();
     super.onInit();
+  }
+
+  @override
+  void onReady() {
+    getExploreProducts();
+    getProductsAllStore();
+    super.onReady();
+  }
+
+  List<ProductModel> checkStore(StoreModel model) {
+    if (model.name == "Big C") {
+      return bigcstore;
+    } else if (model.name == "Win Mart") {
+      return winmartstore;
+    } else if (model.name == "Coop Mart") {
+      return coopmartstore;
+    } else if (model.name == "Lan Chi Mart") {
+      return lanchistore;
+    } else if (model.name == "Aeon Mall") {
+      return aeonstore;
+    } else if (model.name == "Mega Mart") {
+      return megastore;
+    }
+    return lottestore;
+  }
+
+  StoreModel checkProductInStore(ProductModel product) {
+    if (bigcstore.contains(product)) {
+      return listStore[0];
+    }
+    if (winmartstore.contains(product)) {
+      return listStore[1];
+    }
+    if (coopmartstore.contains(product)) {
+      return listStore[2];
+    }
+    if (lanchistore.contains(product)) {
+      return listStore[3];
+    }
+    if (aeonstore.contains(product)) {
+      return listStore[4];
+    }
+    if (megastore.contains(product)) {
+      return listStore[5];
+    }
+    return listStore[6];
   }
 
   RxBool? groFastvalue = false.obs;
@@ -24,6 +71,42 @@ class ProductController extends GetxController {
   var isInCart = <ProductModel>[].obs;
 
   var productInCart = <String, RxList<ProductModel>>{}.obs;
+
+  var wishlistList = <Wishlist>[].obs;
+
+  findSubtitleWishList(String title) {
+    String subTitle = "";
+    for (var wishlist in wishlistList) {
+      if (wishlist.title == title) {
+        subTitle = wishlist.subTitle;
+      }
+    }
+    return subTitle;
+  }
+
+  addMapProductInWishList() {
+    productInWishList.clear();
+    for (var wishlist in wishlistList) {
+      if (!productInWishList.containsKey(wishlist.title)) {
+        productInWishList.addAll({
+          wishlist.title: RxList.from(listProducts
+              .where((productIsInWishList) =>
+                  productIsInWishList.wishlistName.contains(wishlist.title))
+              .toList())
+        });
+      } else {
+        productInWishList.update(
+            wishlist.title,
+            (value) => RxList.from(listProducts
+                .where((productIsInWishList) =>
+                    productIsInWishList.wishlistName.contains(wishlist.title))
+                .toList()));
+      }
+      update();
+    }
+  }
+
+  var productInWishList = <String, RxList<ProductModel>>{}.obs;
 
   noChooseVoucher() {
     groFastvalue!.value = false;
@@ -73,7 +156,8 @@ class ProductController extends GetxController {
   var applied = false.obs;
 
   addProductInCart(ProductModel product) {
-    isInCart.addIf(!isInCart.contains(product), product);
+    isInCart.addIf(
+        !isInCart.contains(product) && product.status == "", product);
     update();
   }
 
@@ -82,7 +166,6 @@ class ProductController extends GetxController {
       element.quantity = 0;
     }
     isInCart.clear();
-    productInCart.clear();
     update();
   }
 
@@ -122,6 +205,21 @@ class ProductController extends GetxController {
   }
 
   var productMoney = 0.obs;
+
+  checkBigCVoucher() {
+    for (var product in isInCart) {
+      for (var choose in chooseList) {
+        if (product.imgStore == choose.imgStore && choose.value == true) {
+          if (bigCValue!.value == true &&
+              product.nameStore == "Big C" &&
+              product.category == "Trái cây") {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
 
   sumProductMoney() {
     productMoney.value = 0;
@@ -280,4 +378,43 @@ class ProductController extends GetxController {
         .where((product) => product.category == "Mỳ & Gạo")
         .toList();
   }
+
+  var bigcstore = <ProductModel>[].obs;
+  var coopmartstore = <ProductModel>[].obs;
+  var winmartstore = <ProductModel>[].obs;
+  var lanchistore = <ProductModel>[].obs;
+  var aeonstore = <ProductModel>[].obs;
+  var megastore = <ProductModel>[].obs;
+  var lottestore = <ProductModel>[].obs;
+
+  void getProductsAllStore() {
+    bigcstore.value = listProducts
+        .where((product) => product.imgStore == listStore[0].imgStore)
+        .toList();
+    coopmartstore.value = listProducts
+        .where((product) => product.imgStore == listStore[1].imgStore)
+        .toList();
+
+    winmartstore.value = listProducts
+        .where((product) => product.imgStore == listStore[2].imgStore)
+        .toList();
+
+    lanchistore.value = listProducts
+        .where((product) => product.imgStore == listStore[3].imgStore)
+        .toList();
+
+    aeonstore.value = listProducts
+        .where((product) => product.imgStore == listStore[4].imgStore)
+        .toList();
+
+    megastore.value = listProducts
+        .where((product) => product.imgStore == listStore[5].imgStore)
+        .toList();
+
+    lottestore.value = listProducts
+        .where((product) => product.imgStore == listStore[6].imgStore)
+        .toList();
+  }
+
+  var wishListProduct = <ProductModel>[].obs;
 }

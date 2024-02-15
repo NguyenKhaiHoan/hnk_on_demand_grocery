@@ -31,28 +31,28 @@ class _BottomNavBarState extends State<BottomNavBar> {
           items: [
             CustomNavigationBarItem(
               icon: rootController.currentPage.value == 0
-                  ? const Icon(EneftyIcons.home_2_bold)
-                  : const Icon(EneftyIcons.home_2_outline),
+                  ? const Icon(Icons.home)
+                  : const Icon(Icons.home_outlined),
             ),
             CustomNavigationBarItem(
               icon: rootController.currentPage.value == 1
-                  ? const Icon(EneftyIcons.search_normal_2_bold)
-                  : const Icon(EneftyIcons.search_normal_2_outline),
+                  ? const Icon(Icons.search)
+                  : const Icon(Icons.search),
             ),
             CustomNavigationBarItem(
               icon: rootController.currentPage.value == 2
-                  ? const Icon(EneftyIcons.heart_bold)
-                  : const Icon(EneftyIcons.heart_outline),
+                  ? const Icon(Icons.favorite)
+                  : const Icon(Icons.favorite_outline),
             ),
             CustomNavigationBarItem(
               icon: rootController.currentPage.value == 3
-                  ? const Icon(EneftyIcons.notification_bing_bold)
-                  : const Icon(EneftyIcons.notification_bing_outline),
+                  ? const Icon(Icons.store)
+                  : const Icon(Icons.store_outlined),
             ),
             CustomNavigationBarItem(
               icon: rootController.currentPage.value == 4
-                  ? const Icon(EneftyIcons.user_bold)
-                  : const Icon(EneftyIcons.user_outline),
+                  ? const Icon(Icons.person_2)
+                  : const Icon(Icons.person_2_outlined),
             ),
           ],
         ));

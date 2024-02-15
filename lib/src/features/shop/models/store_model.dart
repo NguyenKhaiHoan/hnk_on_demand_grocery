@@ -1,3 +1,4 @@
+import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 
 class StoreModel {
@@ -6,14 +7,19 @@ class StoreModel {
   String name;
   bool isFavourite;
   List<String> category;
+  List<ProductModel> products;
+  double rating;
+  double distance;
 
-  StoreModel({
-    required this.imgStore,
-    required this.name,
-    required this.isFavourite,
-    required this.imgBackground,
-    required this.category,
-  });
+  StoreModel(
+      {required this.imgStore,
+      required this.name,
+      required this.isFavourite,
+      required this.imgBackground,
+      required this.category,
+      required this.rating,
+      required this.products,
+      required this.distance});
 }
 
 final listStore = [
@@ -23,8 +29,11 @@ final listStore = [
     imgBackground:
         'https://th.bing.com/th/id/R.ee18a6f92ca5084015368ca41a226eb4?rik=hfph0qMOoUNGNQ&pid=ImgRaw&r=0',
     name: 'Big C',
-    isFavourite: true,
+    isFavourite: false,
     category: categories,
+    rating: DummyData.randomDouble(3.0, 5.0),
+    products: [],
+    distance: DummyData.randomDouble(0.5, 5.0),
   ),
   StoreModel(
     imgStore:
@@ -32,8 +41,11 @@ final listStore = [
     imgBackground:
         'https://th.bing.com/th/id/R.c7deb0f814f496dba3ad7e837889aeab?rik=oauwLKF5J0S5tA&pid=ImgRaw&r=0',
     name: 'Win Mart',
-    isFavourite: true,
+    isFavourite: false,
     category: categories,
+    rating: DummyData.randomDouble(3.0, 5.0),
+    products: [],
+    distance: DummyData.randomDouble(0.5, 5.0),
   ),
   StoreModel(
     imgStore:
@@ -43,6 +55,9 @@ final listStore = [
     name: 'Coop Mart',
     isFavourite: false,
     category: categories,
+    rating: DummyData.randomDouble(3.0, 5.0),
+    products: [],
+    distance: DummyData.randomDouble(0.5, 5.0),
   ),
   StoreModel(
     imgStore:
@@ -52,6 +67,9 @@ final listStore = [
     name: 'Lan Chi Mart',
     isFavourite: false,
     category: categories,
+    rating: DummyData.randomDouble(3.0, 5.0),
+    products: [],
+    distance: DummyData.randomDouble(0.5, 5.0),
   ),
   StoreModel(
     imgStore:
@@ -59,8 +77,11 @@ final listStore = [
     imgBackground:
         'https://th.bing.com/th/id/OIP.gbNq0tbBDUmCdwM6d2MOrwHaE7?w=227&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',
     name: 'Aeon Mall',
-    isFavourite: true,
+    isFavourite: false,
     category: categories,
+    rating: DummyData.randomDouble(3.0, 5.0),
+    products: [],
+    distance: DummyData.randomDouble(0.5, 5.0),
   ),
   StoreModel(
     imgStore:
@@ -70,6 +91,9 @@ final listStore = [
     name: 'Mega Mart',
     isFavourite: false,
     category: categories,
+    rating: DummyData.randomDouble(3.0, 5.0),
+    products: [],
+    distance: DummyData.randomDouble(0.5, 5.0),
   ),
   StoreModel(
     imgStore:
@@ -77,35 +101,10 @@ final listStore = [
     imgBackground:
         'https://th.bing.com/th/id/OIP.gTMP960uKQes3OrtLvyyZwHaFb?w=252&h=185&c=7&r=0&o=5&dpr=1.3&pid=1.7',
     name: 'Lotte Mart',
-    isFavourite: true,
+    isFavourite: false,
     category: categories,
+    rating: DummyData.randomDouble(3.0, 5.0),
+    products: [],
+    distance: DummyData.randomDouble(0.5, 5.0),
   ),
 ];
-final isFavoritedStore = listStore.where((store) => store.isFavourite).toList();
-
-// final bigcstore = listProduct
-//     .where((product) => product.imgStore == listStore[0].imgStore)
-//     .toList();
-// final coopmartstore = listProduct
-//     .where((product) => product.imgStore == listStore[1].imgStore)
-//     .toList();
-
-// final winmartstore = listProduct
-//     .where((product) => product.imgStore == listStore[2].imgStore)
-//     .toList();
-
-// final lanchistore = listProduct
-//     .where((product) => product.imgStore == listStore[3].imgStore)
-//     .toList();
-
-// final aeonstore = listProduct
-//     .where((product) => product.imgStore == listStore[4].imgStore)
-//     .toList();
-
-// final megastore = listProduct
-//     .where((product) => product.imgStore == listStore[5].imgStore)
-//     .toList();
-
-// final lottestore = listProduct
-//     .where((product) => product.imgStore == listStore[6].imgStore)
-//     .toList();

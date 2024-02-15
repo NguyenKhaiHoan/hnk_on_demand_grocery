@@ -19,7 +19,6 @@ class CartCircle extends StatelessWidget {
         GestureDetector(
           onTap: () {
             productController.addMapProductInCart();
-            print(productController.productMoney.value);
             homeController.openReminder();
             Get.toNamed(HAppRoutes.cart);
           },
@@ -34,7 +33,7 @@ class CartCircle extends StatelessWidget {
                 ),
                 color: HAppColor.hBackgroundColor),
             child: const Icon(
-              EvaIcons.shoppingBag,
+              EvaIcons.shoppingCart,
               size: 25,
             ),
           ),

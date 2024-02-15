@@ -7,7 +7,8 @@ import 'package:on_demand_grocery/src/features/shop/views/explore/explore_screen
 import 'package:on_demand_grocery/src/features/shop/views/home/home_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/notification/notification_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/root/widgets/bottom_nav_bar.dart';
-import 'package:on_demand_grocery/src/features/shop/views/wishlist/wishlist_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/list/list_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/store/store_all_screen.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -20,8 +21,8 @@ class _RootScreenState extends State<RootScreen> {
   final screens = [
     const HomeScreen(),
     const ExploreScreen(),
-    const WishlistScreen(),
-    const NotificationScreen(),
+    const ListScreen(),
+    const AllStoreScreen(),
     const ProfileScreen(),
   ];
 

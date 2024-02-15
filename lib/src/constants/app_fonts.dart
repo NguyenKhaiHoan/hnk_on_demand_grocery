@@ -5,4 +5,5 @@ class HAppFont {
   static const nunitoRegular = FontWeight.w400;
   static const nunitoMedium = FontWeight.w500;
   static const nunitoSemiBold = FontWeight.w600;
+  static const nunitoBold = FontWeight.w700;
 }

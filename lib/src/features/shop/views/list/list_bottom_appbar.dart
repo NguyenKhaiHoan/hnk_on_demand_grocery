@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
-class WishlistBottomAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  WishlistBottomAppBar({super.key});
+class ListBottomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  ListBottomAppBar({super.key});
 
   final productController = Get.put(ProductController());
+  final storeController = Get.put(StoreController());
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +21,7 @@ class WishlistBottomAppBar extends StatelessWidget
             Align(
               alignment: Alignment.centerRight,
               child: TabBar(
+                  padding: EdgeInsets.zero,
                   labelStyle: HAppStyle.label3Bold,
                   isScrollable: true,
                   indicatorColor: HAppColor.hBluePrimaryColor,
@@ -31,23 +32,19 @@ class WishlistBottomAppBar extends StatelessWidget
                           text:
                               'Sản phẩm (${productController.isFavoritedProducts.length})',
                         )),
-                    Tab(
-                      text: 'Cửa hàng (${isFavoritedStore.length})',
-                    ),
+                    Obx(() => Tab(
+                          text:
+                              'Cửa hàng (${storeController.isFavoritedStores.length})',
+                        )),
+                    Obx(() => Tab(
+                          text:
+                              'Mong ước (${productController.wishlistList.length})',
+                        )),
+                    Obx(() => Tab(
+                          text:
+                              'Chờ có hàng (${productController.registerNotificationProducts.length})',
+                        )),
                   ]),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                color: HAppColor.hBackgroundColor,
-                height: 48,
-                width: 48,
-                child: Center(
-                    child: Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Icon(EvaIcons.options2Outline),
-                )),
-              ),
             ),
           ],
         ));

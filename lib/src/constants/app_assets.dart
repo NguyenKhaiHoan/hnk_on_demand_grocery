@@ -1,4 +1,3 @@
-import 'package:flutter_svg/flutter_svg.dart';
 
 class HAppAsset {
   static const onboardingImage =

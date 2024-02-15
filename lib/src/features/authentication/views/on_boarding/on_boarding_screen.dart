@@ -27,7 +27,7 @@ class OnboardingScreen extends StatelessWidget {
               ClipPath(
                 clipper: OvalBottomBorderClipper(),
                 child: Container(
-                  height: HAppSize.deviceHeight * 0.7,
+                  height: HAppSize.deviceHeight * 0.65,
                   padding: const EdgeInsets.all(0),
                   decoration: const BoxDecoration(
                       image: DecorationImage(
