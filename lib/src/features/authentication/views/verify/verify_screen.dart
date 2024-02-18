@@ -60,6 +60,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     );
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         toolbarHeight: 80,
         leading: Align(

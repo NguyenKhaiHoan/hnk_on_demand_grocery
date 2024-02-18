@@ -21,6 +21,8 @@ import 'package:on_demand_grocery/src/features/shop/views/home/widgets/store_men
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:swipeable_tile/swipeable_tile.dart';
+import 'package:vibration/vibration.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,6 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
     "https://scontent.fhan14-4.fna.fbcdn.net/v/t39.30808-6/279524630_4660714097366794_183406176671654681_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=3635dc&_nc_ohc=wNpQbhy-ZMgAX81nlC-&_nc_ht=scontent.fhan14-4.fna&oh=00_AfBub2gVEthDoRh-CEasB2ellsxaRuE2sDrqI8WKsCwaQQ&oe=65A89E4C",
   ];
 
+  ScrollController controller = ScrollController();
+
+  final items = List<String>.generate(10, (i) => 'Item ${i + 1}');
   int itemsPerRow = 7;
   double ratio = 1;
   double widthCategory = HAppSize.deviceWidth * 1.3;
@@ -92,8 +97,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                       Obx(() => Padding(
                             padding: hAppDefaultPaddingLR,
-                            child: homeController.reminder.isTrue &&
-                                    productController.isInCart.isNotEmpty
+                            child: (homeController.reminder.isTrue &&
+                                    productController.isInCart.isNotEmpty)
                                 ? Column(
                                     children: [
                                       ShoppingReminderWidget(),
@@ -167,7 +172,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                 height: 240,
                                 child: ListView.separated(
-                                    controller: ScrollController(),
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: (context, index) {
@@ -205,7 +209,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(
                                 height: 110,
                                 child: ListView.separated(
-                                    controller: ScrollController(),
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: (context, index) {
@@ -244,7 +247,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: double.infinity,
                                   height: 305,
                                   child: Obx(() => ListView.builder(
-                                        controller: ScrollController(),
                                         scrollDirection: Axis.horizontal,
                                         itemCount: productController
                                                     .topSellingProducts.length >
@@ -296,7 +298,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: double.infinity,
                                   height: 305,
                                   child: Obx(() => ListView.builder(
-                                        controller: ScrollController(),
                                         scrollDirection: Axis.horizontal,
                                         itemCount: productController
                                                     .topSaleProducts.length >

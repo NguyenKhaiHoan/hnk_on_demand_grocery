@@ -23,6 +23,22 @@ void main() async {
   runApp(const MyApp());
 }
 
+class ScrollBehaviorModified extends ScrollBehavior {
+  const ScrollBehaviorModified();
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    switch (getPlatform(context)) {
+      case TargetPlatform.iOS:
+      case TargetPlatform.macOS:
+      case TargetPlatform.android:
+      case TargetPlatform.fuchsia:
+      case TargetPlatform.linux:
+      case TargetPlatform.windows:
+        return const ClampingScrollPhysics();
+    }
+  }
+}
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -40,7 +56,8 @@ class _MyAppState extends State<MyApp> {
       theme: HAppTheme().lightTheme,
       getPages: HAppPages.pages,
       builder: (context, child) => ResponsiveBreakpoints.builder(
-        child: child!,
+        child: ScrollConfiguration(
+            behavior: const ScrollBehaviorModified(), child: child!),
         breakpoints: [
           const Breakpoint(start: 0, end: 450, name: MOBILE),
           const Breakpoint(start: 451, end: 800, name: TABLET),

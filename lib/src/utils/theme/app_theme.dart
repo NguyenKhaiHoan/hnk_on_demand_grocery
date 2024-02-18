@@ -6,6 +6,7 @@ import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 class HAppTheme {
   final lightTheme = ThemeData.light().copyWith(
     scaffoldBackgroundColor: HAppColor.hBackgroundColor,
+    visualDensity: VisualDensity.adaptivePlatformDensity,
     primaryColor: HAppColor.hBluePrimaryColor,
     splashColor: HAppColor.hTransparentColor,
     appBarTheme: const AppBarTheme(

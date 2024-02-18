@@ -55,19 +55,14 @@ class ProductDetailScreen extends StatelessWidget {
                 child: PreferredSize(
                     preferredSize: const Size.fromHeight(80.0),
                     child: AppBar(
+                      titleSpacing: 0,
+                      centerTitle: false,
+                      automaticallyImplyLeading: false,
                       backgroundColor: detailController.showAppBar.value
                           ? HAppColor.hBackgroundColor
                           : HAppColor.hTransparentColor,
                       toolbarHeight: 80,
-                      leadingWidth: HAppSize.deviceWidth -
-                          24 -
-                          24 -
-                          10 -
-                          16 -
-                          10 -
-                          40 -
-                          10,
-                      leading: Align(
+                      title: Align(
                         alignment: Alignment.centerLeft,
                         child: Row(
                           children: [
@@ -1623,12 +1618,10 @@ class ProductDetailScreen extends StatelessWidget {
                       color: HAppColor.hRedColor,
                     ),
                     label: 'Ghé thăm ${model.nameStore}',
-                    onTap: () {
-                      // Get.back();
-                      Get.toNamed(HAppRoutes.storeDetail, arguments: {
-                        'model': productController.checkProductInStore(model)
-                      });
-                    },
+                    onTap: () =>
+                        Get.toNamed(HAppRoutes.storeDetail, arguments: {
+                          'model': productController.checkProductInStore(model)
+                        }),
                     backgroundColor: HAppColor.hBackgroundColor),
                 SpeedDialChild(
                     shape: const CircleBorder(),
@@ -1637,7 +1630,10 @@ class ProductDetailScreen extends StatelessWidget {
                       color: HAppColor.hRedColor,
                     ),
                     label: 'Trò chuyện',
-                    onTap: () => print("Mẹ"),
+                    onTap: () => Get.toNamed(HAppRoutes.chat, arguments: {
+                          'model': model,
+                          'store': productController.checkProductInStore(model)
+                        }),
                     backgroundColor: HAppColor.hBackgroundColor)
               ],
             )

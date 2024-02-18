@@ -17,12 +17,16 @@ class CartScreen extends StatefulWidget {
   State<CartScreen> createState() => _CartScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   final productController = Get.put(ProductController());
   bool? check1 = false;
 
+  List<GlobalObjectKey<AnimatedListState>> listKeyList = [];
+
   @override
   Widget build(BuildContext context) {
+    listKeyList =
+        List.generate(10, (index) => GlobalObjectKey<AnimatedListState>(index));
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -195,6 +199,14 @@ class _CartScreenState extends State<CartScreen> {
                     shrinkWrap: true,
                     itemCount: productController.productInCart.keys.length,
                     itemBuilder: (context, index) {
+                      String image = productController.findImgStore(
+                          productController.productInCart.keys
+                              .elementAt(index));
+                      String title =
+                          productController.productInCart.keys.elementAt(index);
+                      int length = productController.productInCart.values
+                          .elementAt(index)
+                          .length;
                       return ExpansionTile(
                         initiallyExpanded: true,
                         tilePadding: EdgeInsets.zero,
@@ -205,19 +217,14 @@ class _CartScreenState extends State<CartScreen> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               image: DecorationImage(
-                                  image: NetworkImage(
-                                      productController.findImgStore(
-                                          productController.productInCart.keys
-                                              .elementAt(index))),
+                                  image: NetworkImage(image),
                                   fit: BoxFit.fill)),
                         ),
                         title: Row(children: [
                           Column(
                             children: [
-                              Text(productController.productInCart.keys
-                                  .elementAt(index)),
-                              Text(
-                                  "${productController.productInCart.values.elementAt(index).length} sản phẩm"),
+                              Text(title),
+                              Text("$length sản phẩm"),
                             ],
                           ),
                           const Spacer(),
@@ -243,12 +250,13 @@ class _CartScreenState extends State<CartScreen> {
                         ]),
                         children: [
                           ListView.separated(
+                            key: listKeyList[index],
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: productController.productInCart.values
                                 .elementAt(index)
                                 .length,
-                            itemBuilder: (context, index2) {
+                            itemBuilder: (context2, index2) {
                               return ProductCartWidget(
                                 model: productController.productInCart.values
                                     .elementAt(index)

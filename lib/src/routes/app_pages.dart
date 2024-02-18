@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/verify/verify_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/chat/chat_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/list_item_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/wishlist_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/cart_screen.dart';
@@ -116,6 +117,13 @@ abstract class HAppPages {
       curve: Curves.easeOut,
       transition: Transition.rightToLeftWithFade,
     ),
+    GetPage(
+      name: HAppRoutes.chat,
+      page: () => ChatScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
   ];
 }
 
@@ -134,4 +142,5 @@ abstract class HAppRoutes {
   static const complete = '/complete';
   static const wishlist = '/wishlist';
   static const wishlistItem = '/wishlistItem';
+  static const chat = '/chat';
 }
