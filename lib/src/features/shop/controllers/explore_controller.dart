@@ -6,7 +6,7 @@ class ExploreController extends GetxController
   static ExploreController get instance => Get.find();
 
   late TabController tabController;
-  final scrollController = ScrollController();
+  late ScrollController scrollController;
 
   final showFab = false.obs;
 
@@ -14,11 +14,13 @@ class ExploreController extends GetxController
   void onInit() {
     super.onInit();
     tabController = TabController(vsync: this, length: 14);
+    scrollController = ScrollController();
   }
 
   @override
   void onClose() {
     tabController.dispose();
+    scrollController.dispose();
     super.onClose();
   }
 

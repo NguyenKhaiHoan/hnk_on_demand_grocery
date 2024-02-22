@@ -21,8 +21,6 @@ import 'package:on_demand_grocery/src/features/shop/views/home/widgets/store_men
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
-import 'package:swipeable_tile/swipeable_tile.dart';
-import 'package:vibration/vibration.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,7 +29,11 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin<HomeScreen> {
+  @override
+  bool get wantKeepAlive => true;
+
   final homeController = Get.put(HomeController());
   final rootController = Get.put(RootController());
   final exploreController = Get.put(ExploreController());
@@ -52,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: HAppColor.hBackgroundColor,
       appBar: const HomeAppbarWidget(),

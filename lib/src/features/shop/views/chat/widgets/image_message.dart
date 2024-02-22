@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:on_demand_grocery/src/constants/app_colors.dart';
 
 class ImageMessage extends StatelessWidget {
   const ImageMessage({super.key});

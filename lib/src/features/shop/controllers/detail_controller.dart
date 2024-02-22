@@ -5,7 +5,22 @@ import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 class DetailController extends GetxController {
   static DetailController get instance => Get.find();
 
-  var dragController = DraggableScrollableController();
+  final DraggableScrollableController dragController =
+      DraggableScrollableController();
+
+  late ScrollController scrollController;
+
+  @override
+  void onInit() {
+    super.onInit();
+    scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   var showAppBar = false.obs;
 
@@ -36,14 +51,6 @@ class DetailController extends GetxController {
         countText.value = count.toString();
       }
     }
-  }
-
-  final scrollController = ScrollController();
-
-  final showFab = true.obs;
-
-  showFabMenu(bool value) {
-    showFab.value = value;
   }
 
   calculatingDifference(ProductModel product1, String product2Price) {

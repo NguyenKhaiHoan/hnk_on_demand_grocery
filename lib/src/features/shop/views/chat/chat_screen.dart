@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +22,12 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final ProductModel model = Get.arguments['model'];
   final StoreModel store = Get.arguments['store'];
+  bool check = Get.arguments['check'];
 
   final FocusNode _focusNode = FocusNode();
   ChatMessage? _selectedMessage;
 
-  final chatController = Get.put(ChartController());
+  final chatController = Get.put(ChatController());
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +104,7 @@ class _ChatScreenState extends State<ChatScreen> {
               child: ListView.separated(
                 itemCount: demeChatMessages.length,
                 itemBuilder: (context, index) => SwipeActionWidget(
-                    direction: demeChatMessages[index].isSender ? 1 : 0,
+                    check: demeChatMessages[index].isSender ? 1 : 0,
                     function: (_) {
                       _focusNode.requestFocus();
                       setState(() {
@@ -125,20 +124,49 @@ class _ChatScreenState extends State<ChatScreen> {
             child: SafeArea(
               top: false,
               child: Container(
-                padding:
-                    EdgeInsets.symmetric(horizontal: hAppDefaultPadding / 2),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: hAppDefaultPadding / 2),
                 child: Column(
                   children: <Widget>[
-                    _selectedMessage != null
+                    check == true
                         ? Container(
                             padding: const EdgeInsets.symmetric(
                                 vertical: hAppDefaultPadding / 2),
                             child: Row(
                               children: <Widget>[
-                                const Icon(
-                                  Icons.reply_outlined,
-                                  color: Colors.blue,
-                                  size: 25,
+                                Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.network(
+                                        model.imgPath,
+                                        height: 80,
+                                        width: 80,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    model.salePersent != ''
+                                        ? Positioned(
+                                            bottom: 5,
+                                            left: 5,
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      5, 3, 5, 3),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color:
+                                                      HAppColor.hOrangeColor),
+                                              child: Text(model.salePersent,
+                                                  style: HAppStyle.label4Bold
+                                                      .copyWith(
+                                                          color: HAppColor
+                                                              .hWhiteColor)),
+                                            ),
+                                          )
+                                        : Container()
+                                  ],
                                 ),
                                 gapW10,
                                 Expanded(
@@ -146,28 +174,133 @@ class _ChatScreenState extends State<ChatScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Text(
-                                        "Đang trả lời",
-                                        style: HAppStyle.paragraph2Regular
-                                            .copyWith(
-                                                color: HAppColor
-                                                    .hBluePrimaryColor),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                              child: Text(
+                                            model.name,
+                                            maxLines: 2,
+                                            style: HAppStyle.label2Bold,
+                                          )),
+                                          gapW10,
+                                          model.status != ""
+                                              ? Container(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          5, 3, 5, 3),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .only(
+                                                              topLeft: Radius
+                                                                  .circular(5),
+                                                              bottomLeft: Radius
+                                                                  .circular(5)),
+                                                      color: HAppColor
+                                                          .hGreyColorShade300),
+                                                  child: Center(
+                                                      child: Text(
+                                                    model.status,
+                                                    style:
+                                                        HAppStyle.label4Regular,
+                                                  )),
+                                                )
+                                              : Container()
+                                        ],
                                       ),
-                                      gapH2,
-                                      Text(_selectedMessage!.text,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: HAppStyle.paragraph3Regular
-                                              .copyWith(
-                                                  color: HAppColor
-                                                      .hGreyColorShade600)),
+                                      gapH4,
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                EvaIcons.star,
+                                                color: HAppColor.hOrangeColor,
+                                                size: 16,
+                                              ),
+                                              gapW2,
+                                              Text.rich(
+                                                TextSpan(
+                                                  style:
+                                                      HAppStyle.paragraph2Bold,
+                                                  text: "4.3",
+                                                  children: [
+                                                    TextSpan(
+                                                      text: '/5',
+                                                      style: HAppStyle
+                                                          .paragraph3Regular
+                                                          .copyWith(
+                                                              color: HAppColor
+                                                                  .hGreyColorShade600),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          gapW10,
+                                          Text.rich(
+                                            TextSpan(
+                                              style: HAppStyle.paragraph2Bold,
+                                              text: '${model.countBuyed} ',
+                                              children: [
+                                                TextSpan(
+                                                  text: 'Đã bán',
+                                                  style: HAppStyle
+                                                      .paragraph3Regular
+                                                      .copyWith(
+                                                          color: HAppColor
+                                                              .hGreyColorShade600),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      gapH4,
+                                      model.salePersent == ''
+                                          ? Text(
+                                              model.price,
+                                              style: HAppStyle.label2Bold
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hBluePrimaryColor),
+                                            )
+                                          : Text.rich(
+                                              TextSpan(
+                                                style: HAppStyle.label2Bold
+                                                    .copyWith(
+                                                        color: HAppColor
+                                                            .hOrangeColor,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .none),
+                                                text: '${model.priceSale} ',
+                                                children: [
+                                                  TextSpan(
+                                                    text: model.price,
+                                                    style: HAppStyle
+                                                        .label4Regular
+                                                        .copyWith(
+                                                            color: HAppColor
+                                                                .hGreyColor,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .lineThrough),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                     ],
                                   ),
                                 ),
+                                gapW10,
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      _selectedMessage = null;
+                                      check = false;
                                     });
                                   },
                                   child: Container(
@@ -186,7 +319,65 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ),
                               ],
                             ))
-                        : const SizedBox.shrink(),
+                        : _selectedMessage != null
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: hAppDefaultPadding / 2),
+                                child: Row(
+                                  children: <Widget>[
+                                    const Icon(
+                                      Icons.reply_outlined,
+                                      color: Colors.blue,
+                                      size: 25,
+                                    ),
+                                    gapW10,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            "Đang trả lời",
+                                            style: HAppStyle.paragraph2Regular
+                                                .copyWith(
+                                                    color: HAppColor
+                                                        .hBluePrimaryColor),
+                                          ),
+                                          gapH2,
+                                          Text(_selectedMessage!.text,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: HAppStyle.paragraph3Regular
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hGreyColorShade600)),
+                                        ],
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedMessage = null;
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          color: HAppColor.hGreyColorShade300,
+                                        ),
+                                        child: const Icon(
+                                          Icons.close,
+                                          color: HAppColor.hDarkColor,
+                                          size: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ))
+                            : const SizedBox.shrink(),
                     TextField(
                       controller: chatController.controller,
                       focusNode: _focusNode,

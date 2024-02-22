@@ -153,7 +153,7 @@ class OnboardingScreen extends StatelessWidget {
                                                                   gapW6,
                                                                   Icon(
                                                                     EvaIcons
-                                                                        .arrowRightOutline,
+                                                                        .arrowIosForwardOutline,
                                                                     color: HAppColor
                                                                         .hWhiteColor,
                                                                   )

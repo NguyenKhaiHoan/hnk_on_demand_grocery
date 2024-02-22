@@ -6,7 +6,19 @@ class RootController extends GetxController {
 
   var currentPage = 0.obs;
 
-  final screenController = PageController();
+  late PageController screenController;
+
+  @override
+  void onInit() {
+    super.onInit();
+    screenController = PageController();
+  }
+
+  @override
+  void dispose() {
+    screenController.dispose();
+    super.dispose();
+  }
 
   animateToScreen(int index) {
     currentPage.value = index;

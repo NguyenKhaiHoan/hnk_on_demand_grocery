@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/verify/verify_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/filter/filter_store_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/chat_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/list_item_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/wishlist_screen.dart';
@@ -119,10 +120,17 @@ abstract class HAppPages {
     ),
     GetPage(
       name: HAppRoutes.chat,
-      page: () => ChatScreen(),
+      page: () => const ChatScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.filterStore,
+      page: () => const FilterStoreScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.downToUp,
     ),
   ];
 }
@@ -143,4 +151,5 @@ abstract class HAppRoutes {
   static const wishlist = '/wishlist';
   static const wishlistItem = '/wishlistItem';
   static const chat = '/chat';
+  static const filterStore = '/filterStore';
 }

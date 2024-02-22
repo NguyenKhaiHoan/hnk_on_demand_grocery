@@ -31,6 +31,7 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
   @override
   Widget build(BuildContext context) {
     return SwipeActionWidget(
+      check: 1,
       backgroundColorIcon: const Color(0xFFFFE6E6),
       colorIcon: HAppColor.hRedColor,
       icon: EvaIcons.trashOutline,

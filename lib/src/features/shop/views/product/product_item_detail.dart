@@ -2,7 +2,6 @@ import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
@@ -36,7 +35,6 @@ class ProductDetailScreen extends StatelessWidget {
       detailController.showAppBar.value = false;
       detailController.showNameInAppBar.value = false;
       detailController.setCount(model);
-      detailController.showFab(true);
     });
     return Scaffold(
       body: SafeArea(
@@ -72,7 +70,6 @@ class ProductDetailScreen extends StatelessWidget {
                                 Get.back();
                                 detailController.changeShowNameInAppBar(false);
                                 detailController.changeShowAppBar(false);
-                                detailController.showFabMenu(true);
                               },
                               child: Container(
                                 width: 40,
@@ -297,11 +294,6 @@ class ProductDetailScreen extends StatelessWidget {
                   } else {
                     detailController.changeShowNameInAppBar(false);
                     detailController.changeShowAppBar(false);
-                  }
-                  if (scrollController.offset <= 700) {
-                    detailController.showFabMenu(true);
-                  } else {
-                    detailController.showFabMenu(false);
                   }
                 });
                 return Obx(() => Container(
@@ -843,143 +835,120 @@ class ProductDetailScreen extends StatelessWidget {
                               ],
                             ),
                             gapH24,
-                            GestureDetector(
-                              onTap: () => Get.toNamed(HAppRoutes.storeDetail,
-                                  arguments: {
-                                    'model': productController
-                                        .checkProductInStore(model)
-                                  }),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        width: 1.5,
-                                        color: HAppColor.hGreyColorShade300)),
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 10, bottom: 10),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 80,
-                                      height: 80,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                          color: HAppColor.hGreyColorShade300,
-                                          image: DecorationImage(
-                                              image:
-                                                  NetworkImage(model.imgStore),
-                                              fit: BoxFit.cover)),
-                                    ),
-                                    gapW10,
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                            Row(
+                              children: [
+                                Container(
+                                  width: 80,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: HAppColor.hGreyColorShade300,
+                                      image: DecorationImage(
+                                          image: NetworkImage(model.imgStore),
+                                          fit: BoxFit.cover)),
+                                ),
+                                gapW10,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        model.nameStore,
+                                        style: HAppStyle.heading4Style,
+                                      ),
+                                      gapH4,
+                                      Row(
                                         children: [
-                                          Text(
-                                            model.nameStore,
-                                            style: HAppStyle.heading4Style,
+                                          const Icon(
+                                            EvaIcons.star,
+                                            color: HAppColor.hOrangeColor,
+                                            size: 20,
                                           ),
-                                          gapH4,
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                EvaIcons.star,
-                                                color: HAppColor.hOrangeColor,
-                                                size: 20,
-                                              ),
-                                              gapW2,
-                                              Text.rich(
+                                          gapW2,
+                                          Text.rich(
+                                            TextSpan(
+                                              style: HAppStyle.paragraph2Bold,
+                                              text: "4.3",
+                                              children: [
                                                 TextSpan(
-                                                  style:
-                                                      HAppStyle.paragraph2Bold,
-                                                  text: "4.3",
-                                                  children: [
-                                                    TextSpan(
-                                                      text: '/5 (1k+ Đánh giá)',
-                                                      style: HAppStyle
-                                                          .paragraph2Regular
-                                                          .copyWith(
-                                                              color: HAppColor
-                                                                  .hGreyColor),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          gapH4,
-                                          Row(
-                                            children: [
-                                              Text.rich(
-                                                TextSpan(
-                                                  style:
-                                                      HAppStyle.paragraph2Bold,
-                                                  text: "130 ",
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Sản phẩm',
-                                                      style: HAppStyle
-                                                          .paragraph2Regular
-                                                          .copyWith(
-                                                              color: HAppColor
-                                                                  .hGreyColor),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Text(
-                                                " • ",
-                                                style: HAppStyle
-                                                    .paragraph2Regular
-                                                    .copyWith(
-                                                        color: HAppColor
-                                                            .hGreyColor),
-                                              ),
-                                              Text.rich(
-                                                TextSpan(
-                                                  style:
-                                                      HAppStyle.paragraph2Bold,
-                                                  text: '1k+ ',
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Đã bán',
-                                                      style: HAppStyle
-                                                          .paragraph2Regular
-                                                          .copyWith(
-                                                              color: HAppColor
-                                                                  .hGreyColor),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          gapH4,
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                EneftyIcons.location_outline,
-                                                size: 15,
-                                                color: HAppColor.hDarkColor,
-                                              ),
-                                              gapW4,
-                                              Text('Hà Nội',
+                                                  text: '/5',
                                                   style: HAppStyle
                                                       .paragraph2Regular
                                                       .copyWith(
                                                           color: HAppColor
-                                                              .hGreyColorShade600))
-                                            ],
-                                          )
+                                                              .hGreyColor),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    ),
-                                    const Icon(Icons.arrow_forward_ios)
-                                  ],
+                                      gapH4,
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            EneftyIcons.location_outline,
+                                            size: 15,
+                                            color: HAppColor.hDarkColor,
+                                          ),
+                                          gapW4,
+                                          Text('Hà Nội',
+                                              style: HAppStyle.paragraph2Regular
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hGreyColorShade600))
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                gapW10,
+                                GestureDetector(
+                                  child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        color: HAppColor.hGreyColorShade300,
+                                      ),
+                                      child: const Icon(
+                                        EvaIcons.messageSquare,
+                                        color: HAppColor.hBluePrimaryColor,
+                                        size: 20,
+                                      )),
+                                  onTap: () =>
+                                      Get.toNamed(HAppRoutes.chat, arguments: {
+                                    'model': model,
+                                    'store': productController
+                                        .checkProductInStore(model),
+                                    'check': true
+                                  }),
+                                ),
+                                gapW10,
+                                GestureDetector(
+                                  child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        color: HAppColor.hGreyColorShade300,
+                                      ),
+                                      child: const Icon(
+                                        Icons.storefront_rounded,
+                                        color: HAppColor.hBluePrimaryColor,
+                                        size: 20,
+                                      )),
+                                  onTap: () => Get.toNamed(
+                                      HAppRoutes.storeDetail,
+                                      arguments: {
+                                        'model': productController
+                                            .checkProductInStore(model)
+                                      }),
+                                ),
+                              ],
                             ),
                             gapH24,
                             const Text(
@@ -1050,7 +1019,7 @@ class ProductDetailScreen extends StatelessWidget {
                                     ),
                                     gapW4,
                                     Text(
-                                      "Thêm vào WishList",
+                                      "Thêm vào Danh sách mong ước",
                                       style: HAppStyle.label2Bold,
                                     )
                                   ],
@@ -1602,42 +1571,6 @@ class ProductDetailScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: Obx(() => detailController.showFab.isTrue
-          ? SpeedDial(
-              foregroundColor: HAppColor.hWhiteColor,
-              animatedIcon: AnimatedIcons.menu_close,
-              backgroundColor: HAppColor.hRedColor.shade200,
-              overlayColor: HAppColor.hBackgroundColor,
-              overlayOpacity: 0.4,
-              spacing: 12,
-              children: [
-                SpeedDialChild(
-                    shape: const CircleBorder(),
-                    child: const Icon(
-                      Icons.store,
-                      color: HAppColor.hRedColor,
-                    ),
-                    label: 'Ghé thăm ${model.nameStore}',
-                    onTap: () =>
-                        Get.toNamed(HAppRoutes.storeDetail, arguments: {
-                          'model': productController.checkProductInStore(model)
-                        }),
-                    backgroundColor: HAppColor.hBackgroundColor),
-                SpeedDialChild(
-                    shape: const CircleBorder(),
-                    child: const Icon(
-                      Icons.message,
-                      color: HAppColor.hRedColor,
-                    ),
-                    label: 'Trò chuyện',
-                    onTap: () => Get.toNamed(HAppRoutes.chat, arguments: {
-                          'model': model,
-                          'store': productController.checkProductInStore(model)
-                        }),
-                    backgroundColor: HAppColor.hBackgroundColor)
-              ],
-            )
-          : Container()),
     );
   }
 }

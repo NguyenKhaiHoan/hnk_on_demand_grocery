@@ -6,6 +6,10 @@ class StoreController extends GetxController
     with GetSingleTickerProviderStateMixin {
   static StoreController get instance => Get.find();
 
+  var selfCategory = false.obs;
+
+  var listFilterStore = <StoreModel>[].obs;
+
   var isFavoritedStores = <StoreModel>[].obs;
 
   addStoreInFavorited(StoreModel store) {
@@ -18,7 +22,7 @@ class StoreController extends GetxController
   }
 
   late TabController tabController;
-  final scrollController = ScrollController();
+  late ScrollController scrollController;
 
   final showAppBar = false.obs;
 
@@ -26,11 +30,13 @@ class StoreController extends GetxController
   void onInit() {
     super.onInit();
     tabController = TabController(vsync: this, length: 3);
+    scrollController = ScrollController();
   }
 
   @override
   void onClose() {
     tabController.dispose();
+    scrollController.dispose();
     super.onClose();
   }
 

@@ -12,7 +12,7 @@ class SwipeActionWidget extends StatelessWidget {
     required this.backgroundColorIcon,
     required this.colorIcon,
     required this.icon,
-    this.direction,
+    required this.check,
   });
 
   final Function(SwipeDirection) function;
@@ -20,7 +20,7 @@ class SwipeActionWidget extends StatelessWidget {
   final Color backgroundColorIcon;
   final Color colorIcon;
   final IconData icon;
-  final int? direction;
+  final int check;
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +28,10 @@ class SwipeActionWidget extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       isElevated: false,
       color: HAppColor.hBackgroundColor,
-      swipeThreshold: direction == 1
-          ? 64 / HAppSize.deviceWidth
-          : 84 / HAppSize.deviceWidth,
-      direction: direction == 1
-          ? SwipeDirection.endToStart
-          : SwipeDirection.startToEnd,
+      swipeThreshold:
+          check == 1 ? 64 / HAppSize.deviceWidth : 84 / HAppSize.deviceWidth,
+      direction:
+          check == 1 ? SwipeDirection.endToStart : SwipeDirection.startToEnd,
       onSwiped: function,
       backgroundBuilder: (
         _,
@@ -52,7 +50,7 @@ class SwipeActionWidget extends StatelessWidget {
             }
             return Container(
               alignment:
-                  direction == 1 ? Alignment.centerRight : Alignment.centerLeft,
+                  check == 1 ? Alignment.centerRight : Alignment.centerLeft,
               child: Transform.scale(
                 scale: Tween<double>(
                   begin: 0.0,

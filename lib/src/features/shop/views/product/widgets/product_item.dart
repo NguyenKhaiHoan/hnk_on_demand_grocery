@@ -223,53 +223,21 @@ class ProductItemWidget extends StatelessWidget {
                                   style: HAppStyle.label2Bold.copyWith(
                                       color: HAppColor.hBluePrimaryColor),
                                 )
-                              : model.status == ""
-                                  ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(model.price,
-                                            style: HAppStyle.paragraph3Bold
-                                                .copyWith(
-                                                    color: HAppColor.hGreyColor,
-                                                    decoration: TextDecoration
-                                                        .lineThrough)),
-                                        Text(model.priceSale,
-                                            style: HAppStyle.label2Bold
-                                                .copyWith(
-                                                    color:
-                                                        HAppColor.hOrangeColor,
-                                                    decoration:
-                                                        TextDecoration.none))
-                                      ],
-                                    )
-                                  : Row(
-                                      children: [
-                                        Text.rich(
-                                          TextSpan(
-                                            style: HAppStyle.label2Bold
-                                                .copyWith(
-                                                    color:
-                                                        HAppColor.hOrangeColor,
-                                                    decoration:
-                                                        TextDecoration.none),
-                                            text: '${model.priceSale} ',
-                                            children: [
-                                              TextSpan(
-                                                text: model.price,
-                                                style: HAppStyle.label4Regular
-                                                    .copyWith(
-                                                        color: HAppColor
-                                                            .hGreyColor,
-                                                        decoration:
-                                                            TextDecoration
-                                                                .lineThrough),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(model.price,
+                                        style: HAppStyle.paragraph3Bold
+                                            .copyWith(
+                                                color: HAppColor.hGreyColor,
+                                                decoration: TextDecoration
+                                                    .lineThrough)),
+                                    Text(model.priceSale,
+                                        style: HAppStyle.label2Bold.copyWith(
+                                            color: HAppColor.hOrangeColor,
+                                            decoration: TextDecoration.none))
+                                  ],
+                                ),
                         ),
                       ),
                       Visibility(
@@ -436,7 +404,7 @@ class ProductItemWidget extends StatelessWidget {
                                         gapW4,
                                         Text(
                                           compareOperator == "="
-                                              ? "Ngang nhau"
+                                              ? "Bằng giá"
                                               : "$comparePrice",
                                           style: HAppStyle.paragraph3Regular,
                                         )
@@ -462,8 +430,8 @@ class ProductItemWidget extends StatelessWidget {
                           child: Center(
                               child: Image.asset(
                             'assets/images/other/search_tick.png',
-                            height: 25,
-                            width: 25,
+                            height: 20,
+                            width: 20,
                           )),
                         ),
                         onTap: () => Get.toNamed(HAppRoutes.compare),

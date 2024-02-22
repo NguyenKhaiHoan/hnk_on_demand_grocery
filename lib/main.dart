@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
       ),
       home: AnimatedSplashScreen(
         splashIconSize: 5000,
-        duration: 5000,
+        duration: 3000,
         splash: Center(
             child: Image.asset(
           "assets/logos/grofast_splash.gif",

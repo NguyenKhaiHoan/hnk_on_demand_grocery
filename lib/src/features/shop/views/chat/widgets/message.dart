@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:on_demand_grocery/src/constants/app_colors.dart';
-import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/models/chat_message_model.dart';
-
-import 'audio_message.dart';
-import 'text_message.dart';
-import 'video_message.dart';
+import 'package:on_demand_grocery/src/features/shop/views/chat/widgets/text_message.dart';
+import 'package:on_demand_grocery/src/features/shop/views/chat/widgets/image_message.dart';
 
 class Message extends StatelessWidget {
   const Message({

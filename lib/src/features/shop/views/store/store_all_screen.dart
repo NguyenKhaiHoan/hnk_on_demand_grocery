@@ -4,10 +4,12 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/custom_chip_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/store/widgets/store_item_wiget.dart';
+import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class AllStoreScreen extends StatefulWidget {
@@ -17,11 +19,10 @@ class AllStoreScreen extends StatefulWidget {
   State<AllStoreScreen> createState() => _AllStoreScreenState();
 }
 
-class _AllStoreScreenState extends State<AllStoreScreen> {
+class _AllStoreScreenState extends State<AllStoreScreen>
+    with AutomaticKeepAliveClientMixin<AllStoreScreen> {
   @override
-  void initState() {
-    super.initState();
-  }
+  bool get wantKeepAlive => true;
 
   final itemsSort = ['A-Z', 'Z-A'];
   String selectedValueSort = 'A-Z';
@@ -40,10 +41,18 @@ class _AllStoreScreenState extends State<AllStoreScreen> {
     'Ăn vặt',
     'Mỳ & Gạo',
   ];
-  String selectedValueCategory = 'Tất cả';
+
+  final storeController = Get.put(StoreController());
+
+  @override
+  void initState() {
+    super.initState();
+    storeController.listFilterStore.value = listStore;
+  }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Tất cả cửa hàng tại Hà Nội"),
@@ -92,8 +101,16 @@ class _AllStoreScreenState extends State<AllStoreScreen> {
                   child: DropdownButton<String>(
                     padding: EdgeInsets.zero,
                     value: selectedValueSort,
-                    onChanged: (newValue) =>
-                        setState(() => selectedValueSort = newValue!),
+                    onChanged: (newValue) => setState(() {
+                      selectedValueSort = newValue!;
+                      if (selectedValueSort == 'A-Z') {
+                        storeController.listFilterStore
+                            .sort((a, b) => a.name.compareTo(b.name));
+                      } else {
+                        storeController.listFilterStore
+                            .sort((a, b) => -a.name.compareTo(b.name));
+                      }
+                    }),
                     items: itemsSort
                         .map<DropdownMenuItem<String>>(
                             (String value) => DropdownMenuItem<String>(
@@ -105,28 +122,25 @@ class _AllStoreScreenState extends State<AllStoreScreen> {
                   ),
                 ),
                 gapW10,
-                Container(
-                  height: 42,
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: HAppColor.hGreyColorShade300,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: DropdownButton<String>(
-                    padding: EdgeInsets.zero,
-                    value: selectedValueCategory,
-                    onChanged: (newValue) =>
-                        setState(() => selectedValueCategory = newValue!),
-                    items: itemsCategory
-                        .map<DropdownMenuItem<String>>(
-                            (String value) => DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                ))
-                        .toList(),
-                    underline: const SizedBox(),
+                GestureDetector(
+                  onTap: () => Get.toNamed(HAppRoutes.filterStore),
+                  child: Container(
+                    height: 42,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: HAppColor.hGreyColorShade300,
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Row(children: [
+                      const Text('Bộ lọc'),
+                      gapW4,
+                      Icon(
+                        EvaIcons.funnelOutline,
+                        color: HAppColor.hGreyColor.shade700,
+                      )
+                    ]),
                   ),
                 ),
                 gapW10,
@@ -195,7 +209,8 @@ class _AllStoreScreenState extends State<AllStoreScreen> {
                   mainAxisExtent: 200,
                 ),
                 itemBuilder: (BuildContext context, int index) {
-                  return StoreItemWidget(model: listStore[index]);
+                  return StoreItemWidget(
+                      model: storeController.listFilterStore[index]);
                 },
               ),
               gapH24,

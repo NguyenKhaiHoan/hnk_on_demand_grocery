@@ -19,7 +19,7 @@ class HAppSize {
   static final deviceHeight = Get.height;
 }
 
-const hAppDefaultPadding = HAppSize.p24;
+const hAppDefaultPadding = HAppSize.p16;
 const hAppDefaultPaddingLR =
     EdgeInsets.fromLTRB(hAppDefaultPadding, 0, hAppDefaultPadding, 0);
 

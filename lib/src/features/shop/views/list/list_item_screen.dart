@@ -5,8 +5,10 @@ import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item_horizal_widget.dart';
+import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class WishlistItemScreen extends StatefulWidget {
@@ -18,6 +20,7 @@ class WishlistItemScreen extends StatefulWidget {
 
 class _WishlistItemScreenState extends State<WishlistItemScreen> {
   final productController = Get.put(ProductController());
+  final rootController = Get.put(RootController());
 
   final String title = Get.arguments['title'];
   final String subtitle = Get.arguments['subtitle'];
@@ -103,24 +106,33 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
         color: HAppColor.hTransparentColor,
         child: ElevatedButton(
           onPressed: () {
-            for (var model in list) {
-              productController.addProductInCart(model);
-              if (model.quantity == 0) {
-                model.quantity++;
-                productController.refreshList(productController.isInCart);
-                productController.refreshAllList();
+            if (list.isNotEmpty) {
+              for (var model in list) {
+                productController.addProductInCart(model);
+                if (model.quantity == 0) {
+                  model.quantity++;
+                  productController.refreshList(productController.isInCart);
+                  productController.refreshAllList();
+                }
               }
+              list.refresh();
+            } else {
+              Get.offAllNamed(HAppRoutes.root);
+              rootController.animateToScreen(1);
             }
-            list.refresh();
             setState(() {});
           },
           style: ElevatedButton.styleFrom(
             minimumSize: Size(HAppSize.deviceWidth - 48, 50),
             backgroundColor: HAppColor.hBluePrimaryColor,
           ),
-          child: Text("Chuyển tới Giỏ hàng",
-              style:
-                  HAppStyle.label2Bold.copyWith(color: HAppColor.hWhiteColor)),
+          child: list.isNotEmpty
+              ? Text("Chuyển tới Giỏ hàng",
+                  style: HAppStyle.label2Bold
+                      .copyWith(color: HAppColor.hWhiteColor))
+              : Text("Thêm vào Danh sách mong ước ngay",
+                  style: HAppStyle.label2Bold
+                      .copyWith(color: HAppColor.hWhiteColor)),
         ),
       ),
     );

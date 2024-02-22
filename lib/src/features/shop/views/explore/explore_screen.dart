@@ -19,7 +19,10 @@ class ExploreScreen extends StatefulWidget {
   State<ExploreScreen> createState() => _ExploreScreenState();
 }
 
-class _ExploreScreenState extends State<ExploreScreen> {
+class _ExploreScreenState extends State<ExploreScreen>
+    with AutomaticKeepAliveClientMixin<ExploreScreen> {
+  @override
+  bool get wantKeepAlive => true;
   final exploreController = Get.put(ExploreController());
   final productController = Get.put(ProductController());
 
@@ -59,6 +62,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return DefaultTabController(
         length: listExplore.length,
         child: Scaffold(
