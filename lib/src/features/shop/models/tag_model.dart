@@ -7,31 +7,30 @@ class Tag {
 }
 
 List<Tag> tags = [
-  Tag(0, 'Tất Cả', true),
-  Tag(1, 'Gần đây', false),
-  Tag(2, 'Cửa hàng nổi tiếng', false),
-  Tag(3, 'Đánh giá cao', false),
-];
-
-List<Tag> tagsSearch = [
-  Tag(0, 'Tất cả', false),
-  Tag(1, 'Gần đây', false),
-  Tag(2, 'Miễn phí giao hàng', false),
-  Tag(3, 'Đánh giá cao', false),
+  Tag(0, 'Gần đây', false),
+  Tag(1, 'Cửa hàng nổi tiếng', false),
+  Tag(2, 'Đánh giá cao', false),
+  Tag(3, 'Nhập khẩu', false)
 ];
 
 List<Tag> tagsCategory = [
-  Tag(0, 'Tất Cả', true),
-  Tag(1, 'Trái cây', false),
-  Tag(2, 'Rau củ', false),
-  Tag(3, 'Thịt tươi', false),
-  Tag(4, 'Hải sản', false),
-  Tag(5, 'Trứng', false),
-  Tag(6, 'Sữa', false),
-  Tag(7, 'Gia vị', false),
-  Tag(8, 'Hạt', false),
-  Tag(9, 'Bánh mỳ', false),
-  Tag(10, 'Đồ uống', false),
-  Tag(11, 'Ăn vặt', false),
-  Tag(12, 'Mỳ & Gạo', false),
+  Tag(0, 'Trái cây', false),
+  Tag(1, 'Rau củ', false),
+  Tag(2, 'Thịt tươi', false),
+  Tag(3, 'Hải sản', false),
+  Tag(4, 'Trứng', false),
+  Tag(5, 'Sữa', false),
+  Tag(6, 'Gia vị', false),
+  Tag(7, 'Hạt', false),
+  Tag(8, 'Bánh mỳ', false),
+  Tag(9, 'Đồ uống', false),
+  Tag(10, 'Ăn vặt', false),
+  Tag(11, 'Mỳ & Gạo', false),
+];
+
+List<Tag> tagsSearch = [
+  Tag(0, 'Tất cả', true),
+  Tag(1, 'Gần đây', false),
+  Tag(2, 'Miễn phí giao hàng', false),
+  Tag(3, 'Đánh giá cao', false),
 ];

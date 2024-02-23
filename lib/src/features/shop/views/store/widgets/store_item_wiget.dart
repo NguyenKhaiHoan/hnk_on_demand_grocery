@@ -91,8 +91,8 @@ class StoreItemWidget extends StatelessWidget {
                       size: 20,
                     ),
                     gapW2,
-                    const Text(
-                      '4.3',
+                    Text(
+                      model.rating.toStringAsFixed(1),
                       style: HAppStyle.paragraph3Regular,
                     ),
                     Text(
@@ -105,7 +105,8 @@ class StoreItemWidget extends StatelessWidget {
                         style: HAppStyle.paragraph3Regular
                             .copyWith(color: HAppColor.hGreyColorShade600)),
                     gapW2,
-                    const Text("2.5", style: HAppStyle.paragraph3Regular),
+                    Text(model.distance.toStringAsFixed(1),
+                        style: HAppStyle.paragraph3Regular),
                     Text(" Km",
                         style: HAppStyle.paragraph3Regular
                             .copyWith(color: HAppColor.hGreyColorShade600))

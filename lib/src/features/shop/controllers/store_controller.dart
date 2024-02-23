@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
 
 class StoreController extends GetxController
     with GetSingleTickerProviderStateMixin {
   static StoreController get instance => Get.find();
 
   var selfCategory = false.obs;
+  var selectedValueSort = 'A - Z'.obs;
+  var checkApplied = false.obs;
+
+  var tagsCategoryObs = <Tag>[].obs;
+
+  var tagsStoreObs = <Tag>[].obs;
 
   var listFilterStore = <StoreModel>[].obs;
 
