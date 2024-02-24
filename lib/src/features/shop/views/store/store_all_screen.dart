@@ -298,7 +298,6 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                                       !storeController
                                           .tagsCategoryObs[index].active;
                                   storeController.tagsCategoryObs.refresh();
-                                  filterStore();
                                   checkApplied();
                                 },
                               ))

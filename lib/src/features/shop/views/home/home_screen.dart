@@ -39,10 +39,8 @@ class _HomeScreenState extends State<HomeScreen>
   final exploreController = Get.put(ExploreController());
   final productController = Get.put(ProductController());
 
-  late List<String> listBanner = [
-    "https://www.bigc.vn/files/banners/2022/july-trang/mega/resize-cover-blog-4.jpg",
+  List<String> listBanner = [
     "https://statics.vincom.com.vn/uu-dai/1-1702090213.jpg",
-    "https://scontent.fhan14-4.fna.fbcdn.net/v/t39.30808-6/279524630_4660714097366794_183406176671654681_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=3635dc&_nc_ohc=wNpQbhy-ZMgAX81nlC-&_nc_ht=scontent.fhan14-4.fna&oh=00_AfBub2gVEthDoRh-CEasB2ellsxaRuE2sDrqI8WKsCwaQQ&oe=65A89E4C",
   ];
 
   ScrollController controller = ScrollController();

@@ -17,21 +17,15 @@ class DummyData {
     return random.nextBool();
   }
 
-  static String randomSalePersent() {
-    return random.nextBool() ? '${randomInt(0, 100)}%' : '';
+  static int randomSalePersent() {
+    return random.nextBool() ? randomInt(10, 99) : 0;
   }
 
-  static String randomPriceSale(String price, String salePersent) {
-    double priceNum = double.parse(price);
-    if (salePersent == '') {
-      return priceNum.ceil().toString();
-    }
-    int salePersentNum =
-        int.parse(salePersent.substring(0, salePersent.length - 1));
+  static int randomPriceSale(int price, int salePersent) {
+    double priceNum = price.toDouble();
+    double priceSaleNum = priceNum * (1 - salePersent / 100);
 
-    double priceSaleNum = priceNum * (1 - salePersentNum / 100);
-
-    return priceSaleNum.ceil().toString();
+    return (priceSaleNum / 1000).ceil() * 1000;
   }
 
   static T randomElement<T>(List<T> list) {
@@ -46,10 +40,10 @@ class DummyData {
         String nameStore = "";
         String category = randomElement(categories);
         String name = randomElement(names);
-        String price = randomDouble(1, 1000).ceil().toString();
+        int price = randomInt(1, 1000) * 1000;
         String unit = randomElement(units);
-        String salePersent = randomSalePersent().toString();
-        String priceSale = randomPriceSale(price, salePersent);
+        int salePersent = randomSalePersent();
+        int priceSale = randomPriceSale(price, salePersent);
         String imgPath = randomElement(imgPaths);
         String imgStore = randomElement(imgStores);
         String status = randomInt(1, 10) <= 2 ? "Tạm hết hàng" : "";
@@ -67,10 +61,11 @@ class DummyData {
           nameStore = "Mega Mart";
         } else if (imgStore == imgStores[6]) {
           nameStore = "Lotte Mart";
+        } else if (imgStore == imgStores[7]) {
+          nameStore = "K - Mart";
         }
-        String countBuyed = randomInt(10, 5000).toString();
-        price = '$price.000₫';
-        priceSale = '$priceSale.000₫';
+        int countBuyed = randomInt(10, 500);
+        double rating = randomDouble(3.0, 5.0);
         return ProductModel(
             category: category,
             name: name,
@@ -84,9 +79,14 @@ class DummyData {
             nameStore: nameStore,
             quantity: 0,
             status: status,
-            wishlistName: '');
+            wishlistName: '',
+            rating: rating);
       },
     );
     return list;
+  }
+
+  static String vietNamCurrencyFormatting(int amount) {
+    return '${amount.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (match) => '${match[1]}.')}₫';
   }
 }

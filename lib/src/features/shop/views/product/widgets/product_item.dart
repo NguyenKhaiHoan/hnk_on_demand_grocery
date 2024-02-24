@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
@@ -77,7 +78,7 @@ class ProductItemWidget extends StatelessWidget {
                       ),
                     )
                   : Container(),
-              model.salePersent != ''
+              model.salePersent != 0
                   ? Positioned(
                       bottom: 10,
                       left: 10,
@@ -86,7 +87,7 @@ class ProductItemWidget extends StatelessWidget {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: HAppColor.hOrangeColor),
-                        child: Text(model.salePersent,
+                        child: Text('${model.salePersent}%',
                             style: HAppStyle.label4Bold
                                 .copyWith(color: HAppColor.hWhiteColor)),
                       ),
@@ -217,22 +218,27 @@ class ProductItemWidget extends StatelessWidget {
                         height: 45,
                         padding: const EdgeInsets.only(left: 10),
                         child: Center(
-                          child: model.salePersent == ''
+                          child: model.salePersent == 0
                               ? Text(
-                                  model.price,
+                                  DummyData.vietNamCurrencyFormatting(
+                                      model.price),
                                   style: HAppStyle.label2Bold.copyWith(
                                       color: HAppColor.hBluePrimaryColor),
                                 )
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(model.price,
+                                    Text(
+                                        DummyData.vietNamCurrencyFormatting(
+                                            model.price),
                                         style: HAppStyle.paragraph3Bold
                                             .copyWith(
                                                 color: HAppColor.hGreyColor,
                                                 decoration: TextDecoration
                                                     .lineThrough)),
-                                    Text(model.priceSale,
+                                    Text(
+                                        DummyData.vietNamCurrencyFormatting(
+                                            model.priceSale),
                                         style: HAppStyle.label2Bold.copyWith(
                                             color: HAppColor.hOrangeColor,
                                             decoration: TextDecoration.none))
@@ -347,7 +353,7 @@ class ProductItemWidget extends StatelessWidget {
                     children: [
                       Padding(
                           padding: const EdgeInsets.only(left: 10),
-                          child: model.salePersent == ''
+                          child: model.salePersent == 0
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -355,14 +361,15 @@ class ProductItemWidget extends StatelessWidget {
                                       children: [
                                         compareOperator == '>'
                                             ? const Icon(
-                                                EvaIcons.trendingUpOutline,
+                                                EvaIcons
+                                                    .diagonalArrowRightUpOutline,
                                                 color: HAppColor.hRedColor,
                                                 size: 20,
                                               )
                                             : compareOperator == "<"
                                                 ? const Icon(
                                                     EvaIcons
-                                                        .trendingDownOutline,
+                                                        .diagonalArrowRightDownOutline,
                                                     color: Colors.greenAccent,
                                                     size: 20,
                                                   )
@@ -376,7 +383,9 @@ class ProductItemWidget extends StatelessWidget {
                                         )
                                       ],
                                     ),
-                                    Text(model.price,
+                                    Text(
+                                        DummyData.vietNamCurrencyFormatting(
+                                            model.price),
                                         style: HAppStyle.label2Bold.copyWith(
                                             color: HAppColor.hBluePrimaryColor,
                                             decoration: TextDecoration.none))
@@ -389,14 +398,15 @@ class ProductItemWidget extends StatelessWidget {
                                       children: [
                                         compareOperator == '>'
                                             ? const Icon(
-                                                EvaIcons.trendingUpOutline,
+                                                EvaIcons
+                                                    .diagonalArrowRightUpOutline,
                                                 color: HAppColor.hRedColor,
                                                 size: 20,
                                               )
                                             : compareOperator == "<"
                                                 ? const Icon(
                                                     EvaIcons
-                                                        .trendingDownOutline,
+                                                        .diagonalArrowRightDownOutline,
                                                     color: Colors.greenAccent,
                                                     size: 20,
                                                   )
@@ -410,7 +420,9 @@ class ProductItemWidget extends StatelessWidget {
                                         )
                                       ],
                                     ),
-                                    Text(model.priceSale,
+                                    Text(
+                                        DummyData.vietNamCurrencyFormatting(
+                                            model.priceSale),
                                         style: HAppStyle.label2Bold.copyWith(
                                             color: HAppColor.hOrangeColor,
                                             decoration: TextDecoration.none))

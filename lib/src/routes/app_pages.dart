@@ -4,7 +4,7 @@ import 'package:on_demand_grocery/src/features/authentication/views/login/login_
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/verify/verify_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/chat_screen.dart';
-import 'package:on_demand_grocery/src/features/shop/views/list/list_item_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/list/widgets/list_item_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/wishlist_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/cart_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/checkout_screen.dart';

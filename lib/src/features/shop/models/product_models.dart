@@ -3,17 +3,18 @@
 class ProductModel {
   String category;
   String name;
-  String price;
-  String salePersent;
-  String priceSale;
+  int price;
+  int salePersent;
+  int priceSale;
   String imgPath;
   String imgStore;
   String nameStore;
   String unit;
-  String countBuyed;
+  int countBuyed;
   int quantity;
   String status;
   String wishlistName;
+  double rating;
 
   ProductModel(
       {required this.category,
@@ -28,7 +29,8 @@ class ProductModel {
       required this.countBuyed,
       required this.quantity,
       required this.status,
-      required this.wishlistName});
+      required this.wishlistName,
+      required this.rating});
 }
 
 List<String> categories = [

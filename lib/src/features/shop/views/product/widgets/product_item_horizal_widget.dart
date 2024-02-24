@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
@@ -77,7 +78,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
                       ),
                     )
                   : Container(),
-              model.salePersent != ''
+              model.salePersent != 0
                   ? Positioned(
                       bottom: 10,
                       left: 0,
@@ -86,7 +87,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: HAppColor.hOrangeColor),
-                        child: Text(model.salePersent,
+                        child: Text('${model.salePersent}%',
                             style: HAppStyle.label4Bold
                                 .copyWith(color: HAppColor.hWhiteColor)),
                       ),
@@ -144,7 +145,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
                 child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(right: 10, top: 10),
+                  padding: const EdgeInsets.only(right: 10, top: 10),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -153,7 +154,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
                             Text(model.category,
                                 style: HAppStyle.paragraph3Regular.copyWith(
                                     color: HAppColor.hGreyColorShade600)),
-                            Spacer(),
+                            const Spacer(),
                             Text(model.unit,
                                 style: HAppStyle.paragraph3Regular.copyWith(
                                     color: HAppColor.hGreyColorShade600)),
@@ -213,7 +214,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
                         ),
                       ]),
                 ),
-                Spacer(),
+                const Spacer(),
                 !compare
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -222,9 +223,10 @@ class ProductItemHorizalWidget extends StatelessWidget {
                           SizedBox(
                             height: 45,
                             child: Center(
-                              child: model.salePersent == ''
+                              child: model.salePersent == 0
                                   ? Text(
-                                      model.price,
+                                      DummyData.vietNamCurrencyFormatting(
+                                          model.price),
                                       style: HAppStyle.label2Bold.copyWith(
                                           color: HAppColor.hBluePrimaryColor),
                                     )
@@ -233,15 +235,22 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(model.price,
-                                                style: HAppStyle.paragraph3Bold
+                                            Text(
+                                                DummyData
+                                                    .vietNamCurrencyFormatting(
+                                                        model.price),
+                                                style: HAppStyle
+                                                    .paragraph3Bold
                                                     .copyWith(
                                                         color: HAppColor
                                                             .hGreyColor,
                                                         decoration:
                                                             TextDecoration
                                                                 .lineThrough)),
-                                            Text(model.priceSale,
+                                            Text(
+                                                DummyData
+                                                    .vietNamCurrencyFormatting(
+                                                        model.priceSale),
                                                 style: HAppStyle.label2Bold
                                                     .copyWith(
                                                         color: HAppColor
@@ -262,10 +271,13 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                                         decoration:
                                                             TextDecoration
                                                                 .none),
-                                                text: '${model.priceSale} ',
+                                                text:
+                                                    '${DummyData.vietNamCurrencyFormatting(model.priceSale)} ',
                                                 children: [
                                                   TextSpan(
-                                                    text: model.price,
+                                                    text: DummyData
+                                                        .vietNamCurrencyFormatting(
+                                                            model.price),
                                                     style: HAppStyle
                                                         .label4Regular
                                                         .copyWith(
@@ -428,7 +440,9 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                             )
                                           ],
                                         ),
-                                        Text(model.price,
+                                        Text(
+                                            DummyData.vietNamCurrencyFormatting(
+                                                model.price),
                                             style: HAppStyle.label2Bold
                                                 .copyWith(
                                                     color: HAppColor
@@ -468,7 +482,9 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                             )
                                           ],
                                         ),
-                                        Text(model.priceSale,
+                                        Text(
+                                            DummyData.vietNamCurrencyFormatting(
+                                                model.priceSale),
                                             style: HAppStyle.label2Bold
                                                 .copyWith(
                                                     color:

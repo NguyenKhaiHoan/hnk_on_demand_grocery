@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/swipe_action_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
@@ -142,14 +143,14 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                           image: NetworkImage(widget.model.imgPath),
                           fit: BoxFit.fill)),
                 ),
-                widget.model.salePersent != ''
+                widget.model.salePersent != 0
                     ? Positioned(
                         child: Container(
                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: HAppColor.hOrangeColor),
-                          child: Text(widget.model.salePersent,
+                          child: Text('${widget.model.salePersent}%',
                               style: HAppStyle.paragraph3Regular
                                   .copyWith(color: HAppColor.hWhiteColor)),
                         ),
@@ -284,7 +285,9 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                         children: [
                           widget.model.salePersent == ''
                               ? Text(
-                                  "${int.parse(widget.model.price.substring(0, widget.model.price.length - 5)) * widget.model.quantity}.000₫",
+                                  DummyData.vietNamCurrencyFormatting(
+                                      widget.model.price *
+                                          widget.model.quantity),
                                   style: HAppStyle.label2Bold.copyWith(
                                       color: HAppColor.hBluePrimaryColor),
                                 )
@@ -292,14 +295,18 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                        "${int.parse(widget.model.price.substring(0, widget.model.price.length - 5)) * widget.model.quantity}.000₫",
+                                        DummyData.vietNamCurrencyFormatting(
+                                            widget.model.price *
+                                                widget.model.quantity),
                                         style: HAppStyle.paragraph3Bold
                                             .copyWith(
                                                 color: HAppColor.hGreyColor,
                                                 decoration: TextDecoration
                                                     .lineThrough)),
                                     Text(
-                                        "${int.parse(widget.model.priceSale.substring(0, widget.model.priceSale.length - 5)) * widget.model.quantity}.000₫",
+                                        DummyData.vietNamCurrencyFormatting(
+                                            widget.model.priceSale *
+                                                widget.model.quantity),
                                         style: HAppStyle.label2Bold.copyWith(
                                             color: HAppColor.hOrangeColor,
                                             decoration: TextDecoration.none))

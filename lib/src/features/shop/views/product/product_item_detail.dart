@@ -7,6 +7,7 @@ import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
@@ -648,9 +649,10 @@ class ProductDetailScreen extends StatelessWidget {
                               },
                               title: Row(
                                 children: [
-                                  model.salePersent == ''
+                                  model.salePersent == 0
                                       ? Text(
-                                          model.price,
+                                          DummyData.vietNamCurrencyFormatting(
+                                              model.price),
                                           style: HAppStyle.label1Bold.copyWith(
                                               color:
                                                   HAppColor.hBluePrimaryColor),
@@ -661,10 +663,13 @@ class ProductDetailScreen extends StatelessWidget {
                                                 HAppStyle.label1Bold.copyWith(
                                               color: HAppColor.hOrangeColor,
                                             ),
-                                            text: '${model.priceSale} ',
+                                            text:
+                                                '${DummyData.vietNamCurrencyFormatting(model.priceSale)} ',
                                             children: [
                                               TextSpan(
-                                                text: model.price,
+                                                text: DummyData
+                                                    .vietNamCurrencyFormatting(
+                                                        model.price),
                                                 style: HAppStyle.paragraph2Bold
                                                     .copyWith(
                                                         color: HAppColor
@@ -694,7 +699,7 @@ class ProductDetailScreen extends StatelessWidget {
                                             String compareOperator = "";
                                             String comparePrice = "";
 
-                                            if (model.salePersent == "") {
+                                            if (model.salePersent == 0) {
                                               differentText = detailController
                                                   .calculatingDifference(
                                                       productController
@@ -1213,9 +1218,15 @@ class ProductDetailScreen extends StatelessWidget {
                               text: "Giá:\n",
                               children: [
                                 TextSpan(
-                                  text: model.priceSale != ""
-                                      ? "${int.parse(model.priceSale.substring(0, model.priceSale.length - 5)) * int.parse(detailController.countText.value)}.000₫"
-                                      : "${int.parse(model.price.substring(0, model.price.length - 5)) * int.parse(detailController.countText.value)}.000₫",
+                                  text: model.priceSale != 0
+                                      ? DummyData.vietNamCurrencyFormatting(
+                                          model.priceSale *
+                                              int.parse(detailController
+                                                  .countText.value))
+                                      : DummyData.vietNamCurrencyFormatting(
+                                          model.price *
+                                              int.parse(detailController
+                                                  .countText.value)),
                                   style: HAppStyle.heading4Style.copyWith(
                                       color: HAppColor.hBluePrimaryColor),
                                 ),
@@ -1254,10 +1265,6 @@ class ProductDetailScreen extends StatelessWidget {
                       onTap: () {
                         productController
                             .addRegisterNotificationProducts(model);
-                        for (var product
-                            in productController.registerNotificationProducts) {
-                          print(product.name);
-                        }
                         if (productController.registerNotificationProducts
                             .contains(model)) {
                           toastification.show(

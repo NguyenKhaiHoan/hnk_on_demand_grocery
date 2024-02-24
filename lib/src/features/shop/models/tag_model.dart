@@ -34,3 +34,9 @@ List<Tag> tagsSearch = [
   Tag(2, 'Miễn phí giao hàng', false),
   Tag(3, 'Đánh giá cao', false),
 ];
+
+List<Tag> tagsProduct = [
+  Tag(0, 'Gần đây', false),
+  Tag(1, 'Đánh giá cao', false),
+  Tag(2, 'Nhập khẩu', false)
+];

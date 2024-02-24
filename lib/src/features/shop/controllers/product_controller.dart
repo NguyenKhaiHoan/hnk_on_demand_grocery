@@ -3,6 +3,7 @@ import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/models/check_box_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
 
 class ProductController extends GetxController {
@@ -230,28 +231,18 @@ class ProductController extends GetxController {
               product.nameStore == "Big C" &&
               product.category == "Trái cây" &&
               applied.value) {
-            if (product.salePersent != "") {
-              productMoney.value += (int.parse(product.priceSale
-                          .substring(0, product.priceSale.length - 5)) *
-                      product.quantity *
-                      0.9)
-                  .ceil();
+            if (product.salePersent != 0) {
+              productMoney.value +=
+                  (product.priceSale * product.quantity * 0.9).ceil();
             } else {
-              productMoney.value += (int.parse(product.price
-                          .substring(0, product.price.length - 5)) *
-                      product.quantity *
-                      0.9)
-                  .ceil();
+              productMoney.value +=
+                  (product.price * product.quantity * 0.9).ceil();
             }
           } else {
-            if (product.salePersent != "") {
-              productMoney.value += int.parse(product.priceSale
-                      .substring(0, product.priceSale.length - 5)) *
-                  product.quantity;
+            if (product.salePersent != 0) {
+              productMoney.value += product.priceSale * product.quantity;
             } else {
-              productMoney.value += int.parse(
-                      product.price.substring(0, product.price.length - 5)) *
-                  product.quantity;
+              productMoney.value += product.price * product.quantity;
             }
           }
         }
@@ -346,11 +337,11 @@ class ProductController extends GetxController {
   }
 
   void getExploreProducts() {
-    topSellingProducts.value = listProducts
-        .where((product) => int.parse(product.countBuyed) > 100)
-        .toList();
+    // ListProducts
+    topSellingProducts.value =
+        listProducts.where((product) => product.countBuyed > 100).toList();
     topSaleProducts.value =
-        listProducts.where((product) => product.salePersent != "").toList();
+        listProducts.where((product) => product.salePersent != 0).toList();
     cate1Products.value = listProducts
         .where((product) => product.category == "Trái cây")
         .toList();
@@ -377,6 +368,23 @@ class ProductController extends GetxController {
     cate12Products.value = listProducts
         .where((product) => product.category == "Mỳ & Gạo")
         .toList();
+    // ListFilterProduct
+    // listFilterProducts = topSellingProducts;
+    // oldList = topSellingProducts;
+    // listFilterTopSaleProducts = topSaleProducts;
+    // listFilterTopSellingProducts = topSaleProducts;
+    // listFilterCate1Products = cate1Products;
+    // listFilterCate2Products = cate2Products;
+    // listFilterCate3Products = cate3Products;
+    // listFilterCate4Products = cate4Products;
+    // listFilterCate5Products = cate5Products;
+    // listFilterCate6Products = cate6Products;
+    // listFilterCate7Products = cate7Products;
+    // listFilterCate8Products = cate8Products;
+    // listFilterCate9Products = cate9Products;
+    // listFilterCate10Products = cate10Products;
+    // listFilterCate11Products = cate11Products;
+    // listFilterCate12Products = cate12Products;
   }
 
   var bigcstore = <ProductModel>[].obs;
@@ -417,4 +425,52 @@ class ProductController extends GetxController {
   }
 
   var wishListProduct = <ProductModel>[].obs;
+
+  var selfCategory = false.obs;
+  var selectedValueSort = 'Nổi bật'.obs;
+  var checkApplied = false.obs;
+
+  var tagsCategoryObs = <Tag>[].obs;
+  var tagsProductObs = <Tag>[].obs;
+
+  var oldList = <ProductModel>[].obs;
+
+  var listFilterProducts = <ProductModel>[].obs;
+
+  // var listFilterTopSellingProducts = <ProductModel>[].obs;
+  // var listFilterTopSaleProducts = <ProductModel>[].obs;
+  // var listFilterCate1Products = <ProductModel>[].obs;
+  // var listFilterCate2Products = <ProductModel>[].obs;
+  // var listFilterCate3Products = <ProductModel>[].obs;
+  // var listFilterCate4Products = <ProductModel>[].obs;
+  // var listFilterCate5Products = <ProductModel>[].obs;
+  // var listFilterCate6Products = <ProductModel>[].obs;
+  // var listFilterCate7Products = <ProductModel>[].obs;
+  // var listFilterCate8Products = <ProductModel>[].obs;
+  // var listFilterCate9Products = <ProductModel>[].obs;
+  // var listFilterCate10Products = <ProductModel>[].obs;
+  // var listFilterCate11Products = <ProductModel>[].obs;
+  // var listFilterCate12Products = <ProductModel>[].obs;
+
+  void filterProductSort() {
+    if (selectedValueSort.value == 'Nổi bật') {
+      // listFilterProducts.value = oldList;
+    } else if (selectedValueSort.value == 'Thấp - Cao') {
+      listFilterProducts.sort((a, b) => a.priceSale == 0
+          ? (b.priceSale == 0
+              ? a.price.compareTo(b.price)
+              : a.price.compareTo(b.priceSale))
+          : (b.priceSale == 0
+              ? a.priceSale.compareTo(b.price)
+              : a.priceSale.compareTo(b.priceSale)));
+    } else if (selectedValueSort.value == 'Cao - Thấp') {
+      listFilterProducts.sort((a, b) => a.priceSale == 0
+          ? (b.priceSale == 0
+              ? -a.price.compareTo(b.price)
+              : -a.price.compareTo(b.priceSale))
+          : (b.priceSale == 0
+              ? -a.priceSale.compareTo(b.price)
+              : -a.priceSale.compareTo(b.priceSale)));
+    }
+  }
 }

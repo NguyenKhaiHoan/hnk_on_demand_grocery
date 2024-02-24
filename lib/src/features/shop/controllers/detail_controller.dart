@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 
 class DetailController extends GetxController {
@@ -53,25 +54,21 @@ class DetailController extends GetxController {
     }
   }
 
-  calculatingDifference(ProductModel product1, String product2Price) {
-    if (product1.salePersent == "") {
-      int result =
-          (int.parse(product1.price.substring(0, product1.price.length - 5))) -
-              (int.parse(product2Price.substring(0, product2Price.length - 5)));
+  calculatingDifference(ProductModel product1, int product2Price) {
+    if (product1.salePersent == 0) {
+      int result = product1.price - product2Price;
       return result >= 0
           ? result == 0
-              ? "= ${result.abs()}"
-              : "> ${result.abs()}"
-          : "< ${result.abs()}";
+              ? "= ${DummyData.vietNamCurrencyFormatting(result)}"
+              : "> ${DummyData.vietNamCurrencyFormatting(result)}"
+          : "< ${DummyData.vietNamCurrencyFormatting(result)}";
     } else {
-      int result = (int.parse(
-              product1.priceSale.substring(0, product1.priceSale.length - 5))) -
-          (int.parse(product2Price.substring(0, product2Price.length - 5)));
+      int result = product1.priceSale - product2Price;
       return result >= 0
           ? result == 0
-              ? "= ${result.abs()}"
-              : "> ${result.abs()}"
-          : "< ${result.abs()}";
+              ? "= ${DummyData.vietNamCurrencyFormatting(result)}"
+              : "> ${DummyData.vietNamCurrencyFormatting(result)}"
+          : "< ${DummyData.vietNamCurrencyFormatting(result)}";
     }
   }
 
@@ -88,6 +85,6 @@ class DetailController extends GetxController {
 
   String comparePriceNumber(String s) {
     List<String> parts = s.split(" ");
-    return "${parts[1]}.000₫";
+    return parts[1];
   }
 }
