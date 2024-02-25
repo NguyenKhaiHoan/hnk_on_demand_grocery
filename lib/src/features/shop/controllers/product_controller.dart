@@ -258,21 +258,43 @@ class ProductController extends GetxController {
   findImgStore(String name) {
     String imgStore = "";
     if (name == "Big C") {
-      imgStore = imgStores[0];
+      imgStore = listStore[0].imgStore;
     } else if (name == "Win Mart") {
-      imgStore = imgStores[1];
+      imgStore = listStore[1].imgStore;
     } else if (name == "Coop Mart") {
-      imgStore = imgStores[2];
+      imgStore = listStore[2].imgStore;
     } else if (name == "Lan Chi Mart") {
-      imgStore = imgStores[3];
+      imgStore = listStore[3].imgStore;
     } else if (name == "Aeon Mall") {
-      imgStore = imgStores[4];
+      imgStore = listStore[4].imgStore;
     } else if (name == "Mega Mart") {
-      imgStore = imgStores[5];
+      imgStore = listStore[5].imgStore;
     } else if (name == "Lotte Mart") {
-      imgStore = imgStores[6];
+      imgStore = listStore[6].imgStore;
+    } else if (name == "K - Market") {
+      imgStore = listStore[7].imgStore;
     }
     return imgStore;
+  }
+
+  StoreModel findStoreFromProduct(ProductModel model) {
+    for (var store in listStore) {
+      if (store.storeId == model.storeId) {
+        return store;
+      }
+    }
+    return StoreModel(
+        storeId: -1,
+        imgStore: '',
+        name: '',
+        isFavourite: false,
+        imgBackground: '',
+        category: [],
+        rating: -1,
+        products: [],
+        distance: -1,
+        import: false,
+        isFamous: false);
   }
 
   refreshList(RxList<ProductModel> list) {
@@ -426,8 +448,7 @@ class ProductController extends GetxController {
 
   var wishListProduct = <ProductModel>[].obs;
 
-  var selfCategory = false.obs;
-  var selectedValueSort = 'Nổi bật'.obs;
+  var selectedValueSort = 'Mới nhất'.obs;
   var checkApplied = false.obs;
 
   var tagsCategoryObs = <Tag>[].obs;
@@ -436,6 +457,7 @@ class ProductController extends GetxController {
   var oldList = <ProductModel>[].obs;
 
   var listFilterProducts = <ProductModel>[].obs;
+  var tempListFilterProducts = <ProductModel>[].obs;
 
   // var listFilterTopSellingProducts = <ProductModel>[].obs;
   // var listFilterTopSaleProducts = <ProductModel>[].obs;
@@ -452,9 +474,39 @@ class ProductController extends GetxController {
   // var listFilterCate11Products = <ProductModel>[].obs;
   // var listFilterCate12Products = <ProductModel>[].obs;
 
+  void filterProduct(RxList<ProductModel> list, int index) {
+    if (index > 1) {
+      oldList.value = list
+          .where((product) =>
+              (tagsProductObs[0].active
+                  ? findStoreFromProduct(product).distance < 5.0
+                  : true) &&
+              (tagsProductObs[1].active ? product.rating >= 4.0 : true) &&
+              (tagsProductObs[2].active ? product.origin != 'Việt Nam' : true))
+          .toList();
+    } else {
+      oldList.value = list
+          .where((product) => tagsCategoryObs.every((category) =>
+              category.active
+                  ? product.category.contains(category.title)
+                  : true))
+          .where((product) =>
+              (tagsProductObs[0].active
+                  ? findStoreFromProduct(product).distance < 5.0
+                  : true) &&
+              (tagsProductObs[1].active ? product.rating >= 4.0 : true) &&
+              (tagsProductObs[2].active ? product.origin != 'Việt Nam' : true))
+          .toList();
+    }
+    listFilterProducts = oldList;
+    print('Vào lọc');
+    filterProductSort();
+  }
+
   void filterProductSort() {
-    if (selectedValueSort.value == 'Nổi bật') {
-      // listFilterProducts.value = oldList;
+    print('Vào sort');
+    if (selectedValueSort.value == 'Mới nhất') {
+      listFilterProducts = oldList;
     } else if (selectedValueSort.value == 'Thấp - Cao') {
       listFilterProducts.sort((a, b) => a.priceSale == 0
           ? (b.priceSale == 0

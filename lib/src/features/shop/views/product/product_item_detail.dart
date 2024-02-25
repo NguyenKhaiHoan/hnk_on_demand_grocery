@@ -983,7 +983,7 @@ class ProductDetailScreen extends StatelessWidget {
                                     style: HAppStyle.paragraph2Regular,
                                   ),
                                   Text(
-                                    'Việt Nam',
+                                    model.origin,
                                     style: HAppStyle.paragraph2Regular.copyWith(
                                         color: HAppColor.hGreyColorShade600),
                                   )
@@ -1136,7 +1136,7 @@ class ProductDetailScreen extends StatelessWidget {
                                 height: 300,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: 10,
+                                  itemCount: 2,
                                   itemBuilder: (BuildContext context, index) {
                                     return Padding(
                                         padding: const EdgeInsets.fromLTRB(
@@ -1165,7 +1165,7 @@ class ProductDetailScreen extends StatelessWidget {
                                 height: 300,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: 10,
+                                  itemCount: 2,
                                   itemBuilder: (BuildContext context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.fromLTRB(
@@ -1175,7 +1175,7 @@ class ProductDetailScreen extends StatelessWidget {
                                             model: list
                                                 .where((product) =>
                                                     product != model)
-                                                .toList()[index + 10],
+                                                .toList()[index],
                                             list: list,
                                             compare: false,
                                           )),

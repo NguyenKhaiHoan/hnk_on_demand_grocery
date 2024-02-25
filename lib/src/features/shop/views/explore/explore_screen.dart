@@ -30,103 +30,6 @@ class _ExploreScreenState extends State<ExploreScreen>
   final exploreController = Get.put(ExploreController());
   final productController = Get.put(ProductController());
 
-  late int index;
-
-  @override
-  void initState() {
-    super.initState();
-    index = 0;
-    loadTenItemList(productController.topSellingProducts);
-    exploreController.tabController.addListener(() {
-      scrollToTop();
-      index = exploreController.tabController.index;
-      load();
-    });
-
-    exploreController.scrollController.addListener(() {
-      scrollControllerListener();
-      if (exploreController.scrollController.position.pixels ==
-              exploreController.scrollController.position.maxScrollExtent &&
-          !exploreController.isLoadingAdd.value &&
-          !exploreController.isLoading.value) {
-        loadMore();
-      }
-    });
-  }
-
-  void loadTenItemList(RxList<ProductModel> list) {
-    exploreController.isLoading.value = true;
-    productController.listFilterProducts.clear();
-    Future.delayed(const Duration(seconds: 2), () {
-      for (int i = 0; i < 10; i++) {
-        productController.listFilterProducts.add(list[i]);
-      }
-      productController.oldList = list;
-      productController.filterProductSort();
-      exploreController.isLoading.value = false;
-    });
-  }
-
-  void load() {
-    if (index == 0) {
-      loadTenItemList(productController.topSellingProducts);
-    } else if (index == 1) {
-      loadTenItemList(productController.topSaleProducts);
-    } else if (index == 2) {
-      loadTenItemList(productController.cate1Products);
-    } else if (index == 3) {
-      loadTenItemList(productController.cate2Products);
-    } else if (index == 4) {
-      loadTenItemList(productController.cate3Products);
-    } else if (index == 5) {
-      loadTenItemList(productController.cate4Products);
-    } else if (index == 6) {
-      loadTenItemList(productController.cate5Products);
-    } else if (index == 7) {
-      loadTenItemList(productController.cate6Products);
-    } else if (index == 8) {
-      loadTenItemList(productController.cate7Products);
-    } else if (index == 9) {
-      loadTenItemList(productController.cate8Products);
-    } else if (index == 10) {
-      loadTenItemList(productController.cate9Products);
-    } else if (index == 11) {
-      loadTenItemList(productController.cate10Products);
-    } else if (index == 12) {
-      loadTenItemList(productController.cate11Products);
-    } else if (index == 13) {
-      loadTenItemList(productController.cate12Products);
-    }
-  }
-
-  void loadMore() {
-    exploreController.isLoadingAdd.value = true;
-    Future.delayed(const Duration(seconds: 2), () {
-      int temp = 10;
-      int substract = productController.oldList.length -
-          productController.listFilterProducts.length;
-      int start = productController.listFilterProducts.length;
-      if (substract > 10) {
-        temp = 10;
-      } else {
-        temp = substract;
-      }
-      for (int i = start; i < start + temp; i++) {
-        productController.listFilterProducts.add(productController.oldList[i]);
-        print('load item thứ ${i + 1}');
-      }
-      exploreController.isLoadingAdd.value = false;
-    });
-  }
-
-  scrollControllerListener() {
-    if (exploreController.scrollController.offset >= 100) {
-      exploreController.showFab.value = true;
-    } else {
-      exploreController.showFab.value = false;
-    }
-  }
-
   List<String> listExplore = [
     'Bán chạy',
     'Giảm giá',
@@ -143,6 +46,60 @@ class _ExploreScreenState extends State<ExploreScreen>
     'Ăn vặt',
     'Mỳ & Gạo',
   ];
+
+  void loadTenItemList(RxList<ProductModel> list) {
+    exploreController.isLoading.value = true;
+    Future.delayed(const Duration(seconds: 3), () {
+      productController.tempListFilterProducts.clear();
+      productController.filterProduct(list, exploreController.index.value);
+      int temp = 0;
+      int substract = productController.listFilterProducts.length -
+          productController.tempListFilterProducts.length;
+      if (substract > 10) {
+        temp = 10;
+      } else {
+        temp = substract;
+      }
+      for (int i = 0; i < temp; i++) {
+        productController.tempListFilterProducts
+            .add(productController.listFilterProducts[i]);
+      }
+      exploreController.isLoading.value = false;
+    });
+  }
+
+  void load() {
+    exploreController.scrollToTop();
+    if (exploreController.index.value == 0) {
+      loadTenItemList(productController.topSellingProducts);
+    } else if (exploreController.index.value == 1) {
+      loadTenItemList(productController.topSaleProducts);
+    } else if (exploreController.index.value == 2) {
+      loadTenItemList(productController.cate1Products);
+    } else if (exploreController.index.value == 3) {
+      loadTenItemList(productController.cate2Products);
+    } else if (exploreController.index.value == 4) {
+      loadTenItemList(productController.cate3Products);
+    } else if (exploreController.index.value == 5) {
+      loadTenItemList(productController.cate4Products);
+    } else if (exploreController.index.value == 6) {
+      loadTenItemList(productController.cate5Products);
+    } else if (exploreController.index.value == 7) {
+      loadTenItemList(productController.cate6Products);
+    } else if (exploreController.index.value == 8) {
+      loadTenItemList(productController.cate7Products);
+    } else if (exploreController.index.value == 9) {
+      loadTenItemList(productController.cate8Products);
+    } else if (exploreController.index.value == 10) {
+      loadTenItemList(productController.cate9Products);
+    } else if (exploreController.index.value == 11) {
+      loadTenItemList(productController.cate10Products);
+    } else if (exploreController.index.value == 12) {
+      loadTenItemList(productController.cate11Products);
+    } else if (exploreController.index.value == 13) {
+      loadTenItemList(productController.cate12Products);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -231,10 +188,12 @@ class _ExploreScreenState extends State<ExploreScreen>
               ];
             },
             body: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
                 controller: exploreController.tabController,
                 children: [
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -261,10 +220,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -279,7 +240,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -287,7 +248,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -297,6 +273,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -323,10 +300,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -341,7 +320,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -349,7 +328,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -359,6 +353,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -385,10 +380,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -403,7 +400,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -411,7 +408,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -421,6 +433,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -447,10 +460,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -465,7 +480,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -473,7 +488,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -483,6 +513,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -509,10 +540,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -527,7 +560,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -535,7 +568,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -545,6 +593,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -571,10 +620,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -589,7 +640,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -597,7 +648,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -607,6 +673,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -633,10 +700,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -651,7 +720,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -659,7 +728,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -669,6 +753,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -695,10 +780,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -713,7 +800,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -721,7 +808,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -731,6 +833,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -757,10 +860,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -775,7 +880,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -783,7 +888,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -793,6 +913,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -819,10 +940,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -837,7 +960,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -845,7 +968,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -855,6 +993,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -881,10 +1020,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -899,7 +1040,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -907,7 +1048,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -917,6 +1073,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -943,10 +1100,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -961,7 +1120,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -969,7 +1128,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -979,6 +1153,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -1005,10 +1180,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -1023,7 +1200,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -1031,7 +1208,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -1041,6 +1233,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             )),
                   Obx(() => exploreController.isLoading.value
                       ? CustomLayoutWidget(
+                          check: true,
                           widget: GridView.builder(
                             shrinkWrap: true,
                             itemCount: 10,
@@ -1067,10 +1260,12 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ),
                           subWidget: Container(),
                         )
-                      : productController.listFilterProducts.isNotEmpty
+                      : productController.tempListFilterProducts.isNotEmpty
                           ? CustomLayoutWidget(
+                              check: true,
                               widget: ListProductExploreBuilder(
-                                  list: productController.listFilterProducts),
+                                  list:
+                                      productController.tempListFilterProducts),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -1085,7 +1280,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                           : NotFoundScreenWidget(
                               title: 'Không có kết quả nào',
                               subtitle:
-                                  'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
                               widget: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -1093,7 +1288,22 @@ class _ExploreScreenState extends State<ExploreScreen>
                                     backgroundColor:
                                         HAppColor.hBluePrimaryColor,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    for (var tag
+                                        in productController.tagsCategoryObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    for (var tag
+                                        in productController.tagsProductObs) {
+                                      tag.active = false;
+                                    }
+                                    productController.tagsProductObs.refresh();
+                                    productController.selectedValueSort.value =
+                                        'Mới nhất';
+                                    setState(() {});
+                                    load();
+                                  },
                                   child: Text(
                                     "Xóa bộ lọc",
                                     style: HAppStyle.label2Bold
@@ -1101,356 +1311,6 @@ class _ExploreScreenState extends State<ExploreScreen>
                                   )),
                               subWidget: Container(),
                             )),
-                  // Obx(() => productController.topSellingProducts.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.topSellingProducts),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.topSaleProducts.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.topSaleProducts),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate1Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate1Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate2Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate2Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate3Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate3Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate4Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate4Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate5Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate5Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate6Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate6Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate7Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate7Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate8Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate8Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate9Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate9Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate10Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate10Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate11Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate11Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
-                  // Obx(() => productController.cate12Products.isNotEmpty
-                  //     ? CustomLayoutWidget(
-                  //         check: true,
-                  //         widget: Container(),
-                  //         subWidget: ListProductExploreBuilder(
-                  //             list: productController.cate12Products),
-                  //       )
-                  //     : NotFoundScreenWidget(
-                  //         title: 'Không có kết quả nào',
-                  //         subtitle:
-                  //             'Hãy thùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                  //         widget: ElevatedButton(
-                  //             style: ElevatedButton.styleFrom(
-                  //               minimumSize:
-                  //                   Size(HAppSize.deviceWidth * 0.45, 50),
-                  //               backgroundColor: HAppColor.hBluePrimaryColor,
-                  //             ),
-                  //             onPressed: () {},
-                  //             child: Text(
-                  //               "Xóa bộ lọc",
-                  //               style: HAppStyle.label2Bold
-                  //                   .copyWith(color: HAppColor.hWhiteColor),
-                  //             )),
-                  //         subWidget: Container(),
-                  //       )),
                 ]),
           ),
           floatingActionButton: Obx(() => exploreController.showFab.isTrue
@@ -1461,15 +1321,8 @@ class _ExploreScreenState extends State<ExploreScreen>
                     EvaIcons.arrowIosUpward,
                     color: HAppColor.hWhiteColor,
                   ),
-                  onPressed: () => scrollToTop())
+                  onPressed: () => exploreController.scrollToTop())
               : Container()),
         ));
-  }
-
-  void scrollToTop() {
-    exploreController.scrollController.animateTo(
-        exploreController.scrollController.position.minScrollExtent,
-        duration: const Duration(seconds: 2),
-        curve: Curves.fastOutSlowIn);
   }
 }

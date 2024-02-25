@@ -178,7 +178,7 @@ class ProductItemWidget extends StatelessWidget {
                             Text.rich(
                               TextSpan(
                                 style: HAppStyle.paragraph2Bold,
-                                text: "4.3",
+                                text: model.rating.toStringAsFixed(1),
                                 children: [
                                   TextSpan(
                                     text: '/5',

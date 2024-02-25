@@ -11,6 +11,7 @@ class ExploreController extends GetxController
   final showFab = false.obs;
   var isLoading = false.obs;
   var isLoadingAdd = false.obs;
+  var index = 0.obs;
 
   @override
   void onInit() {
@@ -29,5 +30,10 @@ class ExploreController extends GetxController
   animateToTab(int index) {
     tabController.animateTo(index,
         duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+  }
+
+  void scrollToTop() {
+    scrollController.animateTo(scrollController.position.minScrollExtent,
+        duration: const Duration(seconds: 2), curve: Curves.fastOutSlowIn);
   }
 }

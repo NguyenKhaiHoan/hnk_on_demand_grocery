@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 
 class DummyData {
   static Random random = Random();
@@ -35,35 +36,25 @@ class DummyData {
   static List<ProductModel> getAllProducts() {
     List<ProductModel> list = [];
     list = List<ProductModel>.generate(
-      1000,
+      1500,
       (index) {
-        String nameStore = "";
-        String category = randomElement(categories);
+        int storeId = randomInt(1, listStore.length);
+        String nameStore = listStore[storeId].name;
+        String imgStore = listStore[storeId].imgStore;
+        String origin = '';
+        if (listStore[storeId].import) {
+          origin = randomBool() ? randomElement(otherCountry) : 'Việt Nam';
+        } else {
+          origin = 'Việt Nam';
+        }
+        String category = randomElement(listStore[storeId].category);
         String name = randomElement(names);
         int price = randomInt(1, 1000) * 1000;
         String unit = randomElement(units);
         int salePersent = randomSalePersent();
         int priceSale = randomPriceSale(price, salePersent);
         String imgPath = randomElement(imgPaths);
-        String imgStore = randomElement(imgStores);
         String status = randomInt(1, 10) <= 2 ? "Tạm hết hàng" : "";
-        if (imgStore == imgStores[0]) {
-          nameStore = "Big C";
-        } else if (imgStore == imgStores[1]) {
-          nameStore = "Win Mart";
-        } else if (imgStore == imgStores[2]) {
-          nameStore = "Coop Mart";
-        } else if (imgStore == imgStores[3]) {
-          nameStore = "Lan Chi Mart";
-        } else if (imgStore == imgStores[4]) {
-          nameStore = "Aeon Mall";
-        } else if (imgStore == imgStores[5]) {
-          nameStore = "Mega Mart";
-        } else if (imgStore == imgStores[6]) {
-          nameStore = "Lotte Mart";
-        } else if (imgStore == imgStores[7]) {
-          nameStore = "K - Mart";
-        }
         int countBuyed = randomInt(10, 500);
         double rating = randomDouble(3.0, 5.0);
         return ProductModel(
@@ -80,7 +71,10 @@ class DummyData {
             quantity: 0,
             status: status,
             wishlistName: '',
-            rating: rating);
+            rating: rating,
+            origin: origin,
+            productId: index,
+            storeId: storeId);
       },
     );
     return list;

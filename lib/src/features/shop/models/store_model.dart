@@ -2,6 +2,7 @@ import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 
 class StoreModel {
+  int storeId;
   String imgStore;
   String imgBackground;
   String name;
@@ -14,7 +15,8 @@ class StoreModel {
   bool isFamous;
 
   StoreModel(
-      {required this.imgStore,
+      {required this.storeId,
+      required this.imgStore,
       required this.name,
       required this.isFavourite,
       required this.imgBackground,
@@ -44,8 +46,9 @@ final listStore = [
     rating: DummyData.randomDouble(3.0, 5.0),
     products: [],
     distance: DummyData.randomDouble(0.5, 20.0),
-    import: false,
+    import: DummyData.randomBool(),
     isFamous: DummyData.randomBool(),
+    storeId: 0,
   ),
   StoreModel(
     imgStore:
@@ -58,8 +61,9 @@ final listStore = [
     rating: DummyData.randomDouble(3.0, 5.0),
     products: [],
     distance: DummyData.randomDouble(0.5, 20.0),
-    import: false,
+    import: DummyData.randomBool(),
     isFamous: DummyData.randomBool(),
+    storeId: 1,
   ),
   StoreModel(
     imgStore:
@@ -72,8 +76,9 @@ final listStore = [
     rating: DummyData.randomDouble(3.0, 5.0),
     products: [],
     distance: DummyData.randomDouble(0.5, 20.0),
-    import: false,
+    import: DummyData.randomBool(),
     isFamous: DummyData.randomBool(),
+    storeId: 2,
   ),
   StoreModel(
     imgStore:
@@ -86,8 +91,9 @@ final listStore = [
     rating: DummyData.randomDouble(3.0, 5.0),
     products: [],
     distance: DummyData.randomDouble(0.5, 20.0),
-    import: false,
+    import: DummyData.randomBool(),
     isFamous: DummyData.randomBool(),
+    storeId: 3,
   ),
   StoreModel(
     imgStore:
@@ -100,8 +106,9 @@ final listStore = [
     rating: DummyData.randomDouble(3.0, 5.0),
     products: [],
     distance: DummyData.randomDouble(0.5, 20.0),
-    import: false,
+    import: DummyData.randomBool(),
     isFamous: DummyData.randomBool(),
+    storeId: 4,
   ),
   StoreModel(
     imgStore:
@@ -114,8 +121,9 @@ final listStore = [
     rating: DummyData.randomDouble(3.0, 5.0),
     products: [],
     distance: DummyData.randomDouble(0.5, 20.0),
-    import: false,
+    import: DummyData.randomBool(),
     isFamous: DummyData.randomBool(),
+    storeId: 5,
   ),
   StoreModel(
     imgStore:
@@ -128,8 +136,9 @@ final listStore = [
     rating: DummyData.randomDouble(3.0, 5.0),
     products: [],
     distance: DummyData.randomDouble(0.5, 20.0),
-    import: false,
+    import: DummyData.randomBool(),
     isFamous: DummyData.randomBool(),
+    storeId: 6,
   ),
   StoreModel(
       imgStore:
@@ -143,5 +152,6 @@ final listStore = [
       products: [],
       distance: DummyData.randomDouble(0.5, 20.0),
       import: true,
-      isFamous: DummyData.randomBool())
+      isFamous: DummyData.randomBool(),
+      storeId: 7)
 ];

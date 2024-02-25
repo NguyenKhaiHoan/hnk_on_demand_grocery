@@ -17,26 +17,22 @@ class OnboardingPageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: onboardingModel.backgroundColor,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-            hAppDefaultPadding, 40, hAppDefaultPadding, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              onboardingModel.title,
-              // textAlign: TextAlign.center,
-              style: HAppStyle.heading3Style,
-            ).animate().fade(duration: 1000.ms).slideY(curve: Curves.easeOut),
-            gapH12,
-            Text(
-              onboardingModel.discription,
-              // textAlign: TextAlign.center,
-              style: HAppStyle.paragraph1Regular
-                  .copyWith(color: HAppColor.hGreyColorShade600),
-            ),
-          ],
-        ),
+      padding: const EdgeInsets.fromLTRB(
+          hAppDefaultPadding, 40, hAppDefaultPadding, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            onboardingModel.title,
+            style: HAppStyle.heading3Style,
+          ).animate().fade(duration: 1000.ms).slideY(curve: Curves.easeOut),
+          gapH12,
+          Text(
+            onboardingModel.discription,
+            style: HAppStyle.paragraph1Regular
+                .copyWith(color: HAppColor.hGreyColorShade600),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
@@ -23,11 +22,9 @@ class ExploreBottomAppBar extends StatefulWidget
 
 class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
   final exploreController = Get.put(ExploreController());
-
-  // final productController = Get.put(StoreController());
   final productController = Get.put(ProductController());
 
-  final itemsSort = ['Nổi bật', 'Thấp - Cao', 'Cao - Thấp'];
+  final itemsSort = ['Mới nhất', 'Thấp - Cao', 'Cao - Thấp'];
 
   late bool historySelfCategory;
   late List<Tag> historyTagsCategory;
@@ -37,10 +34,106 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
     super.initState();
     productController.tagsCategoryObs.value = tagsCategory;
     productController.tagsProductObs.value = tagsProduct;
-    historySelfCategory = productController.selfCategory.value;
     historyTagsCategory = productController.tagsCategoryObs
         .map((tag) => Tag(tag.id, tag.title, tag.active))
         .toList();
+    loadTenItemList(productController.topSellingProducts);
+    exploreController.tabController.addListener(() {
+      exploreController.index.value = exploreController.tabController.index;
+      load();
+    });
+    exploreController.scrollController.addListener(() {
+      scrollControllerListener();
+      if (exploreController.scrollController.position.pixels ==
+              exploreController.scrollController.position.maxScrollExtent &&
+          !exploreController.isLoadingAdd.value &&
+          !exploreController.isLoading.value &&
+          productController.listFilterProducts.length >
+              productController.tempListFilterProducts.length) {
+        loadMore();
+      }
+    });
+  }
+
+  void loadTenItemList(RxList<ProductModel> list) {
+    exploreController.isLoading.value = true;
+    Future.delayed(const Duration(seconds: 3), () {
+      productController.tempListFilterProducts.clear();
+      productController.filterProduct(list, exploreController.index.value);
+      int temp = 0;
+      int substract = productController.listFilterProducts.length -
+          productController.tempListFilterProducts.length;
+      if (substract > 10) {
+        temp = 10;
+      } else {
+        temp = substract;
+      }
+      for (int i = 0; i < temp; i++) {
+        productController.tempListFilterProducts
+            .add(productController.listFilterProducts[i]);
+      }
+      exploreController.isLoading.value = false;
+    });
+  }
+
+  void load() {
+    exploreController.scrollToTop();
+    if (exploreController.index.value == 0) {
+      loadTenItemList(productController.topSellingProducts);
+    } else if (exploreController.index.value == 1) {
+      loadTenItemList(productController.topSaleProducts);
+    } else if (exploreController.index.value == 2) {
+      loadTenItemList(productController.cate1Products);
+    } else if (exploreController.index.value == 3) {
+      loadTenItemList(productController.cate2Products);
+    } else if (exploreController.index.value == 4) {
+      loadTenItemList(productController.cate3Products);
+    } else if (exploreController.index.value == 5) {
+      loadTenItemList(productController.cate4Products);
+    } else if (exploreController.index.value == 6) {
+      loadTenItemList(productController.cate5Products);
+    } else if (exploreController.index.value == 7) {
+      loadTenItemList(productController.cate6Products);
+    } else if (exploreController.index.value == 8) {
+      loadTenItemList(productController.cate7Products);
+    } else if (exploreController.index.value == 9) {
+      loadTenItemList(productController.cate8Products);
+    } else if (exploreController.index.value == 10) {
+      loadTenItemList(productController.cate9Products);
+    } else if (exploreController.index.value == 11) {
+      loadTenItemList(productController.cate10Products);
+    } else if (exploreController.index.value == 12) {
+      loadTenItemList(productController.cate11Products);
+    } else if (exploreController.index.value == 13) {
+      loadTenItemList(productController.cate12Products);
+    }
+  }
+
+  void loadMore() {
+    exploreController.isLoadingAdd.value = true;
+    Future.delayed(const Duration(seconds: 2), () {
+      int temp = 0;
+      int substract = productController.listFilterProducts.length -
+          productController.tempListFilterProducts.length;
+      if (substract > 10) {
+        temp = 10;
+      } else {
+        temp = substract;
+      }
+      for (int i = 0; i < temp; i++) {
+        productController.tempListFilterProducts
+            .add(productController.listFilterProducts[i]);
+      }
+      exploreController.isLoadingAdd.value = false;
+    });
+  }
+
+  scrollControllerListener() {
+    if (exploreController.scrollController.offset >= 100) {
+      exploreController.showFab.value = true;
+    } else {
+      exploreController.showFab.value = false;
+    }
   }
 
   @override
@@ -55,7 +148,6 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
         child: Column(
           children: [
             TabBar(
-                physics: const NeverScrollableScrollPhysics(),
                 tabAlignment: TabAlignment.start,
                 padding: EdgeInsets.zero,
                 controller: exploreController.tabController,
@@ -116,28 +208,35 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    GestureDetector(
-                      onTap: () => _showModalBottomSheet(context),
-                      child: Container(
-                        height: 42,
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              color: HAppColor.hGreyColorShade300,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Row(children: [
-                          const Text('Danh mục'),
-                          gapW2,
-                          Icon(
-                            Icons.arrow_drop_down,
-                            color: HAppColor.hGreyColor.shade700,
+                    Obx(() => exploreController.index.value < 2
+                        ? Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () => _showModalBottomSheet(context),
+                                child: Container(
+                                  height: 42,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: HAppColor.hGreyColorShade300,
+                                        width: 1.5,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Row(children: [
+                                    const Text('Danh mục'),
+                                    gapW2,
+                                    Icon(
+                                      Icons.arrow_drop_down,
+                                      color: HAppColor.hGreyColor.shade700,
+                                    )
+                                  ]),
+                                ),
+                              ),
+                              gapW10,
+                            ],
                           )
-                        ]),
-                      ),
-                    ),
-                    gapW10,
+                        : Container()),
                     Container(
                       height: 42,
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -150,9 +249,10 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                       child: DropdownButton<String>(
                         padding: EdgeInsets.zero,
                         value: productController.selectedValueSort.value,
+                        style: HAppStyle.paragraph2Regular,
                         onChanged: (newValue) => setState(() {
                           productController.selectedValueSort.value = newValue!;
-                          productController.filterProductSort();
+                          load();
                         }),
                         items: itemsSort
                             .map<DropdownMenuItem<String>>(
@@ -176,7 +276,14 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                                     .tagsProductObs[index].title,
                                 active: productController
                                     .tagsProductObs[index].active,
-                                onTap: () {}));
+                                onTap: () {
+                                  productController
+                                          .tagsProductObs[index].active =
+                                      !productController
+                                          .tagsProductObs[index].active;
+                                  setState(() {});
+                                  load();
+                                }));
                           },
                           separatorBuilder: (_, __) => gapW10,
                           itemCount: productController.tagsProductObs.length),
@@ -191,6 +298,7 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
 
   void _showModalBottomSheet(BuildContext context) {
     bool check = false;
+    checkApplied();
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -216,10 +324,25 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                         ),
                         GestureDetector(
                             onTap: () {
+                              for (int index = 0;
+                                  index <
+                                      productController.tagsCategoryObs.length;
+                                  index++) {
+                                productController
+                                    .tagsCategoryObs[index].active = false;
+                              }
+                              productController.tagsCategoryObs.refresh();
+                              historyTagsCategory = productController
+                                  .tagsCategoryObs
+                                  .map((tag) =>
+                                      Tag(tag.id, tag.title, tag.active))
+                                  .toList();
+                              checkApplied();
                               Get.back();
+                              load();
                             },
                             child: Text(
-                              'Xóa tất cả',
+                              'Xóa danh mục',
                               style: HAppStyle.paragraph2Regular
                                   .copyWith(color: HAppColor.hBluePrimaryColor),
                             ))
@@ -266,50 +389,44 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                                                   : HAppColor.hDarkColor),
                                     )),
                                 onTap: () {
-                                  productController
-                                          .tagsCategoryObs[index].active =
-                                      !productController
-                                          .tagsCategoryObs[index].active;
-                                  productController.tagsCategoryObs.refresh();
+                                  if (!productController
+                                      .tagsCategoryObs[index].active) {
+                                    for (int i = 0;
+                                        i <
+                                            productController
+                                                .tagsCategoryObs.length;
+                                        i++) {
+                                      if (i != index) {
+                                        productController
+                                            .tagsCategoryObs[i].active = false;
+                                      }
+                                    }
+                                    productController.tagsCategoryObs.refresh();
+                                    productController
+                                        .tagsCategoryObs[index].active = true;
+                                  } else {
+                                    productController
+                                            .tagsCategoryObs[index].active =
+                                        !productController
+                                            .tagsCategoryObs[index].active;
+                                  }
+                                  checkApplied();
                                 },
                               ))
                       ],
                     ),
-                    Obx(() => SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: const Text(
-                          'Chỉ chứa danh mục',
-                          style: HAppStyle.paragraph1Regular,
-                        ),
-                        trackOutlineColor: MaterialStateProperty.resolveWith(
-                          (final Set<MaterialState> states) {
-                            if (states.contains(MaterialState.selected)) {
-                              return null;
-                            }
-                            return HAppColor.hGreyColorShade300;
-                          },
-                        ),
-                        activeColor: HAppColor.hBluePrimaryColor,
-                        activeTrackColor: HAppColor.hBlueSecondaryColor,
-                        inactiveThumbColor: HAppColor.hWhiteColor,
-                        inactiveTrackColor: HAppColor.hGreyColorShade300,
-                        value: productController.selfCategory.value,
-                        onChanged: (changed) {
-                          productController.selfCategory.value = changed;
-                        })),
-                    Obx(() => productController.selfCategory.value
-                        ? Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              'Lọc danh sách các cửa hàng chỉ chứa các danh mục được chọn không bao gồm các danh mục khác.',
-                              style: HAppStyle.paragraph2Regular.copyWith(
-                                  color: HAppColor.hGreyColorShade600),
-                            ),
-                          )
-                        : Container()),
                     Obx(() => ElevatedButton(
                           onPressed: () {
-                            Get.back();
+                            check = true;
+                            if (productController.checkApplied.value) {
+                              historyTagsCategory = productController
+                                  .tagsCategoryObs
+                                  .map((tag) =>
+                                      Tag(tag.id, tag.title, tag.active))
+                                  .toList();
+                              load();
+                              Get.back();
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor:
@@ -333,7 +450,31 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
         );
       },
     ).then((value) {
-      if (!check) {}
+      if (!check) {
+        productController.tagsCategoryObs.value = historyTagsCategory
+            .map((tag) => Tag(tag.id, tag.title, tag.active))
+            .toList();
+        productController.tagsCategoryObs.refresh();
+      }
     });
+  }
+
+  void checkApplied() {
+    bool sameList = true;
+
+    for (int index = 0;
+        index < productController.tagsCategoryObs.length;
+        index++) {
+      if (productController.tagsCategoryObs[index].active !=
+          historyTagsCategory[index].active) {
+        sameList = false;
+        break;
+      }
+    }
+    if (sameList == false) {
+      productController.checkApplied.value = true;
+    } else {
+      productController.checkApplied.value = false;
+    }
   }
 }
