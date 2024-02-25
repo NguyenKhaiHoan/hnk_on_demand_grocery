@@ -224,8 +224,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -304,8 +306,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -384,8 +388,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -464,8 +470,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -544,8 +552,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -624,8 +634,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -704,8 +716,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -784,8 +798,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -864,8 +880,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -944,8 +962,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -1024,8 +1044,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -1104,8 +1126,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -1184,8 +1208,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,
@@ -1264,8 +1290,10 @@ class _ExploreScreenState extends State<ExploreScreen>
                           ? CustomLayoutWidget(
                               check: true,
                               widget: ListProductExploreBuilder(
-                                  list:
-                                      productController.tempListFilterProducts),
+                                list: productController.tempListFilterProducts,
+                                storeIcon: true,
+                                compare: false,
+                              ),
                               subWidget: exploreController.isLoadingAdd.value
                                   ? const SizedBox(
                                       height: 60,

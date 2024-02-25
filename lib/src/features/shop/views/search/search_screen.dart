@@ -8,6 +8,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/product_controll
 import 'package:on_demand_grocery/src/features/shop/controllers/search_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
+import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 import '../home/widgets/custom_chip_widget.dart';
@@ -192,174 +193,225 @@ class _SearchScreenState extends State<SearchScreen> {
                 : Container()),
             Expanded(
                 child: SingleChildScrollView(
-                    child: Column(
-              children: [
-                Obx(() => searchController.resultProduct.isNotEmpty
-                    ? ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: searchController.productInSearch.keys.length,
-                        itemBuilder: (context, index) {
-                          return ExpansionTile(
-                            initiallyExpanded: true,
-                            tilePadding: EdgeInsets.zero,
-                            shape: const Border(),
-                            leading: Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(
-                                      image: NetworkImage(productController
-                                          .findImgStore(searchController
-                                              .productInSearch.keys
-                                              .elementAt(index))),
-                                      fit: BoxFit.fill)),
-                            ),
-                            title: Row(children: [
-                              Column(
-                                children: [
-                                  Text(searchController.productInSearch.keys
-                                      .elementAt(index)),
-                                  Text(
-                                      "${searchController.productInSearch.values.elementAt(index).length} sản phẩm"),
-                                ],
-                              ),
-                              const Spacer(),
-                            ]),
-                            children: [
-                              SizedBox(
-                                  width: double.infinity,
-                                  height: 300,
-                                  child: Obx(() => ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: searchController
-                                                    .productInSearch.values
-                                                    .elementAt(index)
-                                                    .length >
-                                                10
-                                            ? 10
-                                            : searchController
-                                                .productInSearch.values
-                                                .elementAt(index)
-                                                .length,
-                                        itemBuilder:
-                                            (BuildContext context, index2) {
-                                          return Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 10, 0),
-                                            child: ProductItemWidget(
-                                              storeIcon: false,
-                                              model: searchController
-                                                  .productInSearch.values
-                                                  .elementAt(index)
-                                                  .elementAt(index2),
-                                              list: searchController
-                                                  .productInSearch.values
-                                                  .elementAt(index),
-                                              compare: false,
-                                            ),
-                                          );
-                                        },
-                                      ))),
-                              gapH16,
-                            ],
-                          );
-                        })
-                    : Column(children: [
-                        searchController.historySearch.isNotEmpty
-                            ? Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          "Lịch sử tìm kiếm",
-                                          style: HAppStyle.heading4Style,
-                                        ),
-                                        TextButton(
-                                            onPressed: () => searchController
-                                                .removeAllHistorySearch(),
-                                            child: Text(
-                                              "Xóa",
-                                              style: HAppStyle.paragraph2Regular
-                                                  .copyWith(
-                                                      color: HAppColor
-                                                          .hBluePrimaryColor),
-                                            ))
-                                      ],
-                                    ),
-                                    SizedBox(
-                                        child: ListView.separated(
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      itemCount:
-                                          searchController.historySearch.length,
-                                      itemBuilder: (context, index) =>
-                                          historySearchsItem(index),
-                                      separatorBuilder:
-                                          (BuildContext context, int index) =>
-                                              gapH6,
-                                    )),
-                                  ],
-                                ))
-                            : Container(),
-                        Padding(
-                            padding: const EdgeInsets.only(top: 12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+              child: Obx(() => searchController.resultProduct.isNotEmpty
+                  ? ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: searchController.productInSearch.keys.length,
+                      itemBuilder: (context, index) {
+                        return ExpansionTile(
+                          initiallyExpanded: true,
+                          tilePadding: EdgeInsets.zero,
+                          shape: const Border(),
+                          leading: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                image: DecorationImage(
+                                    image: NetworkImage(productController
+                                        .findImgStore(searchController
+                                            .productInSearch.keys
+                                            .elementAt(index))),
+                                    fit: BoxFit.fill)),
+                          ),
+                          title: Row(children: [
+                            Column(
                               children: [
-                                const Text(
-                                  "Từ khóa phổ biến",
-                                  style: HAppStyle.heading4Style,
-                                ),
-                                gapH10,
-                                Wrap(
-                                  children: [
-                                    for (var keyword in popularKeywords)
-                                      GestureDetector(
-                                        child: Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: 10, right: 5),
-                                            padding: const EdgeInsets.fromLTRB(
-                                                10, 5, 10, 5),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(100),
-                                              border: Border.all(
-                                                color: HAppColor
-                                                    .hGreyColorShade300,
-                                                width: 1.5,
-                                              ),
-                                            ),
-                                            child: Text(
-                                              keyword,
-                                              style:
-                                                  HAppStyle.paragraph2Regular,
-                                            )),
-                                        onTap: () {
-                                          searchController.controller.text =
-                                              keyword;
-                                          searchController.addHistorySearch();
-                                          searchController
-                                              .addListProductInSearch(
-                                                  productController
-                                                      .listProducts);
-                                          searchController
-                                              .addMapProductInCart();
-                                        },
-                                      )
-                                  ],
+                                Text(searchController.productInSearch.keys
+                                    .elementAt(index)),
+                                Text(
+                                  "${searchController.productInSearch.values.elementAt(index).length} sản phẩm",
+                                  style: HAppStyle.paragraph2Regular.copyWith(
+                                      color: HAppColor.hGreyColorShade600),
                                 ),
                               ],
-                            )),
-                      ])),
-              ],
-            )))
+                            ),
+                            const Spacer(),
+                            SizedBox(
+                              height: 40,
+                              child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    side: BorderSide(
+                                        color: HAppColor.hGreyColorShade300),
+                                  ),
+                                  onPressed: () => Get.toNamed(
+                                          HAppRoutes.storeDetail,
+                                          arguments: {
+                                            'model': productController
+                                                .findStoreFromStoreName(
+                                                    searchController
+                                                        .productInSearch.keys
+                                                        .elementAt(index))
+                                          }),
+                                  child: const Text("Ghé thăm")),
+                            )
+                          ]),
+                          children: [
+                            SizedBox(
+                                width: double.infinity,
+                                height: 300,
+                                child: Obx(() => ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: searchController
+                                                  .productInSearch.values
+                                                  .elementAt(index)
+                                                  .length >
+                                              10
+                                          ? 10
+                                          : searchController
+                                              .productInSearch.values
+                                              .elementAt(index)
+                                              .length,
+                                      itemBuilder:
+                                          (BuildContext context, index2) {
+                                        return Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 10, 0),
+                                          child: ProductItemWidget(
+                                            storeIcon: false,
+                                            model: searchController
+                                                .productInSearch.values
+                                                .elementAt(index)
+                                                .elementAt(index2),
+                                            list: searchController
+                                                .productInSearch.values
+                                                .elementAt(index),
+                                            compare: false,
+                                          ),
+                                        );
+                                      },
+                                    ))),
+                            gapH12,
+                            GestureDetector(
+                              onTap: () {
+                                Get.toNamed(HAppRoutes.searchOnStore,
+                                    arguments: {
+                                      'nameStore': searchController
+                                          .productInSearch.keys
+                                          .elementAt(index),
+                                      'list': searchController
+                                          .productInSearch.values
+                                          .elementAt(index)
+                                    });
+                              },
+                              child: Container(
+                                  width: HAppSize.deviceWidth,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: HAppColor.hWhiteColor),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                          "Xem đầy đủ ${searchController.productInSearch.values.elementAt(index).length} sản phẩm"),
+                                      gapW4,
+                                      const Icon(
+                                        EvaIcons.arrowForwardOutline,
+                                        size: 15,
+                                      )
+                                    ],
+                                  )),
+                            ),
+                            gapH16,
+                          ],
+                        );
+                      })
+                  : Column(children: [
+                      searchController.historySearch.isNotEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: hAppDefaultPadding),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Lịch sử tìm kiếm",
+                                        style: HAppStyle.heading4Style,
+                                      ),
+                                      TextButton(
+                                          onPressed: () => searchController
+                                              .removeAllHistorySearch(),
+                                          child: Text(
+                                            "Xóa",
+                                            style: HAppStyle.paragraph2Regular
+                                                .copyWith(
+                                                    color: HAppColor
+                                                        .hBluePrimaryColor),
+                                          ))
+                                    ],
+                                  ),
+                                  SizedBox(
+                                      child: ListView.separated(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount:
+                                        searchController.historySearch.length,
+                                    itemBuilder: (context, index) =>
+                                        historySearchsItem(index),
+                                    separatorBuilder:
+                                        (BuildContext context, int index) =>
+                                            gapH6,
+                                  )),
+                                ],
+                              ))
+                          : Container(),
+                      Padding(
+                          padding:
+                              const EdgeInsets.only(top: hAppDefaultPadding),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Từ khóa phổ biến",
+                                style: HAppStyle.heading4Style,
+                              ),
+                              gapH10,
+                              Wrap(
+                                children: [
+                                  for (var keyword in popularKeywords)
+                                    GestureDetector(
+                                      child: Container(
+                                          margin: const EdgeInsets.only(
+                                              bottom: 10, right: 5),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 5, 10, 5),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            border: Border.all(
+                                              color:
+                                                  HAppColor.hGreyColorShade300,
+                                              width: 1.5,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            keyword,
+                                            style: HAppStyle.paragraph2Regular,
+                                          )),
+                                      onTap: () {
+                                        searchController.controller.text =
+                                            keyword;
+                                        searchController.addHistorySearch();
+                                        searchController.addListProductInSearch(
+                                            productController.listProducts);
+                                        searchController.addMapProductInCart();
+                                      },
+                                    )
+                                ],
+                              ),
+                            ],
+                          )),
+                    ])),
+            ))
           ],
         ),
       ),

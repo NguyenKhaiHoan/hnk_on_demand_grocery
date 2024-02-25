@@ -3,8 +3,8 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/end_custom_widget.dart';
-import 'package:on_demand_grocery/src/common_widgets/horizontal_list_product_widget.dart';
-import 'package:on_demand_grocery/src/common_widgets/horizontal_list_store_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/horizontal_list_product_with_title_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/horizontal_list_store_with_title_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_layout_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/no_found_screen_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
@@ -189,7 +189,7 @@ class _ListScreenState extends State<ListScreen>
                                 style: HAppStyle.label2Bold
                                     .copyWith(color: HAppColor.hWhiteColor),
                               )),
-                          subWidget: HorizontalListProductWidget(
+                          subWidget: HorizontalListProductWithTitleWidget(
                             list: productController.topSellingProducts,
                             compare: false,
                             storeIcon: true,
@@ -234,7 +234,7 @@ class _ListScreenState extends State<ListScreen>
                                 style: HAppStyle.label2Bold
                                     .copyWith(color: HAppColor.hWhiteColor),
                               )),
-                          subWidget: HorizontalListStoreWidget(
+                          subWidget: HorizontalListStoreWithTitleWidget(
                               list: listStore, title: 'Các cửa hàng nổi bật'))),
                   Obx(() => productController.wishlistList.isNotEmpty
                       ? CustomLayoutWidget(

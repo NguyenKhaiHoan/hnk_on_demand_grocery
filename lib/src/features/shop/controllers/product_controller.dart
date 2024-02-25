@@ -297,6 +297,26 @@ class ProductController extends GetxController {
         isFamous: false);
   }
 
+  StoreModel findStoreFromStoreName(String name) {
+    for (var store in listStore) {
+      if (store.name == name) {
+        return store;
+      }
+    }
+    return StoreModel(
+        storeId: -1,
+        imgStore: '',
+        name: '',
+        isFavourite: false,
+        imgBackground: '',
+        category: [],
+        rating: -1,
+        products: [],
+        distance: -1,
+        import: false,
+        isFamous: false);
+  }
+
   refreshList(RxList<ProductModel> list) {
     list.refresh();
     update();

@@ -4,8 +4,8 @@ import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/store/widgets/store_item_wiget.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
-class HorizontalListStoreWidget extends StatelessWidget {
-  const HorizontalListStoreWidget(
+class HorizontalListStoreWithTitleWidget extends StatelessWidget {
+  const HorizontalListStoreWithTitleWidget(
       {super.key, required this.list, required this.title});
 
   final List<StoreModel> list;

@@ -13,6 +13,7 @@ import 'package:on_demand_grocery/src/features/shop/views/order/voucher_screen.d
 import 'package:on_demand_grocery/src/features/shop/views/product/compare_product_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/product_item_detail.dart';
 import 'package:on_demand_grocery/src/features/shop/views/root/root_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/search/search_one_store_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/search/search_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/store/store_detail_screen.dart';
 
@@ -123,6 +124,13 @@ abstract class HAppPages {
       curve: Curves.easeOut,
       transition: Transition.rightToLeftWithFade,
     ),
+    GetPage(
+      name: HAppRoutes.searchOnStore,
+      page: () => const SearchOneStoreScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
   ];
 }
 
@@ -142,4 +150,5 @@ abstract class HAppRoutes {
   static const wishlist = '/wishlist';
   static const wishlistItem = '/wishlistItem';
   static const chat = '/chat';
+  static const searchOnStore = '/searchOnStore';
 }

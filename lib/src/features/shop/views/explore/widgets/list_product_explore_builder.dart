@@ -4,7 +4,13 @@ import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
 
 class ListProductExploreBuilder extends StatelessWidget {
-  const ListProductExploreBuilder({super.key, required this.list});
+  const ListProductExploreBuilder(
+      {super.key,
+      required this.list,
+      required this.storeIcon,
+      required this.compare});
+  final bool storeIcon;
+  final bool compare;
 
   final RxList<ProductModel> list;
 
@@ -23,9 +29,9 @@ class ListProductExploreBuilder extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         return ProductItemWidget(
           model: list[index],
-          storeIcon: true,
+          storeIcon: storeIcon,
           list: list,
-          compare: false,
+          compare: compare,
         );
       },
     );
