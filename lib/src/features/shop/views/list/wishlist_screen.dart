@@ -31,15 +31,15 @@ class _WishlistScreenState extends State<WishlistScreen> {
         centerTitle: true,
         toolbarHeight: 80,
         leadingWidth: 50,
-        leading: Row(children: [
-          gapW24,
-          GestureDetector(
+        leading: Padding(
+          padding: hAppDefaultPaddingL,
+          child: GestureDetector(
             onTap: () => Get.back(),
             child: const Icon(
               EvaIcons.close,
             ),
           ),
-        ]),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

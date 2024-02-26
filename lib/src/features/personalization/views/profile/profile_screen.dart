@@ -30,13 +30,13 @@ class _ProfileScreenState extends State<ProfileScreen>
           toolbarHeight: 80,
           automaticallyImplyLeading: false,
           titleSpacing: 0,
-          title: const Row(children: [
-            gapW24,
-            Text(
+          title: const Padding(
+            padding: hAppDefaultPaddingL,
+            child: Text(
               'GroFast',
               style: HAppStyle.heading3Style,
-            )
-          ]),
+            ),
+          ),
           centerTitle: false,
         ),
         body: SingleChildScrollView(

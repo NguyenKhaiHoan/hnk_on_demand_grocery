@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/product_list_stack.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
@@ -34,28 +35,30 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         centerTitle: true,
         toolbarHeight: 80,
         leadingWidth: 100,
-        leading: Row(children: [
-          gapW24,
-          GestureDetector(
-            onTap: () => Get.back(),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  border: Border.all(
-                    color: HAppColor.hGreyColorShade300,
-                    width: 1.5,
+        leading: Row(
+          children: [
+            gapW12,
+            GestureDetector(
+              onTap: () => Get.back(),
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(
+                      color: HAppColor.hGreyColorShade300,
+                      width: 1.5,
+                    ),
+                    color: HAppColor.hBackgroundColor),
+                child: const Center(
+                  child: Icon(
+                    EvaIcons.arrowBackOutline,
                   ),
-                  color: HAppColor.hBackgroundColor),
-              child: const Center(
-                child: Icon(
-                  EvaIcons.arrowBackOutline,
                 ),
               ),
-            ),
-          ),
-        ]),
+            )
+          ],
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -72,10 +75,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       "Thông tin giao hàng",
                       style: HAppStyle.heading4Style,
                     ),
-                    Text(
-                      "Sửa",
-                      style: HAppStyle.paragraph3Regular
-                          .copyWith(color: HAppColor.hBluePrimaryColor),
+                    GestureDetector(
+                      onTap: () => Get.toNamed(HAppRoutes.deliveryInfomation),
+                      child: Text(
+                        "Sửa",
+                        style: HAppStyle.paragraph3Regular
+                            .copyWith(color: HAppColor.hBluePrimaryColor),
+                      ),
                     ),
                   ],
                 ),
@@ -128,7 +134,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                       gapH4,
                       const Text(
-                        "Thứ 5, 25 - 1 - 2024",
+                        "Thứ 5, 25 - 1, 2024",
                       )
                     ],
                   ),
@@ -228,7 +234,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             'Tiền hàng (${productController.isInCart.length} sản phẩm)',
                             style: HAppStyle.label2Bold,
                           ),
-                          Text('${productController.productMoney.value}.000₫'),
+                          Text(DummyData.vietNamCurrencyFormatting(
+                              productController.productMoney.value)),
                         ],
                       ),
                       Divider(
@@ -284,7 +291,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         children: [
                           const Text('Tổng cộng', style: HAppStyle.label2Bold),
                           Text(
-                              '${productController.productMoney.value + 50}.000₫',
+                              DummyData.vietNamCurrencyFormatting(
+                                  productController.productMoney.value + 50000),
                               style: HAppStyle.label2Bold.copyWith(
                                   color: HAppColor.hBluePrimaryColor)),
                         ],
@@ -367,7 +375,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       TextSpan(
                         text: productController.productMoney.value != 0
-                            ? "${productController.productMoney.value + 50}.000₫"
+                            ? DummyData.vietNamCurrencyFormatting(
+                                productController.productMoney.value + 50000)
                             : "0₫",
                         style: HAppStyle.heading4Style
                             .copyWith(color: HAppColor.hBluePrimaryColor),

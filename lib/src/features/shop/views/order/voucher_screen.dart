@@ -26,34 +26,36 @@ class _VoucherScreenState extends State<VoucherScreen> {
         centerTitle: true,
         toolbarHeight: 80,
         leadingWidth: 100,
-        leading: Row(children: [
-          gapW24,
-          GestureDetector(
-            onTap: () {
-              Get.back();
-              productController.bigCValue!.value = false;
-              productController.groFastvalue!.value = false;
-              productController.voucherAppliedSubText.clear();
-              productController.voucherAppliedTextAppear!.value = false;
-            },
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  border: Border.all(
-                    color: HAppColor.hGreyColorShade300,
-                    width: 1.5,
+        leading: Padding(
+          padding: hAppDefaultPaddingL,
+          child: Row(children: [
+            GestureDetector(
+              onTap: () {
+                Get.back();
+                productController.bigCValue!.value = false;
+                productController.groFastvalue!.value = false;
+                productController.voucherAppliedSubText.clear();
+                productController.voucherAppliedTextAppear!.value = false;
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(
+                      color: HAppColor.hGreyColorShade300,
+                      width: 1.5,
+                    ),
+                    color: HAppColor.hBackgroundColor),
+                child: const Center(
+                  child: Icon(
+                    EvaIcons.arrowBackOutline,
                   ),
-                  color: HAppColor.hBackgroundColor),
-              child: const Center(
-                child: Icon(
-                  EvaIcons.arrowBackOutline,
                 ),
               ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

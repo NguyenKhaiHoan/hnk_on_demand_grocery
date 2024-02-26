@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/check_box_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/widgets/product_cart.dart';
@@ -21,12 +22,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   final productController = Get.put(ProductController());
   bool? check1 = false;
 
-  List<GlobalObjectKey<AnimatedListState>> listKeyList = [];
-
   @override
   Widget build(BuildContext context) {
-    listKeyList =
-        List.generate(10, (index) => GlobalObjectKey<AnimatedListState>(index));
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -42,9 +39,12 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                 ? "Bỏ chọn tất cả"
                                 : "Chọn tất cả"),
                             onTap: () {
-                              productController.changeAllChoose();
-                              productController.sumProductMoney();
-                              setState(() {});
+                              if (mounted) {
+                                setState(() {
+                                  productController.changeAllChoose();
+                                  productController.sumProductMoney();
+                                });
+                              }
                             },
                           ),
                           PopupMenuItem(
@@ -110,43 +110,44 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                 pauseOnHover: true,
                                 dragToClose: true,
                               );
-                              setState(() {});
                             },
                           ),
                         ],
                     child: const Icon(EvaIcons.moreVerticalOutline)),
-                gapW24
+                gapW12
               ],
             )
           ],
           title: Obx(() => productController.isInCart.isNotEmpty
               ? Text("Giỏ hàng (${productController.isInCart.length})")
-              : Text("Giỏ hàng")),
+              : const Text("Giỏ hàng")),
           centerTitle: true,
           toolbarHeight: 80,
           leadingWidth: 100,
-          leading: Row(children: [
-            gapW24,
-            GestureDetector(
-              onTap: () => Get.back(),
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    border: Border.all(
-                      color: HAppColor.hGreyColorShade300,
-                      width: 1.5,
+          leading: Row(
+            children: [
+              gapW12,
+              GestureDetector(
+                onTap: () => Get.back(),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      border: Border.all(
+                        color: HAppColor.hGreyColorShade300,
+                        width: 1.5,
+                      ),
+                      color: HAppColor.hBackgroundColor),
+                  child: const Center(
+                    child: Icon(
+                      EvaIcons.arrowBackOutline,
                     ),
-                    color: HAppColor.hBackgroundColor),
-                child: const Center(
-                  child: Icon(
-                    EvaIcons.arrowBackOutline,
                   ),
                 ),
-              ),
-            ),
-          ]),
+              )
+            ],
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -194,83 +195,88 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
               ),
               gapH12,
               Obx(
-                () => ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: productController.productInCart.keys.length,
-                    itemBuilder: (context, index) {
-                      String image = productController.findImgStore(
-                          productController.productInCart.keys
-                              .elementAt(index));
-                      String title =
-                          productController.productInCart.keys.elementAt(index);
-                      int length = productController.productInCart.values
-                          .elementAt(index)
-                          .length;
-                      return ExpansionTile(
-                        initiallyExpanded: true,
-                        tilePadding: EdgeInsets.zero,
-                        shape: const Border(),
-                        leading: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                  image: NetworkImage(image),
-                                  fit: BoxFit.fill)),
-                        ),
-                        title: Row(children: [
-                          Column(
-                            children: [
-                              Text(title),
-                              Text("$length sản phẩm"),
-                            ],
-                          ),
-                          const Spacer(),
-                          Checkbox(
-                              activeColor: HAppColor.hBluePrimaryColor,
-                              value: chooseList[index].value,
-                              onChanged: (bool? value) {
-                                setState(() {
-                                  chooseList[index].value = value;
+                () => productController.productInCart.isEmpty
+                    ? Container()
+                    : ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: productController.productInCart.keys.length,
+                        itemBuilder: (context, index) {
+                          String image = productController.findImgStore(
+                              productController.productInCart.keys
+                                  .elementAt(index));
+                          String title = productController.productInCart.keys
+                              .elementAt(index);
+                          int length = productController.productInCart.values
+                              .elementAt(index)
+                              .length;
+                          return ExpansionTile(
+                            initiallyExpanded: true,
+                            tilePadding: EdgeInsets.zero,
+                            shape: const Border(),
+                            leading: Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  image: DecorationImage(
+                                      image: NetworkImage(image),
+                                      fit: BoxFit.fill)),
+                            ),
+                            title: Row(children: [
+                              Column(
+                                children: [
+                                  Text(title),
+                                  Text("$length sản phẩm"),
+                                ],
+                              ),
+                              const Spacer(),
+                              Checkbox(
+                                  activeColor: HAppColor.hBluePrimaryColor,
+                                  value: chooseList[index].value,
+                                  onChanged: (bool? value) {
+                                    if (mounted) {
+                                      setState(() {
+                                        chooseList[index].value = value;
 
-                                  if (chooseList[index].value == false) {
-                                    productController.allChooseBool.value =
-                                        false;
-                                  } else {
-                                    final allChose = chooseList
-                                        .every((element) => element.value!);
-                                    productController.allChooseBool.value =
-                                        allChose;
-                                  }
-                                });
-                                productController.sumProductMoney();
-                              })
-                        ]),
-                        children: [
-                          ListView.separated(
-                            key: listKeyList[index],
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: productController.productInCart.values
-                                .elementAt(index)
-                                .length,
-                            itemBuilder: (context2, index2) {
-                              return ProductCartWidget(
-                                model: productController.productInCart.values
+                                        if (chooseList[index].value == false) {
+                                          productController
+                                              .allChooseBool.value = false;
+                                        } else {
+                                          final allChose = chooseList.every(
+                                              (element) => element.value!);
+                                          productController
+                                              .allChooseBool.value = allChose;
+                                        }
+                                      });
+                                    }
+                                    productController.sumProductMoney();
+                                  })
+                            ]),
+                            children: [
+                              ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: productController
+                                    .productInCart.values
                                     .elementAt(index)
-                                    .elementAt(index2),
-                                list: productController.productInCart.values
-                                    .elementAt(index),
-                              );
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) => gapH12,
-                          )
-                        ],
-                      );
-                    }),
+                                    .length,
+                                itemBuilder: (context2, index2) {
+                                  return ProductCartWidget(
+                                    model: productController
+                                        .productInCart.values
+                                        .elementAt(index)
+                                        .elementAt(index2),
+                                    list: productController.productInCart.values
+                                        .elementAt(index),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) => gapH12,
+                              )
+                            ],
+                          );
+                        }),
               ),
               gapH24,
             ]),
@@ -359,7 +365,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                 TextSpan(
                                   text: productController.productMoney.value !=
                                           0
-                                      ? "${productController.productMoney.value}.000₫"
+                                      ? DummyData.vietNamCurrencyFormatting(
+                                          productController.productMoney.value)
                                       : "0₫",
                                   style: HAppStyle.heading4Style.copyWith(
                                       color: HAppColor.hBluePrimaryColor),
@@ -392,10 +399,9 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                   ],
                 ),
               )
-            : Container(
-                child: Column(
+            : const Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-              ))));
+              )));
   }
 }

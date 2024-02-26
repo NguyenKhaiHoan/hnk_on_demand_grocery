@@ -2,6 +2,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/no_found_screen_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
@@ -32,6 +33,14 @@ class _SearchScreenState extends State<SearchScreen> {
     "Cà phê",
     "Tương ớt"
   ];
+
+  FocusNode focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,14 +80,16 @@ class _SearchScreenState extends State<SearchScreen> {
           )
         ],
       ),
-      body: Padding(
-        padding: hAppDefaultPaddingLR,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: hAppDefaultPaddingLR,
+            child: TextField(
+              focusNode: focusNode,
               textAlignVertical: TextAlignVertical.center,
               onEditingComplete: () {
+                FocusScope.of(context).unfocus();
                 searchController.addHistorySearch();
                 searchController
                     .addListProductInSearch(productController.listProducts);
@@ -121,301 +132,308 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                   )),
             ),
-            gapH16,
-            Obx(() => searchController.resultProduct.isNotEmpty
-                ? Column(
-                    children: [
-                      SizedBox(
-                        height: 42,
-                        child: ListView.separated(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return CustomChipWidget(
-                                  title: tagsSearch[index].title,
-                                  active: tagsSearch[index].active,
-                                  onTap: () {
-                                    if (index != 0) {
-                                      tagsSearch[index].active =
-                                          !tagsSearch[index].active;
-                                      if (tagsSearch[index].active == true) {
-                                        tagsSearch[0].active = false;
-                                      } else {
-                                        var listNoActive = tagsSearch.where(
-                                            (tag) => tag.active == false);
-                                        if (listNoActive.length ==
-                                            tagsSearch.length) {
-                                          tagsSearch[0].active = true;
-                                        }
-                                      }
-                                    }
-                                    if (!tagsSearch[0].active) {
-                                      searchController.showFilter.value = true;
+          ),
+          gapH16,
+          Obx(() => searchController.resultProduct.isNotEmpty
+              ? ListView(
+                  shrinkWrap: true,
+                  padding: hAppDefaultPaddingLR,
+                  children: [
+                    SizedBox(
+                      height: 42,
+                      child: ListView.separated(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return CustomChipWidget(
+                                title: tagsSearch[index].title,
+                                active: tagsSearch[index].active,
+                                onTap: () {
+                                  if (index != 0) {
+                                    tagsSearch[index].active =
+                                        !tagsSearch[index].active;
+                                    if (tagsSearch[index].active == true) {
+                                      tagsSearch[0].active = false;
                                     } else {
-                                      searchController.showFilter.value = false;
-                                    }
-                                    setState(() {});
-                                  });
-                            },
-                            separatorBuilder: (_, __) => gapW10,
-                            itemCount: tagsSearch.length),
-                      ),
-                      gapH16,
-                      searchController.showFilter.value
-                          ? Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "${searchController.productInSearch.keys.length} Kết quả",
-                                    style: HAppStyle.heading4Style,
-                                  ),
-                                  const Spacer(),
-                                  GestureDetector(
-                                    onTap: () {
-                                      tagsSearch[0].active = true;
-                                      for (var tag in tagsSearch) {
-                                        if (tag.id != 0) {
-                                          tag.active = false;
-                                        }
+                                      var listNoActive = tagsSearch
+                                          .where((tag) => tag.active == false);
+                                      if (listNoActive.length ==
+                                          tagsSearch.length) {
+                                        tagsSearch[0].active = true;
                                       }
-                                      searchController.showFilter.value = false;
-                                      setState(() {});
-                                    },
-                                    child: const Text("Cài đặt lại"),
-                                  )
-                                ],
-                              ),
-                            )
-                          : Container(),
-                    ],
-                  )
-                : Container()),
-            Expanded(
-                child: SingleChildScrollView(
-              child: Obx(() => searchController.resultProduct.isNotEmpty
-                  ? ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: searchController.productInSearch.keys.length,
-                      itemBuilder: (context, index) {
-                        return ExpansionTile(
-                          initiallyExpanded: true,
-                          tilePadding: EdgeInsets.zero,
-                          shape: const Border(),
-                          leading: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                image: DecorationImage(
-                                    image: NetworkImage(productController
-                                        .findImgStore(searchController
-                                            .productInSearch.keys
-                                            .elementAt(index))),
-                                    fit: BoxFit.fill)),
-                          ),
-                          title: Row(children: [
-                            Column(
+                                    }
+                                  }
+                                  if (!tagsSearch[0].active) {
+                                    searchController.showFilter.value = true;
+                                  } else {
+                                    searchController.showFilter.value = false;
+                                  }
+                                  setState(() {});
+                                });
+                          },
+                          separatorBuilder: (_, __) => gapW10,
+                          itemCount: tagsSearch.length),
+                    ),
+                    gapH16,
+                    searchController.showFilter.value
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Row(
                               children: [
-                                Text(searchController.productInSearch.keys
-                                    .elementAt(index)),
                                 Text(
-                                  "${searchController.productInSearch.values.elementAt(index).length} sản phẩm",
-                                  style: HAppStyle.paragraph2Regular.copyWith(
-                                      color: HAppColor.hGreyColorShade600),
+                                  "${searchController.productInSearch.keys.length} Kết quả",
+                                  style: HAppStyle.heading4Style,
                                 ),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    tagsSearch[0].active = true;
+                                    for (var tag in tagsSearch) {
+                                      if (tag.id != 0) {
+                                        tag.active = false;
+                                      }
+                                    }
+                                    searchController.showFilter.value = false;
+                                    setState(() {});
+                                  },
+                                  child: const Text("Cài đặt lại"),
+                                )
                               ],
                             ),
-                            const Spacer(),
-                            SizedBox(
-                              height: 40,
-                              child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.black,
-                                    side: BorderSide(
-                                        color: HAppColor.hGreyColorShade300),
-                                  ),
-                                  onPressed: () => Get.toNamed(
-                                          HAppRoutes.storeDetail,
-                                          arguments: {
-                                            'model': productController
-                                                .findStoreFromStoreName(
-                                                    searchController
-                                                        .productInSearch.keys
-                                                        .elementAt(index))
-                                          }),
-                                  child: const Text("Ghé thăm")),
-                            )
-                          ]),
-                          children: [
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: searchController
-                                                  .productInSearch.values
-                                                  .elementAt(index)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : searchController
-                                              .productInSearch.values
-                                              .elementAt(index)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index2) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: searchController
-                                                .productInSearch.values
-                                                .elementAt(index)
-                                                .elementAt(index2),
-                                            list: searchController
-                                                .productInSearch.values
-                                                .elementAt(index),
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH12,
-                            GestureDetector(
-                              onTap: () {
-                                Get.toNamed(HAppRoutes.searchOnStore,
-                                    arguments: {
-                                      'nameStore': searchController
-                                          .productInSearch.keys
-                                          .elementAt(index),
-                                      'list': searchController
-                                          .productInSearch.values
-                                          .elementAt(index)
-                                    });
-                              },
-                              child: Container(
-                                  width: HAppSize.deviceWidth,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: HAppColor.hWhiteColor),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                          "Xem đầy đủ ${searchController.productInSearch.values.elementAt(index).length} sản phẩm"),
-                                      gapW4,
-                                      const Icon(
-                                        EvaIcons.arrowForwardOutline,
-                                        size: 15,
-                                      )
-                                    ],
-                                  )),
-                            ),
-                            gapH16,
-                          ],
-                        );
-                      })
-                  : Column(children: [
-                      searchController.historySearch.isNotEmpty
-                          ? Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: hAppDefaultPadding),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        "Lịch sử tìm kiếm",
-                                        style: HAppStyle.heading4Style,
-                                      ),
-                                      TextButton(
-                                          onPressed: () => searchController
-                                              .removeAllHistorySearch(),
-                                          child: Text(
-                                            "Xóa",
-                                            style: HAppStyle.paragraph2Regular
-                                                .copyWith(
-                                                    color: HAppColor
-                                                        .hBluePrimaryColor),
-                                          ))
-                                    ],
-                                  ),
-                                  SizedBox(
-                                      child: ListView.separated(
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    itemCount:
-                                        searchController.historySearch.length,
-                                    itemBuilder: (context, index) =>
-                                        historySearchsItem(index),
-                                    separatorBuilder:
-                                        (BuildContext context, int index) =>
-                                            gapH6,
-                                  )),
-                                ],
-                              ))
-                          : Container(),
-                      Padding(
-                          padding:
-                              const EdgeInsets.only(top: hAppDefaultPadding),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          )
+                        : Container(),
+                  ],
+                )
+              : Container()),
+          Expanded(
+              child: SingleChildScrollView(
+                  child: Obx(
+            () => searchController.resultProduct.isNotEmpty &&
+                    searchController.controller.text.isNotEmpty
+                ? ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: hAppDefaultPaddingLR,
+                    shrinkWrap: true,
+                    itemCount: searchController.productInSearch.keys.length,
+                    itemBuilder: (context, index) {
+                      return ExpansionTile(
+                        initiallyExpanded: true,
+                        tilePadding: EdgeInsets.zero,
+                        shape: const Border(),
+                        leading: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                      productController.findImgStore(
+                                          searchController.productInSearch.keys
+                                              .elementAt(index))),
+                                  fit: BoxFit.fill)),
+                        ),
+                        title: Row(children: [
+                          Column(
                             children: [
-                              const Text(
-                                "Từ khóa phổ biến",
-                                style: HAppStyle.heading4Style,
-                              ),
-                              gapH10,
-                              Wrap(
-                                children: [
-                                  for (var keyword in popularKeywords)
-                                    GestureDetector(
-                                      child: Container(
-                                          margin: const EdgeInsets.only(
-                                              bottom: 10, right: 5),
-                                          padding: const EdgeInsets.fromLTRB(
-                                              10, 5, 10, 5),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(100),
-                                            border: Border.all(
-                                              color:
-                                                  HAppColor.hGreyColorShade300,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            keyword,
-                                            style: HAppStyle.paragraph2Regular,
-                                          )),
-                                      onTap: () {
-                                        searchController.controller.text =
-                                            keyword;
-                                        searchController.addHistorySearch();
-                                        searchController.addListProductInSearch(
-                                            productController.listProducts);
-                                        searchController.addMapProductInCart();
-                                      },
-                                    )
-                                ],
+                              Text(searchController.productInSearch.keys
+                                  .elementAt(index)),
+                              Text(
+                                "${searchController.productInSearch.values.elementAt(index).length} sản phẩm",
+                                style: HAppStyle.paragraph2Regular.copyWith(
+                                    color: HAppColor.hGreyColorShade600),
                               ),
                             ],
-                          )),
-                    ])),
-            ))
-          ],
-        ),
+                          ),
+                          const Spacer(),
+                          SizedBox(
+                            height: 40,
+                            child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.black,
+                                  side: BorderSide(
+                                      color: HAppColor.hGreyColorShade300),
+                                ),
+                                onPressed: () => Get.toNamed(
+                                        HAppRoutes.storeDetail,
+                                        arguments: {
+                                          'model': productController
+                                              .findStoreFromStoreName(
+                                                  searchController
+                                                      .productInSearch.keys
+                                                      .elementAt(index))
+                                        }),
+                                child: const Text("Ghé thăm")),
+                          )
+                        ]),
+                        children: [
+                          SizedBox(
+                              width: double.infinity,
+                              height: 300,
+                              child: Obx(() => ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: searchController
+                                                .productInSearch.values
+                                                .elementAt(index)
+                                                .length >
+                                            10
+                                        ? 10
+                                        : searchController
+                                            .productInSearch.values
+                                            .elementAt(index)
+                                            .length,
+                                    itemBuilder:
+                                        (BuildContext context, index2) {
+                                      return Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 10, 0),
+                                        child: ProductItemWidget(
+                                          storeIcon: false,
+                                          model: searchController
+                                              .productInSearch.values
+                                              .elementAt(index)
+                                              .elementAt(index2),
+                                          list: searchController
+                                              .productInSearch.values
+                                              .elementAt(index),
+                                          compare: false,
+                                        ),
+                                      );
+                                    },
+                                  ))),
+                          gapH12,
+                          GestureDetector(
+                            onTap: () {
+                              Get.toNamed(HAppRoutes.searchOnStore, arguments: {
+                                'nameStore': searchController
+                                    .productInSearch.keys
+                                    .elementAt(index),
+                                'list': searchController.productInSearch.values
+                                    .elementAt(index)
+                              });
+                            },
+                            child: Container(
+                                width: HAppSize.deviceWidth,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: HAppColor.hWhiteColor),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                        "Xem đầy đủ ${searchController.productInSearch.values.elementAt(index).length} sản phẩm"),
+                                    gapW4,
+                                    const Icon(
+                                      EvaIcons.arrowForwardOutline,
+                                      size: 15,
+                                    )
+                                  ],
+                                )),
+                          ),
+                          gapH12,
+                        ],
+                      );
+                    })
+                : searchController.controller.text.isNotEmpty
+                    ? NotFoundScreenWidget(
+                        title: 'Không có kết quả tìm kiếm',
+                        subtitle:
+                            'Hãy thử nhập tên sản phẩm khác để tìm kiếm. Hãy thử với các tên sản phẩm khác!',
+                        widget: Container(),
+                        subWidget: Container())
+                    : Padding(
+                        padding: hAppDefaultPaddingLR,
+                        child: Column(children: [
+                          searchController.historySearch.isNotEmpty
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          "Lịch sử tìm kiếm",
+                                          style: HAppStyle.heading4Style,
+                                        ),
+                                        TextButton(
+                                            onPressed: () => searchController
+                                                .removeAllHistorySearch(),
+                                            child: Text(
+                                              "Xóa",
+                                              style: HAppStyle.paragraph2Regular
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hBluePrimaryColor),
+                                            ))
+                                      ],
+                                    ),
+                                    SizedBox(
+                                        child: ListView.separated(
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          searchController.historySearch.length,
+                                      itemBuilder: (context, index) =>
+                                          historySearchsItem(index),
+                                      separatorBuilder:
+                                          (BuildContext context, int index) =>
+                                              gapH6,
+                                    )),
+                                    gapH24,
+                                  ],
+                                )
+                              : Container(),
+                          popularKeywordsWidget()
+                        ]),
+                      ),
+          )))
+        ],
       ),
     ));
+  }
+
+  Widget popularKeywordsWidget() {
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        const Text(
+          "Từ khóa phổ biến",
+          style: HAppStyle.heading4Style,
+        ),
+        gapH10,
+        Wrap(
+          children: [
+            for (var keyword in popularKeywords)
+              GestureDetector(
+                child: Container(
+                    margin: const EdgeInsets.only(bottom: 10, right: 5),
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      border: Border.all(
+                        color: HAppColor.hGreyColorShade300,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Text(
+                      keyword,
+                      style: HAppStyle.paragraph2Regular,
+                    )),
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                  searchController.controller.text = keyword;
+                  searchController.addHistorySearch();
+                  searchController
+                      .addListProductInSearch(productController.listProducts);
+                  searchController.addMapProductInCart();
+                },
+              )
+          ],
+        ),
+      ],
+    );
   }
 
   historySearchsItem(int index) {

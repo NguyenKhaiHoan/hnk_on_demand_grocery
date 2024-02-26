@@ -39,11 +39,10 @@ class _ChatScreenState extends State<ChatScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: HAppColor.hBackgroundColor,
         toolbarHeight: 80,
-        title: Align(
-          alignment: Alignment.centerLeft,
+        title: Padding(
+          padding: hAppDefaultPaddingL,
           child: Row(
             children: [
-              gapW24,
               GestureDetector(
                 onTap: () {
                   Get.back();
@@ -88,12 +87,13 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
         actions: [
-          gapW10,
-          GestureDetector(
-            child: const Icon(Icons.more_horiz_outlined),
-            onTap: () {},
-          ),
-          gapW24,
+          Padding(
+            padding: EdgeInsets.only(right: hAppDefaultPadding, left: 10),
+            child: GestureDetector(
+              child: const Icon(Icons.more_horiz_outlined),
+              onTap: () {},
+            ),
+          )
         ],
       ),
       body: Column(

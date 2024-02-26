@@ -24,7 +24,7 @@ class StoreDetailScreen extends StatefulWidget {
 }
 
 class _StoreDetailScreenState extends State<StoreDetailScreen> {
-  final StoreModel model = Get.arguments['model'];
+  late StoreModel model;
   final storeController = Get.put(StoreController());
   final productController = Get.put(ProductController());
 
@@ -33,6 +33,16 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
 
   final String discription =
       loremIpsum(words: 30, paragraphs: 2, initWithLorem: true);
+
+  @override
+  void initState() {
+    super.initState();
+    model = Get.arguments['model'];
+    model.products = productController.listProducts
+        .where((product) => product.storeId == model.storeId)
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -249,7 +259,8 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                                                     TextSpan(
                                                       style: HAppStyle
                                                           .paragraph2Bold,
-                                                      text: "4.3",
+                                                      text: model.rating
+                                                          .toStringAsFixed(1),
                                                       children: [
                                                         TextSpan(
                                                           text:
@@ -269,7 +280,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                                               Row(
                                                 children: [
                                                   const Icon(
-                                                    Icons.store,
+                                                    EvaIcons.clockOutline,
                                                     size: 20,
                                                     color: HAppColor.hDarkColor,
                                                   ),
@@ -280,7 +291,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                                                           .copyWith(
                                                               color: HAppColor
                                                                   .hGreyColorShade600)),
-                                                  Text('  ┃  ',
+                                                  Text(' ┃ ',
                                                       style: HAppStyle
                                                           .paragraph2Regular
                                                           .copyWith(
@@ -289,11 +300,12 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                                                   const Icon(
                                                     EneftyIcons
                                                         .location_outline,
-                                                    size: 20,
+                                                    size: 18,
                                                     color: HAppColor.hDarkColor,
                                                   ),
                                                   gapW4,
-                                                  Text('2 Km',
+                                                  Text(
+                                                      '${model.distance.toStringAsFixed(1)} Km',
                                                       style: HAppStyle
                                                           .paragraph2Regular
                                                           .copyWith(

@@ -29,6 +29,18 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
   final productController = Get.put(ProductController());
   final detailController = Get.put(DetailController());
 
+  late ProductModel model;
+  late int index;
+  late int modelQuantity;
+
+  @override
+  void initState() {
+    super.initState();
+    model = widget.model;
+    index = 0;
+    modelQuantity = widget.model.quantity;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SwipeActionWidget(
@@ -37,34 +49,12 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
       colorIcon: HAppColor.hRedColor,
       icon: EvaIcons.trashOutline,
       function: (_) {
-        ProductModel model = widget.model;
-        int index = 0;
-        int modelQuantity = widget.model.quantity;
-
-        if (productController.isInCart.contains(model)) {
-          index = productController.isInCart.indexOf(widget.model);
-
-          productController.isInCart.removeAt(index);
-          widget.model.quantity = 0;
-          productController.refreshAllList();
-          productController.refreshList(productController.isInCart);
-          productController.addMapProductInCart();
-          productController.sumProductMoney();
-          setState(() {});
-        }
+        removeProduct();
 
         toastification.show(
           callbacks: ToastificationCallbacks(
             onTap: (toastItem) {
-              if (!productController.isInCart.contains(model)) {
-                widget.model.quantity = modelQuantity;
-                productController.isInCart.insert(index, model);
-                productController.refreshAllList();
-                productController.refreshList(productController.isInCart);
-                productController.addMapProductInCart();
-                productController.sumProductMoney();
-                setState(() {});
-              }
+              undoProduct();
             },
           ),
           progressBarTheme: const ProgressIndicatorThemeData(
@@ -217,18 +207,22 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              if (widget.model.quantity > 1) {
-                                widget.model.quantity--;
-                              } else if (widget.model.quantity == 1) {
-                                productController.isInCart.remove(widget.model);
-                                widget.model.quantity = 0;
+                              if (mounted) {
+                                setState(() {
+                                  if (widget.model.quantity > 1) {
+                                    widget.model.quantity--;
+                                  } else if (widget.model.quantity == 1) {
+                                    productController.isInCart
+                                        .remove(widget.model);
+                                    widget.model.quantity = 0;
+                                  }
+                                  productController.refreshAllList();
+                                  productController
+                                      .refreshList(productController.isInCart);
+                                  productController.addMapProductInCart();
+                                  productController.sumProductMoney();
+                                });
                               }
-                              productController.refreshAllList();
-                              productController
-                                  .refreshList(productController.isInCart);
-                              productController.addMapProductInCart();
-                              productController.sumProductMoney();
-                              setState(() {});
                             },
                             child: Container(
                                 height: 25,
@@ -256,12 +250,15 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                           gapW6,
                           GestureDetector(
                             onTap: () {
-                              widget.model.quantity++;
-                              productController.refreshAllList();
-                              productController
-                                  .refreshList(productController.isInCart);
-                              productController.addMapProductInCart();
-                              setState(() {});
+                              if (mounted) {
+                                setState(() {
+                                  widget.model.quantity++;
+                                  productController.refreshAllList();
+                                  productController
+                                      .refreshList(productController.isInCart);
+                                  productController.addMapProductInCart();
+                                });
+                              }
                             },
                             child: Container(
                                 height: 25,
@@ -330,5 +327,28 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
         ),
       ),
     );
+  }
+
+  void undoProduct() {
+    if (!productController.isInCart.contains(model)) {
+      widget.model.quantity = modelQuantity;
+      productController.isInCart.insert(index, model);
+      productController.refreshAllList();
+      productController.refreshList(productController.isInCart);
+      productController.addMapProductInCart();
+      productController.sumProductMoney();
+    }
+  }
+
+  void removeProduct() async {
+    if (productController.isInCart.contains(model)) {
+      index = productController.isInCart.indexOf(widget.model);
+      productController.isInCart.removeAt(index);
+      widget.model.quantity = 0;
+      productController.refreshAllList();
+      productController.refreshList(productController.isInCart);
+      productController.addMapProductInCart();
+      productController.sumProductMoney();
+    }
   }
 }

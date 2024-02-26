@@ -25,9 +25,9 @@ class _CompareProductScreenState extends State<CompareProductScreen> {
         centerTitle: true,
         toolbarHeight: 80,
         leadingWidth: 100,
-        leading: Row(children: [
-          gapW24,
-          GestureDetector(
+        leading: Padding(
+          padding: hAppDefaultPaddingL,
+          child: GestureDetector(
             onTap: () => Get.back(),
             child: Container(
               width: 40,
@@ -46,7 +46,7 @@ class _CompareProductScreenState extends State<CompareProductScreen> {
               ),
             ),
           ),
-        ]),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

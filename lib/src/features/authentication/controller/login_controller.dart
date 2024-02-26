@@ -4,11 +4,8 @@ import 'package:get/get.dart';
 class LoginController extends GetxController {
   static LoginController get instance => Get.find();
 
-  TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
 
-  var phoneNumber = "".obs;
-  var verificationId = "".obs;
-  var smsOtp = "".obs;
-
-  TextEditingController pinNumberController = TextEditingController();
+  var isHide = true.obs;
 }

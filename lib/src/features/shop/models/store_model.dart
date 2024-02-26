@@ -29,9 +29,11 @@ class StoreModel {
 }
 
 List<String> pickRandomItems(int count) {
-  List<String> list = List.from(categories);
-  list.shuffle();
-  return list.take(count).toList();
+  List<int> indices = List.generate(categories.length, (i) => i);
+  indices.shuffle();
+  indices = indices.take(count).toList();
+  indices.sort();
+  return indices.map((i) => categories[i]).toList();
 }
 
 final listStore = [

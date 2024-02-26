@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
+import 'package:on_demand_grocery/src/features/authentication/views/signup/sign_up_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/verify/verify_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/chat_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/delivery_infomation_dart.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/widgets/list_item_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/wishlist_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/cart_screen.dart';
@@ -12,6 +14,7 @@ import 'package:on_demand_grocery/src/features/shop/views/order/complete_order_s
 import 'package:on_demand_grocery/src/features/shop/views/order/voucher_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/compare_product_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/product_item_detail.dart';
+import 'package:on_demand_grocery/src/features/shop/views/review/review_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/root/root_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/search/search_one_store_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/search/search_screen.dart';
@@ -131,6 +134,27 @@ abstract class HAppPages {
       curve: Curves.easeOut,
       transition: Transition.rightToLeftWithFade,
     ),
+    GetPage(
+      name: HAppRoutes.signup,
+      page: () => const SignUpScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.review,
+      page: () => const ReviewScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.deliveryInfomation,
+      page: () => const DeliveryInfomationScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
   ];
 }
 
@@ -151,4 +175,7 @@ abstract class HAppRoutes {
   static const wishlistItem = '/wishlistItem';
   static const chat = '/chat';
   static const searchOnStore = '/searchOnStore';
+  static const signup = '/signup';
+  static const review = '/review';
+  static const deliveryInfomation = '/deliveryInfomation';
 }
