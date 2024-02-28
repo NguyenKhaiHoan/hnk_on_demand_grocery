@@ -8,10 +8,9 @@ import 'package:on_demand_grocery/src/features/authentication/models/on_boarding
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class OnboardingPageWidget extends StatelessWidget {
-  OnboardingPageWidget({super.key, required this.onboardingModel});
+  const OnboardingPageWidget({super.key, required this.onboardingModel});
 
   final OnboardingModel onboardingModel;
-  final onboardingController = Get.put(OnboardingController());
 
   @override
   Widget build(BuildContext context) {

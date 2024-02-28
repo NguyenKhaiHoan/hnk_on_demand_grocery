@@ -1,6 +1,0 @@
-flutter_native_splash:
-  color: "#ffffff"
-  image: assets/logos/grofast_splash.gif
-  android_12:
-    image: assets/logos/grofast_splash.gif
-  web: true

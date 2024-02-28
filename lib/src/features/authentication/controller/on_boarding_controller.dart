@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:liquid_swipe/PageHelpers/LiquidController.dart';
+import 'package:on_demand_grocery/src/routes/app_pages.dart';
 
 class OnboardingController extends GetxController {
   static OnboardingController get instance => Get.find();
@@ -25,7 +27,7 @@ class OnboardingController extends GetxController {
     if (activePageIndex == 2) {
       containerWidth.value = 140;
       Timer(const Duration(milliseconds: 1100), () {
-        buttonText.value = "Bắt đầu";
+        buttonText.value = "Đăng nhập";
         loadingArrow.value = true;
         update();
       });
@@ -34,9 +36,13 @@ class OnboardingController extends GetxController {
       Timer(const Duration(milliseconds: 1100), () {
         buttonText.value = "";
         loadingArrow.value = false;
-        update();
       });
     }
-    update();
+  }
+
+  void nextToLoginScreen() {
+    final storage = GetStorage();
+    storage.write('isFirstTime', false);
+    Get.offAllNamed(HAppRoutes.login);
   }
 }

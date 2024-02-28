@@ -9,7 +9,7 @@ import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 class RecentOrderItemWidget extends StatelessWidget {
   final Function() onTap;
 
-  final RecentOrderModel model;
+  final OrderModel model;
 
   const RecentOrderItemWidget({
     super.key,
@@ -34,7 +34,7 @@ class RecentOrderItemWidget extends StatelessWidget {
               Container(
                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                   decoration: BoxDecoration(
-                    color: model.active == "Hoàn thành"
+                    color: model.active == "Đã giao"
                         ? HAppColor.hBluePrimaryColor
                         : model.active == "Đang giao"
                             ? HAppColor.hOrangeColor
@@ -80,7 +80,7 @@ class RecentOrderItemWidget extends StatelessWidget {
               )
             ],
           ),
-          gapH12,
+          gapH6,
           Text(
             "Id - ${model.id}",
             style: HAppStyle.heading4Style,
@@ -110,7 +110,6 @@ class RecentOrderItemWidget extends StatelessWidget {
                     )
             ],
           ),
-          gapH6,
           ProductListStackWidget(
             maxItems: 5,
             items: model.listProduct,

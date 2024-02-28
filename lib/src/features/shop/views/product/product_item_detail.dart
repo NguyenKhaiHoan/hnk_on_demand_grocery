@@ -14,6 +14,7 @@ import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 import 'package:toastification/toastification.dart';
@@ -115,135 +116,58 @@ class ProductDetailScreen extends StatelessWidget {
                               productController.addProductInFavorited(model);
                               if (productController.isFavoritedProducts
                                   .contains(model)) {
-                                toastification.show(
-                                  progressBarTheme:
-                                      const ProgressIndicatorThemeData(
+                                HAppUtils.showToastSuccess(
+                                    Text(
+                                      'Thêm vào Yêu thích!',
+                                      style: HAppStyle.label2Bold.copyWith(
                                           color: HAppColor.hBluePrimaryColor),
-                                  context: context,
-                                  type: ToastificationType.success,
-                                  style: ToastificationStyle.flat,
-                                  autoCloseDuration: const Duration(seconds: 1),
-                                  title: Text(
-                                    'Thêm vào Yêu thích!',
-                                    style: HAppStyle.label2Bold.copyWith(
-                                        color: HAppColor.hBluePrimaryColor),
-                                  ),
-                                  description: RichText(
-                                      text: TextSpan(
-                                          style: HAppStyle.paragraph2Regular
-                                              .copyWith(
-                                                  color: HAppColor
-                                                      .hGreyColorShade600),
-                                          text: 'Bạn đã thêm thành công',
-                                          children: [
-                                        TextSpan(
-                                            text: ' ${model.name} ',
+                                    ),
+                                    RichText(
+                                        text: TextSpan(
                                             style: HAppStyle.paragraph2Regular
                                                 .copyWith(
                                                     color: HAppColor
-                                                        .hBluePrimaryColor)),
-                                        const TextSpan(text: 'vào Yêu thích.')
-                                      ])),
-                                  alignment: Alignment.topCenter,
-                                  animationDuration:
-                                      const Duration(milliseconds: 300),
-                                  animationBuilder:
-                                      (context, animation, alignment, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.check,
-                                    color: HAppColor.hBluePrimaryColor,
-                                  ),
-                                  backgroundColor: HAppColor.hBackgroundColor,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 16),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x07000000),
-                                      blurRadius: 16,
-                                      offset: Offset(0, 16),
-                                      spreadRadius: 0,
-                                    )
-                                  ],
-                                  showProgressBar: true,
-                                  closeButtonShowType:
-                                      CloseButtonShowType.onHover,
-                                  closeOnClick: false,
-                                  pauseOnHover: true,
-                                  dragToClose: true,
-                                );
+                                                        .hGreyColorShade600),
+                                            text: 'Bạn đã thêm thành công',
+                                            children: [
+                                          TextSpan(
+                                              text: ' ${model.name} ',
+                                              style: HAppStyle.paragraph2Regular
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hBluePrimaryColor)),
+                                          const TextSpan(text: 'vào Yêu thích.')
+                                        ])),
+                                    1,
+                                    context,
+                                    const ToastificationCallbacks());
                               } else {
-                                toastification.show(
-                                  progressBarTheme:
-                                      const ProgressIndicatorThemeData(
+                                HAppUtils.showToastSuccess(
+                                    Text(
+                                      'Xóa khỏi Yêu thích!',
+                                      style: HAppStyle.label2Bold.copyWith(
                                           color: HAppColor.hBluePrimaryColor),
-                                  context: context,
-                                  type: ToastificationType.success,
-                                  style: ToastificationStyle.flat,
-                                  autoCloseDuration: const Duration(seconds: 1),
-                                  title: Text(
-                                    'Xóa khỏi Yêu thích!',
-                                    style: HAppStyle.label2Bold.copyWith(
-                                        color: HAppColor.hBluePrimaryColor),
-                                  ),
-                                  description: RichText(
-                                      text: TextSpan(
-                                          style: HAppStyle.paragraph2Regular
-                                              .copyWith(
-                                                  color: HAppColor
-                                                      .hGreyColorShade600),
-                                          text: 'Bạn đã xóa thành công',
-                                          children: [
-                                        TextSpan(
-                                            text: ' ${model.name} ',
+                                    ),
+                                    RichText(
+                                        text: TextSpan(
                                             style: HAppStyle.paragraph2Regular
                                                 .copyWith(
                                                     color: HAppColor
-                                                        .hBluePrimaryColor)),
-                                        const TextSpan(text: 'khỏi Yêu thích.')
-                                      ])),
-                                  alignment: Alignment.topCenter,
-                                  animationDuration:
-                                      const Duration(milliseconds: 300),
-                                  animationBuilder:
-                                      (context, animation, alignment, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.check,
-                                    color: HAppColor.hBluePrimaryColor,
-                                  ),
-                                  backgroundColor: HAppColor.hBackgroundColor,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 16),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x07000000),
-                                      blurRadius: 16,
-                                      offset: Offset(0, 16),
-                                      spreadRadius: 0,
-                                    )
-                                  ],
-                                  showProgressBar: true,
-                                  closeButtonShowType:
-                                      CloseButtonShowType.onHover,
-                                  closeOnClick: false,
-                                  pauseOnHover: true,
-                                  dragToClose: true,
-                                );
+                                                        .hGreyColorShade600),
+                                            text: 'Bạn đã xóa thành công',
+                                            children: [
+                                          TextSpan(
+                                              text: ' ${model.name} ',
+                                              style: HAppStyle.paragraph2Regular
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hBluePrimaryColor)),
+                                          const TextSpan(
+                                              text: 'khỏi Yêu thích.')
+                                        ])),
+                                    1,
+                                    context,
+                                    const ToastificationCallbacks());
                               }
                             },
                             child: Container(
@@ -374,154 +298,69 @@ class ProductDetailScreen extends StatelessWidget {
                                           .addProductInFavorited(model);
                                       if (productController.isFavoritedProducts
                                           .contains(model)) {
-                                        toastification.show(
-                                          progressBarTheme:
-                                              const ProgressIndicatorThemeData(
-                                                  color: HAppColor
-                                                      .hBluePrimaryColor),
-                                          context: context,
-                                          type: ToastificationType.success,
-                                          style: ToastificationStyle.flat,
-                                          autoCloseDuration:
-                                              const Duration(seconds: 1),
-                                          title: Text(
-                                            'Thêm vào Yêu thích!',
-                                            style: HAppStyle.label2Bold
-                                                .copyWith(
-                                                    color: HAppColor
-                                                        .hBluePrimaryColor),
-                                          ),
-                                          description: RichText(
-                                              text: TextSpan(
-                                                  style: HAppStyle
-                                                      .paragraph2Regular
-                                                      .copyWith(
-                                                          color: HAppColor
-                                                              .hGreyColorShade600),
-                                                  text:
-                                                      'Bạn đã thêm thành công',
-                                                  children: [
-                                                TextSpan(
-                                                    text: ' ${model.name} ',
+                                        HAppUtils.showToastSuccess(
+                                            Text(
+                                              'Thêm vào Yêu thích!',
+                                              style: HAppStyle.label2Bold
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hBluePrimaryColor),
+                                            ),
+                                            RichText(
+                                                text: TextSpan(
                                                     style: HAppStyle
                                                         .paragraph2Regular
                                                         .copyWith(
                                                             color: HAppColor
-                                                                .hBluePrimaryColor)),
-                                                const TextSpan(
-                                                    text: 'vào Yêu thích.')
-                                              ])),
-                                          alignment: Alignment.topCenter,
-                                          animationDuration:
-                                              const Duration(milliseconds: 300),
-                                          animationBuilder: (context, animation,
-                                              alignment, child) {
-                                            return FadeTransition(
-                                              opacity: animation,
-                                              child: child,
-                                            );
-                                          },
-                                          icon: const Icon(
-                                            Icons.check,
-                                            color: HAppColor.hBluePrimaryColor,
-                                          ),
-                                          backgroundColor:
-                                              HAppColor.hBackgroundColor,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 16),
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 8),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Color(0x07000000),
-                                              blurRadius: 16,
-                                              offset: Offset(0, 16),
-                                              spreadRadius: 0,
-                                            )
-                                          ],
-                                          showProgressBar: true,
-                                          closeButtonShowType:
-                                              CloseButtonShowType.onHover,
-                                          closeOnClick: false,
-                                          pauseOnHover: true,
-                                          dragToClose: true,
-                                        );
+                                                                .hGreyColorShade600),
+                                                    text:
+                                                        'Bạn đã thêm thành công',
+                                                    children: [
+                                                  TextSpan(
+                                                      text: ' ${model.name} ',
+                                                      style: HAppStyle
+                                                          .paragraph2Regular
+                                                          .copyWith(
+                                                              color: HAppColor
+                                                                  .hBluePrimaryColor)),
+                                                  const TextSpan(
+                                                      text: 'vào Yêu thích.')
+                                                ])),
+                                            1,
+                                            context,
+                                            const ToastificationCallbacks());
                                       } else {
-                                        toastification.show(
-                                          progressBarTheme:
-                                              const ProgressIndicatorThemeData(
-                                                  color: HAppColor
-                                                      .hBluePrimaryColor),
-                                          context: context,
-                                          type: ToastificationType.success,
-                                          style: ToastificationStyle.flat,
-                                          autoCloseDuration:
-                                              const Duration(seconds: 1),
-                                          title: Text(
-                                            'Xóa khỏi Yêu thích!',
-                                            style: HAppStyle.label2Bold
-                                                .copyWith(
-                                                    color: HAppColor
-                                                        .hBluePrimaryColor),
-                                          ),
-                                          description: RichText(
-                                              text: TextSpan(
-                                                  style: HAppStyle
-                                                      .paragraph2Regular
-                                                      .copyWith(
-                                                          color: HAppColor
-                                                              .hGreyColorShade600),
-                                                  text: 'Bạn đã xóa thành công',
-                                                  children: [
-                                                TextSpan(
-                                                    text: ' ${model.name} ',
+                                        HAppUtils.showToastSuccess(
+                                            Text(
+                                              'Xóa khỏi Yêu thích!',
+                                              style: HAppStyle.label2Bold
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hBluePrimaryColor),
+                                            ),
+                                            RichText(
+                                                text: TextSpan(
                                                     style: HAppStyle
                                                         .paragraph2Regular
                                                         .copyWith(
                                                             color: HAppColor
-                                                                .hBluePrimaryColor)),
-                                                const TextSpan(
-                                                    text: 'khỏi Yêu thích.')
-                                              ])),
-                                          alignment: Alignment.topCenter,
-                                          animationDuration:
-                                              const Duration(milliseconds: 300),
-                                          animationBuilder: (context, animation,
-                                              alignment, child) {
-                                            return FadeTransition(
-                                              opacity: animation,
-                                              child: child,
-                                            );
-                                          },
-                                          icon: const Icon(
-                                            Icons.check,
-                                            color: HAppColor.hBluePrimaryColor,
-                                          ),
-                                          backgroundColor:
-                                              HAppColor.hBackgroundColor,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 16),
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 8),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Color(0x07000000),
-                                              blurRadius: 16,
-                                              offset: Offset(0, 16),
-                                              spreadRadius: 0,
-                                            )
-                                          ],
-                                          showProgressBar: true,
-                                          closeButtonShowType:
-                                              CloseButtonShowType.onHover,
-                                          closeOnClick: false,
-                                          pauseOnHover: true,
-                                          dragToClose: true,
-                                        );
+                                                                .hGreyColorShade600),
+                                                    text:
+                                                        'Bạn đã xóa thành công',
+                                                    children: [
+                                                  TextSpan(
+                                                      text: ' ${model.name} ',
+                                                      style: HAppStyle
+                                                          .paragraph2Regular
+                                                          .copyWith(
+                                                              color: HAppColor
+                                                                  .hBluePrimaryColor)),
+                                                  const TextSpan(
+                                                      text: 'khỏi Yêu thích.')
+                                                ])),
+                                            1,
+                                            context,
+                                            const ToastificationCallbacks());
                                       }
                                     },
                                     child: Container(
@@ -1216,133 +1055,63 @@ class ProductDetailScreen extends StatelessWidget {
                             .addRegisterNotificationProducts(model);
                         if (productController.registerNotificationProducts
                             .contains(model)) {
-                          toastification.show(
-                            progressBarTheme: const ProgressIndicatorThemeData(
-                                color: HAppColor.hBluePrimaryColor),
-                            context: context,
-                            type: ToastificationType.success,
-                            style: ToastificationStyle.flat,
-                            autoCloseDuration: const Duration(seconds: 5),
-                            title: Text(
-                              'Đăng ký nhận thông báo khi có hàng!',
-                              style: HAppStyle.label2Bold
-                                  .copyWith(color: HAppColor.hBluePrimaryColor),
-                            ),
-                            description: RichText(
-                                text: TextSpan(
-                                    style: HAppStyle.paragraph2Regular.copyWith(
-                                        color: HAppColor.hGreyColorShade600),
-                                    text:
-                                        'Chúng tôi sẽ gửi cho bạn thông báo khi sản phẩm',
-                                    children: [
-                                  TextSpan(
-                                      text: ' ${model.name} ',
+                          HAppUtils.showToastSuccess(
+                              Text(
+                                'Đăng ký nhận thông báo khi có hàng!',
+                                style: HAppStyle.label2Bold.copyWith(
+                                    color: HAppColor.hBluePrimaryColor),
+                              ),
+                              RichText(
+                                  text: TextSpan(
                                       style: HAppStyle.paragraph2Regular
                                           .copyWith(
                                               color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                  const TextSpan(
+                                                  HAppColor.hGreyColorShade600),
                                       text:
-                                          'có sẵn để đặt hàng. Bạn có thể hủy đăng ký bất cứ lúc nào bằng cách nhấn lại nút thông báo.')
-                                ])),
-                            alignment: Alignment.topCenter,
-                            animationDuration:
-                                const Duration(milliseconds: 300),
-                            animationBuilder:
-                                (context, animation, alignment, child) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.check,
-                              color: HAppColor.hBluePrimaryColor,
-                            ),
-                            backgroundColor: HAppColor.hBackgroundColor,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 16),
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x07000000),
-                                blurRadius: 16,
-                                offset: Offset(0, 16),
-                                spreadRadius: 0,
-                              )
-                            ],
-                            showProgressBar: true,
-                            closeButtonShowType: CloseButtonShowType.onHover,
-                            closeOnClick: false,
-                            pauseOnHover: true,
-                            dragToClose: true,
-                          );
+                                          'Chúng tôi sẽ gửi cho bạn thông báo khi sản phẩm',
+                                      children: [
+                                    TextSpan(
+                                        text: ' ${model.name} ',
+                                        style: HAppStyle.paragraph2Regular
+                                            .copyWith(
+                                                color: HAppColor
+                                                    .hBluePrimaryColor)),
+                                    const TextSpan(
+                                        text:
+                                            'có sẵn để đặt hàng. Bạn có thể hủy đăng ký bất cứ lúc nào bằng cách nhấn lại nút thông báo.')
+                                  ])),
+                              5,
+                              context,
+                              const ToastificationCallbacks());
                         } else {
-                          toastification.show(
-                            progressBarTheme: const ProgressIndicatorThemeData(
-                                color: HAppColor.hBluePrimaryColor),
-                            context: context,
-                            type: ToastificationType.success,
-                            style: ToastificationStyle.flat,
-                            autoCloseDuration: const Duration(seconds: 5),
-                            title: Text(
-                              'Hủy đăng ký nhận thông báo khi có hàng!',
-                              style: HAppStyle.label2Bold
-                                  .copyWith(color: HAppColor.hBluePrimaryColor),
-                            ),
-                            description: RichText(
-                                text: TextSpan(
-                                    style: HAppStyle.paragraph2Regular.copyWith(
-                                        color: HAppColor.hGreyColorShade600),
-                                    text:
-                                        'Bạn đã được gỡ khỏi danh sách nhận thông báo về sản phẩm',
-                                    children: [
-                                  TextSpan(
-                                      text: ' ${model.name}',
+                          HAppUtils.showToastSuccess(
+                              Text(
+                                'Hủy đăng ký nhận thông báo khi có hàng!',
+                                style: HAppStyle.label2Bold.copyWith(
+                                    color: HAppColor.hBluePrimaryColor),
+                              ),
+                              RichText(
+                                  text: TextSpan(
                                       style: HAppStyle.paragraph2Regular
                                           .copyWith(
                                               color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                  const TextSpan(
+                                                  HAppColor.hGreyColorShade600),
                                       text:
-                                          '. Nếu bạn muốn đăng ký lại, bạn có thể nhấn vào nút chuông bất cứ lúc nào.')
-                                ])),
-                            alignment: Alignment.topCenter,
-                            animationDuration:
-                                const Duration(milliseconds: 300),
-                            animationBuilder:
-                                (context, animation, alignment, child) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.check,
-                              color: HAppColor.hBluePrimaryColor,
-                            ),
-                            backgroundColor: HAppColor.hBackgroundColor,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 16),
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x07000000),
-                                blurRadius: 16,
-                                offset: Offset(0, 16),
-                                spreadRadius: 0,
-                              )
-                            ],
-                            showProgressBar: true,
-                            closeButtonShowType: CloseButtonShowType.onHover,
-                            closeOnClick: false,
-                            pauseOnHover: true,
-                            dragToClose: true,
-                          );
+                                          'Bạn đã được gỡ khỏi danh sách nhận thông báo về sản phẩm',
+                                      children: [
+                                    TextSpan(
+                                        text: ' ${model.name}',
+                                        style: HAppStyle.paragraph2Regular
+                                            .copyWith(
+                                                color: HAppColor
+                                                    .hBluePrimaryColor)),
+                                    const TextSpan(
+                                        text:
+                                            '. Nếu bạn muốn đăng ký lại, bạn có thể nhấn vào nút chuông bất cứ lúc nào.')
+                                  ])),
+                              5,
+                              context,
+                              const ToastificationCallbacks());
                         }
                       },
                       child: Container(
@@ -1374,135 +1143,57 @@ class ProductDetailScreen extends StatelessWidget {
                             productController.addProductInFavorited(model);
                             if (productController.isFavoritedProducts
                                 .contains(model)) {
-                              toastification.show(
-                                progressBarTheme:
-                                    const ProgressIndicatorThemeData(
+                              HAppUtils.showToastSuccess(
+                                  Text(
+                                    'Thêm vào Yêu thích!',
+                                    style: HAppStyle.label2Bold.copyWith(
                                         color: HAppColor.hBluePrimaryColor),
-                                context: context,
-                                type: ToastificationType.success,
-                                style: ToastificationStyle.flat,
-                                autoCloseDuration: const Duration(seconds: 1),
-                                title: Text(
-                                  'Thêm vào Yêu thích!',
-                                  style: HAppStyle.label2Bold.copyWith(
-                                      color: HAppColor.hBluePrimaryColor),
-                                ),
-                                description: RichText(
-                                    text: TextSpan(
-                                        style: HAppStyle.paragraph2Regular
-                                            .copyWith(
-                                                color: HAppColor
-                                                    .hGreyColorShade600),
-                                        text: 'Bạn đã thêm thành công',
-                                        children: [
-                                      TextSpan(
-                                          text: ' ${model.name} ',
+                                  ),
+                                  RichText(
+                                      text: TextSpan(
                                           style: HAppStyle.paragraph2Regular
                                               .copyWith(
                                                   color: HAppColor
-                                                      .hBluePrimaryColor)),
-                                      const TextSpan(text: 'vào Yêu thích.')
-                                    ])),
-                                alignment: Alignment.topCenter,
-                                animationDuration:
-                                    const Duration(milliseconds: 300),
-                                animationBuilder:
-                                    (context, animation, alignment, child) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.check,
-                                  color: HAppColor.hBluePrimaryColor,
-                                ),
-                                backgroundColor: HAppColor.hBackgroundColor,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 16),
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x07000000),
-                                    blurRadius: 16,
-                                    offset: Offset(0, 16),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                                showProgressBar: true,
-                                closeButtonShowType:
-                                    CloseButtonShowType.onHover,
-                                closeOnClick: false,
-                                pauseOnHover: true,
-                                dragToClose: true,
-                              );
+                                                      .hGreyColorShade600),
+                                          text: 'Bạn đã thêm thành công',
+                                          children: [
+                                        TextSpan(
+                                            text: ' ${model.name} ',
+                                            style: HAppStyle.paragraph2Regular
+                                                .copyWith(
+                                                    color: HAppColor
+                                                        .hBluePrimaryColor)),
+                                        const TextSpan(text: 'vào Yêu thích.')
+                                      ])),
+                                  1,
+                                  context,
+                                  const ToastificationCallbacks());
                             } else {
-                              toastification.show(
-                                progressBarTheme:
-                                    const ProgressIndicatorThemeData(
+                              HAppUtils.showToastSuccess(
+                                  Text(
+                                    'Xóa khỏi Yêu thích!',
+                                    style: HAppStyle.label2Bold.copyWith(
                                         color: HAppColor.hBluePrimaryColor),
-                                context: context,
-                                type: ToastificationType.success,
-                                style: ToastificationStyle.flat,
-                                autoCloseDuration: const Duration(seconds: 1),
-                                title: Text(
-                                  'Xóa khỏi Yêu thích!',
-                                  style: HAppStyle.label2Bold.copyWith(
-                                      color: HAppColor.hBluePrimaryColor),
-                                ),
-                                description: RichText(
-                                    text: TextSpan(
-                                        style: HAppStyle.paragraph2Regular
-                                            .copyWith(
-                                                color: HAppColor
-                                                    .hGreyColorShade600),
-                                        text: 'Bạn đã xóa thành công',
-                                        children: [
-                                      TextSpan(
-                                          text: ' ${model.name} ',
+                                  ),
+                                  RichText(
+                                      text: TextSpan(
                                           style: HAppStyle.paragraph2Regular
                                               .copyWith(
                                                   color: HAppColor
-                                                      .hBluePrimaryColor)),
-                                      const TextSpan(text: 'khỏi Yêu thích.')
-                                    ])),
-                                alignment: Alignment.topCenter,
-                                animationDuration:
-                                    const Duration(milliseconds: 300),
-                                animationBuilder:
-                                    (context, animation, alignment, child) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.check,
-                                  color: HAppColor.hBluePrimaryColor,
-                                ),
-                                backgroundColor: HAppColor.hBackgroundColor,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 16),
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x07000000),
-                                    blurRadius: 16,
-                                    offset: Offset(0, 16),
-                                    spreadRadius: 0,
-                                  )
-                                ],
-                                showProgressBar: true,
-                                closeButtonShowType:
-                                    CloseButtonShowType.onHover,
-                                closeOnClick: false,
-                                pauseOnHover: true,
-                                dragToClose: true,
-                              );
+                                                      .hGreyColorShade600),
+                                          text: 'Bạn đã xóa thành công',
+                                          children: [
+                                        TextSpan(
+                                            text: ' ${model.name} ',
+                                            style: HAppStyle.paragraph2Regular
+                                                .copyWith(
+                                                    color: HAppColor
+                                                        .hBluePrimaryColor)),
+                                        const TextSpan(text: 'khỏi Yêu thích.')
+                                      ])),
+                                  1,
+                                  context,
+                                  const ToastificationCallbacks());
                             }
                           },
                           style: ElevatedButton.styleFrom(

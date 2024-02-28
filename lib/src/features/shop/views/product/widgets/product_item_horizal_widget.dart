@@ -9,6 +9,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/product_controll
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 import 'package:toastification/toastification.dart';
 
 class ProductItemHorizalWidget extends StatelessWidget {
@@ -328,75 +329,35 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                     productController.refreshList(
                                         productController.isInCart);
                                     productController.refreshAllList();
-                                    toastification.show(
-                                      progressBarTheme:
-                                          const ProgressIndicatorThemeData(
+                                    HAppUtils.showToastSuccess(
+                                        Text(
+                                          'Thêm vào Giỏ hàng!',
+                                          style: HAppStyle.label2Bold.copyWith(
                                               color:
                                                   HAppColor.hBluePrimaryColor),
-                                      context: context,
-                                      type: ToastificationType.success,
-                                      style: ToastificationStyle.flat,
-                                      autoCloseDuration:
-                                          const Duration(seconds: 1),
-                                      title: Text(
-                                        'Thêm vào Giỏ hàng!',
-                                        style: HAppStyle.label2Bold.copyWith(
-                                            color: HAppColor.hBluePrimaryColor),
-                                      ),
-                                      description: RichText(
-                                          text: TextSpan(
-                                              style: HAppStyle.paragraph2Regular
-                                                  .copyWith(
-                                                      color: HAppColor
-                                                          .hGreyColorShade600),
-                                              text: 'Bạn đã thêm thành công',
-                                              children: [
-                                            TextSpan(
-                                                text: ' ${model.name} ',
+                                        ),
+                                        RichText(
+                                            text: TextSpan(
                                                 style: HAppStyle
                                                     .paragraph2Regular
                                                     .copyWith(
                                                         color: HAppColor
-                                                            .hBluePrimaryColor)),
-                                            const TextSpan(
-                                                text: 'vào Giỏ hàng.')
-                                          ])),
-                                      alignment: Alignment.topCenter,
-                                      animationDuration:
-                                          const Duration(milliseconds: 300),
-                                      animationBuilder: (context, animation,
-                                          alignment, child) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: child,
-                                        );
-                                      },
-                                      icon: const Icon(
-                                        Icons.check,
-                                        color: HAppColor.hBluePrimaryColor,
-                                      ),
-                                      backgroundColor:
-                                          HAppColor.hBackgroundColor,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 16),
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 8),
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Color(0x07000000),
-                                          blurRadius: 16,
-                                          offset: Offset(0, 16),
-                                          spreadRadius: 0,
-                                        )
-                                      ],
-                                      showProgressBar: true,
-                                      closeButtonShowType:
-                                          CloseButtonShowType.onHover,
-                                      closeOnClick: false,
-                                      pauseOnHover: true,
-                                      dragToClose: true,
-                                    );
+                                                            .hGreyColorShade600),
+                                                text: 'Bạn đã thêm thành công',
+                                                children: [
+                                              TextSpan(
+                                                  text: ' ${model.name} ',
+                                                  style: HAppStyle
+                                                      .paragraph2Regular
+                                                      .copyWith(
+                                                          color: HAppColor
+                                                              .hBluePrimaryColor)),
+                                              const TextSpan(
+                                                  text: 'vào Giỏ hàng.')
+                                            ])),
+                                        1,
+                                        context,
+                                        const ToastificationCallbacks());
                                   }
                                 },
                               ))

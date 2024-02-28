@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/signup/sign_up_screen.dart';
+import 'package:on_demand_grocery/src/features/authentication/views/verify/complete_create_account_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/verify/verify_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/chat_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/delivery_infomation_dart.dart';
@@ -11,6 +12,7 @@ import 'package:on_demand_grocery/src/features/shop/views/list/wishlist_screen.d
 import 'package:on_demand_grocery/src/features/shop/views/order/cart_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/checkout_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/complete_order_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/order/list_all_order_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/voucher_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/compare_product_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/product_item_detail.dart';
@@ -53,6 +55,13 @@ abstract class HAppPages {
     GetPage(
       name: HAppRoutes.verify,
       page: () => const VerifyScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.completeAccount,
+      page: () => const CompleteCreateAccountScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       transition: Transition.rightToLeftWithFade,
@@ -155,6 +164,13 @@ abstract class HAppPages {
       curve: Curves.easeOut,
       transition: Transition.rightToLeftWithFade,
     ),
+    GetPage(
+      name: HAppRoutes.listOrder,
+      page: () => const ListAllOrderScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
   ];
 }
 
@@ -164,6 +180,7 @@ abstract class HAppRoutes {
   static const search = '/search';
   static const login = '/login';
   static const verify = '/verify';
+  static const completeAccount = '/completeAccount';
   static const cart = '/cart';
   static const checkout = '/checkout';
   static const compare = '/compare';
@@ -178,4 +195,5 @@ abstract class HAppRoutes {
   static const signup = '/signup';
   static const review = '/review';
   static const deliveryInfomation = '/deliveryInfomation';
+  static const listOrder = '/listOrder';
 }

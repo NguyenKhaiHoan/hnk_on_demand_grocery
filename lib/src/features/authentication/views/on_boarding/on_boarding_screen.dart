@@ -4,12 +4,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:get/get.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
+import 'package:on_demand_grocery/src/common_widgets/splash_screen_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_assets.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/on_boarding_controller.dart';
 import 'package:on_demand_grocery/src/features/authentication/models/on_boarding_model.dart';
-import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -127,8 +127,9 @@ class OnboardingScreen extends StatelessWidget {
                                                     .currentPage.value ==
                                                 2
                                             ? GestureDetector(
-                                                onTap: () => Get.toNamed(
-                                                    HAppRoutes.login),
+                                                onTap: () =>
+                                                    onboardingController
+                                                        .nextToLoginScreen(),
                                                 child: Row(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment

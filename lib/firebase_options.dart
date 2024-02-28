@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -49,6 +46,15 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDHYYDtELBNrp45pyA3Ef9jFvK0dx4tNtk',
+    appId: '1:297352060294:web:a11b5a58492ac54887a007',
+    messagingSenderId: '297352060294',
+    projectId: 'grofast-ondemandgroceryapp',
+    authDomain: 'grofast-ondemandgroceryapp.firebaseapp.com',
+    storageBucket: 'grofast-ondemandgroceryapp.appspot.com',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA4_jDWr_FESu1CXv8-R-MWWaQUaWQacnk',
     appId: '1:297352060294:android:91701f9ce0a9adaa87a007',
@@ -63,6 +69,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '297352060294',
     projectId: 'grofast-ondemandgroceryapp',
     storageBucket: 'grofast-ondemandgroceryapp.appspot.com',
+    androidClientId: '297352060294-m3iqe6jo38lkitupoq0nlf8nsnthir7k.apps.googleusercontent.com',
+    iosClientId: '297352060294-lclhedvmn79ek3l15uhk1v4v23vrbh17.apps.googleusercontent.com',
     iosBundleId: 'com.example.onDemandGrocery',
   );
 }

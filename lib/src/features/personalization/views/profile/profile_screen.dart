@@ -1,8 +1,11 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/login_controller.dart';
+import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -16,6 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     with AutomaticKeepAliveClientMixin<ProfileScreen> {
   @override
   bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -162,8 +166,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                 ),
               ),
               gapH6,
-              const Center(
-                child: Text('Đăng xuất'),
+              Center(
+                child: GestureDetector(
+                  onTap: () => AuthenticationRepository.instance.logOut(),
+                  child: const Text('Đăng xuất'),
+                ),
               ),
               gapH24,
             ]),

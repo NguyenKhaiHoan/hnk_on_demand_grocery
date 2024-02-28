@@ -7,6 +7,7 @@ import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 import 'package:toastification/toastification.dart';
 
 class VoucherScreen extends StatefulWidget {
@@ -144,73 +145,34 @@ class _VoucherScreenState extends State<VoucherScreen> {
                                     .voucherAppliedTextAppear!.value = value;
                                 productController.displayVoucherAppliedText();
                               } else {
-                                toastification.show(
-                                  progressBarTheme:
-                                      const ProgressIndicatorThemeData(
-                                          color: HAppColor.hRedColor),
-                                  context: context,
-                                  type: ToastificationType.success,
-                                  style: ToastificationStyle.flat,
-                                  autoCloseDuration: const Duration(seconds: 3),
-                                  title: Text(
-                                    'Áp dụng mã ưu đãi không thành công!',
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hRedColor),
-                                  ),
-                                  description: RichText(
-                                      text: TextSpan(
-                                          style: HAppStyle.paragraph2Regular
-                                              .copyWith(
-                                                  color: HAppColor
-                                                      .hGreyColorShade600),
-                                          text:
-                                              'Đơn hàng của bạn có giá trị tiền hàng nhỏ hơn ',
-                                          children: [
-                                        TextSpan(
-                                            text: '200.000₫.',
+                                HAppUtils.showToastError(
+                                    Text(
+                                      'Áp dụng mã ưu đãi không thành công!',
+                                      style: HAppStyle.label2Bold
+                                          .copyWith(color: HAppColor.hRedColor),
+                                    ),
+                                    RichText(
+                                        text: TextSpan(
                                             style: HAppStyle.paragraph2Regular
                                                 .copyWith(
-                                                    color:
-                                                        HAppColor.hRedColor)),
-                                        const TextSpan(
+                                                    color: HAppColor
+                                                        .hGreyColorShade600),
                                             text:
-                                                ' Hãy tiếp tục mua sắm để có thể nhận ưu đãi nhé.')
-                                      ])),
-                                  alignment: Alignment.topCenter,
-                                  animationDuration:
-                                      const Duration(milliseconds: 300),
-                                  animationBuilder:
-                                      (context, animation, alignment, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.close,
-                                    color: HAppColor.hRedColor,
-                                  ),
-                                  backgroundColor: HAppColor.hBackgroundColor,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 16),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x07000000),
-                                      blurRadius: 16,
-                                      offset: Offset(0, 16),
-                                      spreadRadius: 0,
-                                    )
-                                  ],
-                                  showProgressBar: true,
-                                  closeButtonShowType:
-                                      CloseButtonShowType.onHover,
-                                  closeOnClick: false,
-                                  pauseOnHover: true,
-                                  dragToClose: true,
-                                );
+                                                'Đơn hàng của bạn có giá trị tiền hàng nhỏ hơn ',
+                                            children: [
+                                          TextSpan(
+                                              text: '200.000₫.',
+                                              style: HAppStyle.paragraph2Regular
+                                                  .copyWith(
+                                                      color:
+                                                          HAppColor.hRedColor)),
+                                          const TextSpan(
+                                              text:
+                                                  ' Hãy tiếp tục mua sắm để có thể nhận ưu đãi nhé.')
+                                        ])),
+                                    3,
+                                    context,
+                                    const ToastificationCallbacks());
                               }
                               setState(() {});
                             }),
@@ -315,78 +277,39 @@ class _VoucherScreenState extends State<VoucherScreen> {
                                     .voucherAppliedTextAppear!.value = value;
                                 productController.displayVoucherAppliedText();
                               } else {
-                                toastification.show(
-                                  progressBarTheme:
-                                      const ProgressIndicatorThemeData(
-                                          color: HAppColor.hRedColor),
-                                  context: context,
-                                  type: ToastificationType.success,
-                                  style: ToastificationStyle.flat,
-                                  autoCloseDuration: const Duration(seconds: 3),
-                                  title: Text(
-                                    'Áp dụng mã ưu đãi không thành công!',
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hRedColor),
-                                  ),
-                                  description: RichText(
-                                      text: TextSpan(
-                                          style: HAppStyle.paragraph2Regular
-                                              .copyWith(
-                                                  color: HAppColor
-                                                      .hGreyColorShade600),
-                                          text:
-                                              'Đơn hàng của bạn không có sản phẩm thuộc danh mục ',
-                                          children: [
-                                        TextSpan(
-                                            text: 'Trái cây',
+                                HAppUtils.showToastError(
+                                    Text(
+                                      'Áp dụng mã ưu đãi không thành công!',
+                                      style: HAppStyle.label2Bold
+                                          .copyWith(color: HAppColor.hRedColor),
+                                    ),
+                                    RichText(
+                                        text: TextSpan(
                                             style: HAppStyle.paragraph2Regular
                                                 .copyWith(
-                                                    color:
-                                                        HAppColor.hRedColor)),
-                                        const TextSpan(text: ' trong '),
-                                        TextSpan(
-                                            text: 'Big C',
-                                            style: HAppStyle.paragraph2Regular
-                                                .copyWith(
-                                                    color:
-                                                        HAppColor.hRedColor)),
-                                        const TextSpan(text: '.'),
-                                      ])),
-                                  alignment: Alignment.topCenter,
-                                  animationDuration:
-                                      const Duration(milliseconds: 300),
-                                  animationBuilder:
-                                      (context, animation, alignment, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.close,
-                                    color: HAppColor.hRedColor,
-                                  ),
-                                  backgroundColor: HAppColor.hBackgroundColor,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 16),
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x07000000),
-                                      blurRadius: 16,
-                                      offset: Offset(0, 16),
-                                      spreadRadius: 0,
-                                    )
-                                  ],
-                                  showProgressBar: true,
-                                  closeButtonShowType:
-                                      CloseButtonShowType.onHover,
-                                  closeOnClick: false,
-                                  pauseOnHover: true,
-                                  dragToClose: true,
-                                );
+                                                    color: HAppColor
+                                                        .hGreyColorShade600),
+                                            text:
+                                                'Đơn hàng của bạn không có sản phẩm thuộc danh mục ',
+                                            children: [
+                                          TextSpan(
+                                              text: 'Trái cây',
+                                              style: HAppStyle.paragraph2Regular
+                                                  .copyWith(
+                                                      color:
+                                                          HAppColor.hRedColor)),
+                                          const TextSpan(text: ' trong '),
+                                          TextSpan(
+                                              text: 'Big C',
+                                              style: HAppStyle.paragraph2Regular
+                                                  .copyWith(
+                                                      color:
+                                                          HAppColor.hRedColor)),
+                                          const TextSpan(text: '.'),
+                                        ])),
+                                    3,
+                                    context,
+                                    const ToastificationCallbacks());
                               }
                               setState(() {});
                             }),

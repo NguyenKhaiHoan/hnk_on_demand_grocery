@@ -186,7 +186,7 @@ class ReviewItemWidget extends StatelessWidget {
                     ),
                     gapW10,
                     Text(
-                      '10-2-2024',
+                      '10-2, 2024',
                       style: HAppStyle.paragraph3Regular
                           .copyWith(color: HAppColor.hGreyColorShade600),
                     )
@@ -243,7 +243,7 @@ class ReviewItemWidget extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      '10-2-2024',
+                      '10-2, 2024',
                       style: HAppStyle.paragraph3Regular
                           .copyWith(color: HAppColor.hGreyColorShade600),
                     )

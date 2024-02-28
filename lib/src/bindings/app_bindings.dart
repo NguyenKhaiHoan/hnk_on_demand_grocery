@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/login_controller.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/on_boarding_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/chat_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
@@ -13,6 +14,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/search_controlle
 class HAppBinding extends Bindings {
   @override
   void dependencies() {
+    Get.put<NetworkController>(NetworkController(), permanent: true);
     Get.lazyPut(() => ChatController(), fenix: true);
     Get.lazyPut(() => FilterStoreController(), fenix: true);
     Get.lazyPut(() => OnboardingController(), fenix: true);

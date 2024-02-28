@@ -6,6 +6,7 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:on_demand_grocery/src/common_widgets/bumble_scroll_bar_flutter.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/home_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.build(context);
     return Scaffold(
       backgroundColor: HAppColor.hBackgroundColor,
-      appBar: const HomeAppbarWidget(),
+      appBar: HomeAppbarWidget(),
       body: LiquidPullToRefresh(
           height: 50,
           color: HAppColor.hBackgroundColor,
@@ -160,7 +161,9 @@ class _HomeScreenState extends State<HomeScreen>
                                     style: HAppStyle.heading3Style,
                                   ),
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Get.toNamed(HAppRoutes.listOrder);
+                                    },
                                     child: Text("Xem tất cả",
                                         style: HAppStyle.paragraph3Regular
                                             .copyWith(
@@ -171,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               gapH6,
                               SizedBox(
-                                height: 240,
+                                height: 190,
                                 child: ListView.separated(
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
@@ -182,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen>
                                       );
                                     },
                                     separatorBuilder: (_, __) => gapW10,
-                                    itemCount: listOder.length),
+                                    itemCount: 3),
                               ),
                               gapH16,
                               Row(
