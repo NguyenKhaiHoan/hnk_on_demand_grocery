@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_layout_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/no_found_screen_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
@@ -34,17 +35,23 @@ class _ExploreScreenState extends State<ExploreScreen>
     'Bán chạy',
     'Giảm giá',
     'Trái cây',
-    'Rau củ',
-    'Thịt',
-    'Hải sản',
-    'Trứng',
-    'Sữa',
-    'Gia vị',
-    'Hạt',
+    'Ăn vặt',
     'Bánh mỳ',
     'Đồ uống',
-    'Ăn vặt',
-    'Mỳ & Gạo',
+    'Mỳ, Gạo & Ngũ cốc',
+    'Thực phẩm đông lạnh',
+    'Làm bánh',
+    'Chăm sóc cá nhân',
+    'Đồ gia dụng',
+    'Dành cho bé',
+    'Rau củ',
+    'Đồ hộp',
+    'Sữa',
+    'Thịt',
+    'Cá & Hải sản',
+    'Trứng',
+    'Đồ nguội',
+    'Dầu ăn & Gia vị'
   ];
 
   void loadTenItemList(RxList<ProductModel> list) {
@@ -69,6 +76,7 @@ class _ExploreScreenState extends State<ExploreScreen>
   }
 
   void load() {
+    exploreController.isLoading.value = false;
     exploreController.scrollToTop();
     if (exploreController.index.value == 0) {
       loadTenItemList(productController.topSellingProducts);
@@ -98,6 +106,18 @@ class _ExploreScreenState extends State<ExploreScreen>
       loadTenItemList(productController.cate11Products);
     } else if (exploreController.index.value == 13) {
       loadTenItemList(productController.cate12Products);
+    } else if (exploreController.index.value == 14) {
+      loadTenItemList(productController.cate13Products);
+    } else if (exploreController.index.value == 15) {
+      loadTenItemList(productController.cate14Products);
+    } else if (exploreController.index.value == 16) {
+      loadTenItemList(productController.cate15Products);
+    } else if (exploreController.index.value == 17) {
+      loadTenItemList(productController.cate16Products);
+    } else if (exploreController.index.value == 18) {
+      loadTenItemList(productController.cate17Products);
+    } else if (exploreController.index.value == 19) {
+      loadTenItemList(productController.cate18Products);
     }
   }
 
@@ -114,15 +134,8 @@ class _ExploreScreenState extends State<ExploreScreen>
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(left: hAppDefaultPadding),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    image: const DecorationImage(
-                        image: AssetImage('assets/logos/logo.png'),
-                        fit: BoxFit.fill),
-                  ),
+                child: UserImageLogoWidget(
+                  size: 40,
                 ),
               ),
             ),
@@ -191,1154 +204,93 @@ class _ExploreScreenState extends State<ExploreScreen>
                 physics: const NeverScrollableScrollPhysics(),
                 controller: exploreController.tabController,
                 children: [
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
+                  for (int i = 0; i < categories.length + 2; i++)
+                    Obx(() => exploreController.isLoading.value
+                        ? CustomLayoutWidget(
+                            check: true,
+                            widget: GridView.builder(
+                              shrinkWrap: true,
+                              itemCount: 10,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10.0,
+                                mainAxisSpacing: 10.0,
+                                mainAxisExtent: 295,
+                              ),
+                              itemBuilder: (BuildContext context, int index) {
+                                return Shimmer.fromColors(
+                                  baseColor: Colors.grey.shade300,
+                                  highlightColor: Colors.grey.shade100,
+                                  child: ProductItemWidget(
+                                    model:
+                                        productController.listProducts[index],
+                                    storeIcon: true,
+                                    list: productController.listProducts,
+                                    compare: false,
+                                  ),
+                                );
+                              },
                             ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
+                            subWidget: Container(),
+                          )
+                        : productController.tempListFilterProducts.isNotEmpty
+                            ? CustomLayoutWidget(
+                                check: true,
+                                widget: ListProductExploreBuilder(
+                                  list:
+                                      productController.tempListFilterProducts,
                                   storeIcon: true,
-                                  list: productController.listProducts,
                                   compare: false,
                                 ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
+                                subWidget: exploreController.isLoadingAdd.value
+                                    ? const SizedBox(
+                                        height: 60,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            color: HAppColor.hBluePrimaryColor,
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
-                  Obx(() => exploreController.isLoading.value
-                      ? CustomLayoutWidget(
-                          check: true,
-                          widget: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 10.0,
-                              mainAxisSpacing: 10.0,
-                              mainAxisExtent: 295,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: ProductItemWidget(
-                                  model: productController.listProducts[index],
-                                  storeIcon: true,
-                                  list: productController.listProducts,
-                                  compare: false,
-                                ),
-                              );
-                            },
-                          ),
-                          subWidget: Container(),
-                        )
-                      : productController.tempListFilterProducts.isNotEmpty
-                          ? CustomLayoutWidget(
-                              check: true,
-                              widget: ListProductExploreBuilder(
-                                list: productController.tempListFilterProducts,
-                                storeIcon: true,
-                                compare: false,
-                              ),
-                              subWidget: exploreController.isLoadingAdd.value
-                                  ? const SizedBox(
-                                      height: 60,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          color: HAppColor.hBluePrimaryColor,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
-                            )
-                          : NotFoundScreenWidget(
-                              title: 'Không có kết quả nào',
-                              subtitle:
-                                  'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    for (var tag
-                                        in productController.tagsCategoryObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsCategoryObs.refresh();
-                                    for (var tag
-                                        in productController.tagsProductObs) {
-                                      tag.active = false;
-                                    }
-                                    productController.tagsProductObs.refresh();
-                                    productController.selectedValueSort.value =
-                                        'Mới nhất';
-                                    setState(() {});
-                                    load();
-                                  },
-                                  child: Text(
-                                    "Xóa bộ lọc",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: Container(),
-                            )),
+                                      )
+                                    : Container(),
+                              )
+                            : NotFoundScreenWidget(
+                                title: 'Không có kết quả nào',
+                                subtitle:
+                                    'Hãy tùy chỉnh hoặc xóa bộ lọc để ra các kết quả phù hợp',
+                                widget: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      minimumSize:
+                                          Size(HAppSize.deviceWidth * 0.45, 50),
+                                      backgroundColor:
+                                          HAppColor.hBluePrimaryColor,
+                                    ),
+                                    onPressed: () {
+                                      for (var tag in productController
+                                          .tagsCategoryObs) {
+                                        tag.active = false;
+                                      }
+                                      productController.tagsCategoryObs
+                                          .refresh();
+                                      for (var tag
+                                          in productController.tagsProductObs) {
+                                        tag.active = false;
+                                      }
+                                      productController.tagsProductObs
+                                          .refresh();
+                                      productController
+                                          .selectedValueSort.value = 'Mới nhất';
+                                      setState(() {});
+                                      load();
+                                    },
+                                    child: Text(
+                                      "Xóa bộ lọc",
+                                      style: HAppStyle.label2Bold.copyWith(
+                                          color: HAppColor.hWhiteColor),
+                                    )),
+                                subWidget: Container(),
+                              )),
                 ]),
           ),
           floatingActionButton: Obx(() => exploreController.showFab.isTrue

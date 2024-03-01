@@ -17,22 +17,38 @@ class CategoryMenu extends StatelessWidget {
       onTap: onTap,
       child: Column(children: [
         Container(
-          width: 60,
-          height: 60,
+          width: 50,
+          height: 50,
           decoration: BoxDecoration(
             color: HAppColor.hWhiteColor,
             borderRadius: BorderRadius.circular(100),
           ),
-          child: Center(
-              child: Image.asset(
-            model.image,
-            width: 40,
-            height: 40,
-          )),
+          child: CircleAvatar(
+            backgroundColor: HAppColor.hWhiteColor,
+            radius: 90.0,
+            child: Image.network(
+              model.image,
+              height: 30,
+              width: 30,
+              fit: BoxFit.cover,
+              loadingBuilder: (BuildContext context, Widget child,
+                  ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              },
+            ),
+          ),
         ),
         gapH4,
         Text(
-          model.title,
+          model.name,
           style: HAppStyle.paragraph3Regular,
           textAlign: TextAlign.center,
         )

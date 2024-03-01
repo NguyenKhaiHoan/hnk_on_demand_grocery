@@ -24,7 +24,7 @@ class RootController extends GetxController {
     currentPage.value = index;
     screenController.animateToPage(
       index,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 100),
       curve: Curves.easeOut,
     );
   }

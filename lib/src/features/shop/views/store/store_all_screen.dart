@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
@@ -54,15 +55,8 @@ class _AllStoreScreenState extends State<AllStoreScreen>
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: const EdgeInsets.only(left: hAppDefaultPadding),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                image: const DecorationImage(
-                    image: AssetImage('assets/logos/logo.png'),
-                    fit: BoxFit.fill),
-              ),
+            child: UserImageLogoWidget(
+              size: 40,
             ),
           ),
         ),

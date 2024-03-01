@@ -2,10 +2,10 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
-class SplashScreenWidget extends StatelessWidget {
-  const SplashScreenWidget({super.key, required this.screen});
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key, required this.widget});
 
-  final Widget screen;
+  final Widget widget;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class SplashScreenWidget extends StatelessWidget {
         height: 400,
         width: 400,
       )),
-      nextScreen: screen,
+      nextScreen: widget,
       splashTransition: SplashTransition.fadeTransition,
       pageTransitionType: PageTransitionType.fade,
     );

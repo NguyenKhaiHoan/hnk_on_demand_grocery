@@ -8,7 +8,6 @@ import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/category_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
@@ -1186,35 +1185,12 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                           ]),
                     ),
                   ),
-                  SingleChildScrollView(
+                  const SingleChildScrollView(
                     child: Padding(
                       padding: hAppDefaultPaddingLR,
                       child: Column(
                         children: [
                           gapH12,
-                          ListView.separated(
-                              padding: EdgeInsets.zero,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) => ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Text(categoryList[index].title),
-                                    leading: Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: AssetImage(
-                                                  categoryList[index].image),
-                                              fit: BoxFit.cover)),
-                                    ),
-                                    trailing: Icon(
-                                      Icons.arrow_forward_ios,
-                                      size: 15,
-                                    ),
-                                  ),
-                              separatorBuilder: (context, index) => gapH4,
-                              itemCount: categoryList.length),
                         ],
                       ),
                     ),
@@ -1242,21 +1218,21 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                           Image.asset('assets/images/other/location.jpg'),
                           gapH10,
                           ListTile(
-                            visualDensity:
-                                VisualDensity(horizontal: 0, vertical: -4),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
                             contentPadding: EdgeInsets.zero,
-                            leading: Icon(EvaIcons.pinOutline),
-                            title: Text("Địa chỉ"),
+                            leading: const Icon(EvaIcons.pinOutline),
+                            title: const Text("Địa chỉ"),
                             subtitle: Text("Hà Nội",
                                 style: TextStyle(
                                     color: HAppColor.hGreyColorShade600)),
                           ),
                           ListTile(
-                            visualDensity:
-                                VisualDensity(horizontal: 0, vertical: -4),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
                             contentPadding: EdgeInsets.zero,
-                            leading: Icon(EvaIcons.phoneOutline),
-                            title: Text("Số điện thoại"),
+                            leading: const Icon(EvaIcons.phoneOutline),
+                            title: const Text("Số điện thoại"),
                             subtitle: Text(
                               "+84388586955",
                               style: TextStyle(
@@ -1264,15 +1240,15 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                             ),
                           ),
                           ListTile(
-                            visualDensity:
-                                VisualDensity(horizontal: 0, vertical: -4),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
                             contentPadding: EdgeInsets.zero,
-                            leading: Icon(EvaIcons.clockOutline),
+                            leading: const Icon(EvaIcons.clockOutline),
                             subtitle: Text(
                                 "Mở cửa từ 7:00 AM đến tận 9:00 PM các ngày trong tuần (từ Chủ Nhật)",
                                 style: TextStyle(
                                     color: HAppColor.hGreyColorShade600)),
-                            title: Text("Giờ hoạt động"),
+                            title: const Text("Giờ hoạt động"),
                           ),
                         ],
                       ),

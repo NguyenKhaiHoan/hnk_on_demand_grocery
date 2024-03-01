@@ -2,20 +2,19 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'package:on_demand_grocery/src/common_widgets/bumble_scroll_bar_flutter.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/home_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/category_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/recent_oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
-import 'package:on_demand_grocery/src/features/shop/views/home/widgets/category_menu.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/home_appbar_widget.dart';
+import 'package:on_demand_grocery/src/features/shop/views/home/widgets/home_category.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/recent_order_item_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/shopping_reminder_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/store_menu.dart';
@@ -35,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   bool get wantKeepAlive => true;
 
+  final categoryController = Get.put(CategoryController());
   final homeController = Get.put(HomeController());
   final rootController = Get.put(RootController());
   final exploreController = Get.put(ExploreController());
@@ -45,11 +45,6 @@ class _HomeScreenState extends State<HomeScreen>
   ];
 
   ScrollController controller = ScrollController();
-
-  final items = List<String>.generate(10, (i) => 'Item ${i + 1}');
-  int itemsPerRow = 7;
-  double ratio = 1;
-  double widthCategory = HAppSize.deviceWidth * 1.3;
 
   @override
   Widget build(BuildContext context) {
@@ -112,13 +107,7 @@ class _HomeScreenState extends State<HomeScreen>
                       Padding(
                         padding: hAppDefaultPaddingLR,
                         child: Column(children: [
-                          CustomBumbleScrollbar(
-                              heightContent: (widthCategory / itemsPerRow) *
-                                      (categoryList.length / itemsPerRow)
-                                          .ceil() *
-                                      (1 / ratio) +
-                                  70,
-                              child: itemGrid()),
+                          HomeCategory(),
                         ]),
                       ),
                       gapH16,
@@ -338,29 +327,5 @@ class _HomeScreenState extends State<HomeScreen>
   Future<void> loadingData() async {
     setState(() {});
     return await Future.delayed(const Duration(seconds: 2));
-  }
-
-  Widget itemGrid() {
-    return SizedBox(
-      width: widthCategory,
-      child: GridView.builder(
-        itemCount: categoryList.length,
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            mainAxisSpacing: 10,
-            mainAxisExtent: 85,
-            crossAxisCount: itemsPerRow,
-            childAspectRatio: ratio),
-        itemBuilder: (context, index) {
-          return CategoryMenu(
-            onTap: () {
-              rootController.animateToScreen(1);
-              exploreController.animateToTab(index + 2);
-            },
-            model: categoryList[index],
-          );
-        },
-      ),
-    );
   }
 }

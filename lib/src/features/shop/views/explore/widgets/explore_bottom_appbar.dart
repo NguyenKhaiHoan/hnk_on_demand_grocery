@@ -46,10 +46,8 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
       scrollControllerListener();
       if (exploreController.scrollController.position.pixels ==
               exploreController.scrollController.position.maxScrollExtent &&
-          !exploreController.isLoadingAdd.value &&
-          !exploreController.isLoading.value &&
-          productController.listFilterProducts.length >
-              productController.tempListFilterProducts.length) {
+          !exploreController.isLoading.value) {
+        print('Cuối');
         loadMore();
       }
     });
@@ -71,12 +69,15 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
       for (int i = 0; i < temp; i++) {
         productController.tempListFilterProducts
             .add(productController.listFilterProducts[i]);
+        print(productController.tempListFilterProducts[i].name);
       }
+      print('end: $temp');
       exploreController.isLoading.value = false;
     });
   }
 
   void load() {
+    exploreController.isLoading.value = false;
     exploreController.scrollToTop();
     if (exploreController.index.value == 0) {
       loadTenItemList(productController.topSellingProducts);
@@ -106,24 +107,39 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
       loadTenItemList(productController.cate11Products);
     } else if (exploreController.index.value == 13) {
       loadTenItemList(productController.cate12Products);
+    } else if (exploreController.index.value == 14) {
+      loadTenItemList(productController.cate13Products);
+    } else if (exploreController.index.value == 15) {
+      loadTenItemList(productController.cate14Products);
+    } else if (exploreController.index.value == 16) {
+      loadTenItemList(productController.cate15Products);
+    } else if (exploreController.index.value == 17) {
+      loadTenItemList(productController.cate16Products);
+    } else if (exploreController.index.value == 18) {
+      loadTenItemList(productController.cate17Products);
+    } else if (exploreController.index.value == 19) {
+      loadTenItemList(productController.cate18Products);
     }
   }
 
   void loadMore() {
     exploreController.isLoadingAdd.value = true;
-    Future.delayed(const Duration(seconds: 2), () {
+    print('Vào');
+    Future.delayed(const Duration(seconds: 2)).then((value) {
       int temp = 0;
-      int substract = productController.listFilterProducts.length -
-          productController.tempListFilterProducts.length;
+      int start = productController.tempListFilterProducts.length;
+      int substract = productController.listFilterProducts.length - start;
       if (substract > 10) {
         temp = 10;
       } else {
         temp = substract;
       }
-      for (int i = 0; i < temp; i++) {
+      for (int i = start; i < start + temp; i++) {
         productController.tempListFilterProducts
             .add(productController.listFilterProducts[i]);
+        print(productController.tempListFilterProducts[i].name);
       }
+      print('start: $start, end: ${start + temp}');
       exploreController.isLoadingAdd.value = false;
     });
   }
@@ -167,25 +183,7 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                     text: 'Trái cây',
                   ),
                   Tab(
-                    text: 'Rau củ',
-                  ),
-                  Tab(
-                    text: 'Thịt',
-                  ),
-                  Tab(
-                    text: 'Hải sản',
-                  ),
-                  Tab(
-                    text: 'Trứng',
-                  ),
-                  Tab(
-                    text: 'Sữa',
-                  ),
-                  Tab(
-                    text: 'Gia vị',
-                  ),
-                  Tab(
-                    text: 'Hạt',
+                    text: 'Ăn vặt',
                   ),
                   Tab(
                     text: 'Bánh mỳ',
@@ -194,10 +192,46 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                     text: 'Đồ uống',
                   ),
                   Tab(
-                    text: 'Ăn vặt',
+                    text: 'Mỳ, Gạo & Ngũ cốc',
                   ),
                   Tab(
-                    text: 'Mỳ & Gạo',
+                    text: 'Thực phẩm đông lạnh',
+                  ),
+                  Tab(
+                    text: 'Làm bánh',
+                  ),
+                  Tab(
+                    text: 'Chăm sóc cá nhân',
+                  ),
+                  Tab(
+                    text: 'Đồ gia dụng',
+                  ),
+                  Tab(
+                    text: 'Dành cho bé',
+                  ),
+                  Tab(
+                    text: 'Rau củ',
+                  ),
+                  Tab(
+                    text: 'Đồ hộp',
+                  ),
+                  Tab(
+                    text: 'Sữa',
+                  ),
+                  Tab(
+                    text: 'Thịt',
+                  ),
+                  Tab(
+                    text: 'Cá & Hải sản',
+                  ),
+                  Tab(
+                    text: 'Trứng',
+                  ),
+                  Tab(
+                    text: 'Đồ nguội',
+                  ),
+                  Tab(
+                    text: 'Dầu ăn & Gia vị',
                   ),
                 ]),
             gapH12,
@@ -281,7 +315,7 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                                           .tagsProductObs[index].active =
                                       !productController
                                           .tagsProductObs[index].active;
-                                  setState(() {});
+                                  productController.tagsProductObs.refresh();
                                   load();
                                 }));
                           },
@@ -351,7 +385,7 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                     Divider(
                       color: HAppColor.hGreyColorShade300,
                     ),
-                    gapH12,
+                    gapH6,
                     Wrap(
                       children: [
                         for (int index = 0;
@@ -401,7 +435,6 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                                             .tagsCategoryObs[i].active = false;
                                       }
                                     }
-                                    productController.tagsCategoryObs.refresh();
                                     productController
                                         .tagsCategoryObs[index].active = true;
                                   } else {
@@ -410,6 +443,7 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar> {
                                         !productController
                                             .tagsCategoryObs[index].active;
                                   }
+                                  productController.tagsCategoryObs.refresh();
                                   checkApplied();
                                 },
                               ))

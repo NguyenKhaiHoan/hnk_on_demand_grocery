@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/user_model.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/repositories/user_repository.dart';
@@ -17,7 +18,7 @@ class SignUpController extends GetxController {
 
   GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
 
-  var isHide = true.obs;
+  var isHide = false.obs;
   var isChoseCondition = true.obs;
 
   void signup() async {
@@ -25,6 +26,12 @@ class SignUpController extends GetxController {
       HAppUtils.loadingOverlays();
 
       if (!signupFormKey.currentState!.validate()) {
+        HAppUtils.stopLoading();
+        return;
+      }
+
+      final isConnected = await NetworkController.instance.isConnected();
+      if (!isConnected) {
         HAppUtils.stopLoading();
         return;
       }
@@ -44,7 +51,9 @@ class SignUpController extends GetxController {
           name: nameController.text.trim(),
           email: emailController.text.trim(),
           phoneNumber: phoneController.text.trim(),
-          profileImage: '');
+          profileImage: '',
+          creationDate: DateFormat('EEEE, d-M-y', 'vi').format(DateTime.now()),
+          authenticationBy: 'Email');
 
       final userRepository = Get.put(UserRepository());
       await userRepository.saveUserRecord(newUser);

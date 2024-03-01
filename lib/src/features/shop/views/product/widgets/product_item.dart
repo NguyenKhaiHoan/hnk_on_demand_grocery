@@ -149,9 +149,11 @@ class ProductItemWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(model.category,
-                            style: HAppStyle.paragraph3Regular
-                                .copyWith(color: HAppColor.hGreyColorShade600)),
+                        Expanded(
+                            child: Text(model.category,
+                                style: HAppStyle.paragraph3Regular.copyWith(
+                                    color: HAppColor.hGreyColorShade600,
+                                    overflow: TextOverflow.ellipsis))),
                         Text(model.unit,
                             style: HAppStyle.paragraph3Regular
                                 .copyWith(color: HAppColor.hGreyColorShade600)),

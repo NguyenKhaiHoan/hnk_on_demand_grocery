@@ -183,6 +183,14 @@ class HAppUtils {
     return null;
   }
 
+  static String? validateCorrectPassword(String? value, String password) {
+    validatePassword(value);
+    if (value != password) {
+      return 'Mật khẩu không khớp nhau.';
+    }
+    return null;
+  }
+
   static String? validatePhoneNumber(String? value) {
     validateEmptyField('Số điện thoại', value);
 
@@ -202,8 +210,8 @@ class HAppUtils {
         builder: (_) => Center(
               child: PopScope(
                 canPop: false,
-                child: Lottie.asset('assets/animations/loading_animations.json',
-                    height: 60, width: 60, fit: BoxFit.cover),
+                child: Lottie.asset('assets/animations/loading_animation.json',
+                    height: 80, width: 80, fit: BoxFit.cover),
               ),
             ));
   }

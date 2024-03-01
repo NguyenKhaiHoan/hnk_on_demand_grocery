@@ -108,7 +108,9 @@ class FormLoginWidget extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed(HAppRoutes.forgetPassword);
+                  },
                   child: Text("Quên mật khẩu?",
                       style: HAppStyle.paragraph3Regular
                           .copyWith(color: HAppColor.hBluePrimaryColor)),

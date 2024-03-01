@@ -6,6 +6,8 @@ class UserModel {
   String email;
   String phoneNumber;
   String profileImage;
+  String creationDate;
+  String authenticationBy;
 
   UserModel({
     required this.id,
@@ -13,21 +15,31 @@ class UserModel {
     required this.email,
     required this.phoneNumber,
     required this.profileImage,
+    required this.creationDate,
+    required this.authenticationBy,
   });
 
-  static UserModel empty() =>
-      UserModel(id: '', name: '', email: '', phoneNumber: '', profileImage: '');
+  static UserModel empty() => UserModel(
+      id: '',
+      name: '',
+      email: '',
+      phoneNumber: '',
+      profileImage: '',
+      creationDate: '',
+      authenticationBy: '');
 
   Map<String, dynamic> toJon() {
     return {
       'Name': name,
       'Email': email,
       'PhoneNumber': phoneNumber,
-      'ProfileImage': profileImage
+      'ProfileImage': profileImage,
+      'CreationDate': creationDate,
+      'AuthenticationBy': authenticationBy
     };
   }
 
-  factory UserModel.fromSnapshot(
+  factory UserModel.fromDocumentSnapshot(
       DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data()!;
     return UserModel(
@@ -35,6 +47,8 @@ class UserModel {
         name: data['Name'] ?? '',
         email: data['Email'] ?? '',
         phoneNumber: data['PhoneNumber'] ?? '',
-        profileImage: data['ProfileImage'] ?? '');
+        profileImage: data['ProfileImage'] ?? '',
+        creationDate: data['CreationDate'] ?? '',
+        authenticationBy: data['AuthenticationBy'] ?? '');
   }
 }

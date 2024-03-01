@@ -35,8 +35,10 @@ class ProductController extends GetxController {
       return aeonstore;
     } else if (model.name == "Mega Mart") {
       return megastore;
+    } else if (model.name == "Lotte Mart") {
+      return lottestore;
     }
-    return lottestore;
+    return kmarketstore;
   }
 
   StoreModel checkProductInStore(ProductModel product) {
@@ -58,7 +60,10 @@ class ProductController extends GetxController {
     if (megastore.contains(product)) {
       return listStore[5];
     }
-    return listStore[6];
+    if (lottestore.contains(product)) {
+      return listStore[6];
+    }
+    return listStore[7];
   }
 
   RxBool? groFastvalue = false.obs;
@@ -343,6 +348,12 @@ class ProductController extends GetxController {
   var cate10Products = <ProductModel>[].obs;
   var cate11Products = <ProductModel>[].obs;
   var cate12Products = <ProductModel>[].obs;
+  var cate13Products = <ProductModel>[].obs;
+  var cate14Products = <ProductModel>[].obs;
+  var cate15Products = <ProductModel>[].obs;
+  var cate16Products = <ProductModel>[].obs;
+  var cate17Products = <ProductModel>[].obs;
+  var cate18Products = <ProductModel>[].obs;
   var isFavoritedProducts = <ProductModel>[].obs;
   var comparePriceProducts = <ProductModel>[].obs;
   var registerNotificationProducts = <ProductModel>[].obs;
@@ -379,7 +390,6 @@ class ProductController extends GetxController {
   }
 
   void getExploreProducts() {
-    // ListProducts
     topSellingProducts.value =
         listProducts.where((product) => product.countBuyed > 100).toList();
     topSaleProducts.value =
@@ -388,45 +398,48 @@ class ProductController extends GetxController {
         .where((product) => product.category == "Trái cây")
         .toList();
     cate2Products.value =
-        listProducts.where((product) => product.category == "Rau củ").toList();
-    cate3Products.value =
-        listProducts.where((product) => product.category == "Thịt").toList();
-    cate4Products.value =
-        listProducts.where((product) => product.category == "Hải sản").toList();
-    cate5Products.value =
-        listProducts.where((product) => product.category == "Trứng").toList();
-    cate6Products.value =
-        listProducts.where((product) => product.category == "Sữa").toList();
-    cate7Products.value =
-        listProducts.where((product) => product.category == "Gia vị").toList();
-    cate8Products.value =
-        listProducts.where((product) => product.category == "Hạt").toList();
-    cate9Products.value =
-        listProducts.where((product) => product.category == "Bánh mỳ").toList();
-    cate10Products.value =
-        listProducts.where((product) => product.category == "Đồ uống").toList();
-    cate11Products.value =
         listProducts.where((product) => product.category == "Ăn vặt").toList();
-    cate12Products.value = listProducts
-        .where((product) => product.category == "Mỳ & Gạo")
+    cate3Products.value =
+        listProducts.where((product) => product.category == "Bánh mỳ").toList();
+    cate4Products.value =
+        listProducts.where((product) => product.category == "Đồ uống").toList();
+    cate5Products.value = listProducts
+        .where((product) => product.category == "Mỳ, Gạo & Ngũ cốc")
         .toList();
-    // ListFilterProduct
-    // listFilterProducts = topSellingProducts;
-    // oldList = topSellingProducts;
-    // listFilterTopSaleProducts = topSaleProducts;
-    // listFilterTopSellingProducts = topSaleProducts;
-    // listFilterCate1Products = cate1Products;
-    // listFilterCate2Products = cate2Products;
-    // listFilterCate3Products = cate3Products;
-    // listFilterCate4Products = cate4Products;
-    // listFilterCate5Products = cate5Products;
-    // listFilterCate6Products = cate6Products;
-    // listFilterCate7Products = cate7Products;
-    // listFilterCate8Products = cate8Products;
-    // listFilterCate9Products = cate9Products;
-    // listFilterCate10Products = cate10Products;
-    // listFilterCate11Products = cate11Products;
-    // listFilterCate12Products = cate12Products;
+    cate6Products.value = listProducts
+        .where((product) => product.category == "Thực phẩm đông lạnh")
+        .toList();
+    cate7Products.value = listProducts
+        .where((product) => product.category == "Làm bánh")
+        .toList();
+    cate8Products.value = listProducts
+        .where((product) => product.category == "Chăm sóc cá nhân")
+        .toList();
+    cate9Products.value = listProducts
+        .where((product) => product.category == "Đồ gia dụng")
+        .toList();
+    cate10Products.value = listProducts
+        .where((product) => product.category == "Dành cho bé")
+        .toList();
+    cate11Products.value =
+        listProducts.where((product) => product.category == "Rau củ").toList();
+    cate12Products.value =
+        listProducts.where((product) => product.category == "Đồ hộp").toList();
+    cate13Products.value =
+        listProducts.where((product) => product.category == "Sữa").toList();
+    cate14Products.value =
+        listProducts.where((product) => product.category == "Thịt").toList();
+    cate15Products.value = listProducts
+        .where((product) => product.category == "Cá & Hải sản")
+        .toList();
+    cate16Products.value =
+        listProducts.where((product) => product.category == "Trứng").toList();
+    cate17Products.value = listProducts
+        .where((product) => product.category == "Đồ nguội")
+        .toList();
+    cate18Products.value = listProducts
+        .where((product) => product.category == "Dầu ăn & Gia vị")
+        .toList();
   }
 
   var bigcstore = <ProductModel>[].obs;
@@ -436,6 +449,7 @@ class ProductController extends GetxController {
   var aeonstore = <ProductModel>[].obs;
   var megastore = <ProductModel>[].obs;
   var lottestore = <ProductModel>[].obs;
+  var kmarketstore = <ProductModel>[].obs;
 
   void getProductsAllStore() {
     bigcstore.value = listProducts
@@ -464,6 +478,10 @@ class ProductController extends GetxController {
     lottestore.value = listProducts
         .where((product) => product.imgStore == listStore[6].imgStore)
         .toList();
+
+    kmarketstore.value = listProducts
+        .where((product) => product.imgStore == listStore[7].imgStore)
+        .toList();
   }
 
   var wishListProduct = <ProductModel>[].obs;
@@ -478,21 +496,6 @@ class ProductController extends GetxController {
 
   var listFilterProducts = <ProductModel>[].obs;
   var tempListFilterProducts = <ProductModel>[].obs;
-
-  // var listFilterTopSellingProducts = <ProductModel>[].obs;
-  // var listFilterTopSaleProducts = <ProductModel>[].obs;
-  // var listFilterCate1Products = <ProductModel>[].obs;
-  // var listFilterCate2Products = <ProductModel>[].obs;
-  // var listFilterCate3Products = <ProductModel>[].obs;
-  // var listFilterCate4Products = <ProductModel>[].obs;
-  // var listFilterCate5Products = <ProductModel>[].obs;
-  // var listFilterCate6Products = <ProductModel>[].obs;
-  // var listFilterCate7Products = <ProductModel>[].obs;
-  // var listFilterCate8Products = <ProductModel>[].obs;
-  // var listFilterCate9Products = <ProductModel>[].obs;
-  // var listFilterCate10Products = <ProductModel>[].obs;
-  // var listFilterCate11Products = <ProductModel>[].obs;
-  // var listFilterCate12Products = <ProductModel>[].obs;
 
   void filterProduct(RxList<ProductModel> list, int index) {
     if (index > 1) {

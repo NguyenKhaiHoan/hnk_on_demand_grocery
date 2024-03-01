@@ -1,43 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CategoryModel {
+  String id;
   String image;
-  String title;
-  bool active = false;
+  String name;
 
   CategoryModel({
+    required this.id,
     required this.image,
-    required this.title,
+    required this.name,
   });
-}
 
-final categoryList = [
-  CategoryModel(
-      image: 'assets/images/category/icons8-strawberry-64.png',
-      title: 'Trái cây'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-broccoli-64.png', title: 'Rau củ'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-thanksgiving-64.png',
-      title: 'Thịt'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-crab-64.png', title: 'Hải sản'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-eggs-64.png', title: 'Trứng'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-milk-carton-64.png', title: 'Sữa'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-salt-shaker-64.png',
-      title: 'Gia vị'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-nut-64.png', title: 'Hạt'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-bread-64.png', title: 'Bánh mỳ'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-orange-soda-64.png',
-      title: 'Đồ uống'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-chupa-chups-64.png',
-      title: 'Ăn vặt'),
-  CategoryModel(
-      image: 'assets/images/category/icons8-porridge-64.png',
-      title: 'Mỳ & Gạo'),
-];
+  static CategoryModel empty() => CategoryModel(id: '', image: '', name: '');
+
+  Map<String, dynamic> toJon() {
+    return {
+      'Name': name,
+      'Image': image,
+    };
+  }
+
+  factory CategoryModel.fromDocumentSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> document) {
+    if (document.data() != null) {
+      final data = document.data()!;
+      return CategoryModel(
+        id: document.id,
+        name: data['Name'] ?? '',
+        image: data['Image'] ?? '',
+      );
+    }
+    return CategoryModel.empty();
+  }
+}

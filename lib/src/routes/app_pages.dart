@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/forget_password_controller.dart';
+import 'package:on_demand_grocery/src/features/authentication/views/change_password/change_password_screen.dart';
+import 'package:on_demand_grocery/src/features/authentication/views/forget_password/forget_password_screen.dart';
+import 'package:on_demand_grocery/src/features/authentication/views/forget_password/sent_password_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/signup/sign_up_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/verify/complete_create_account_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/verify/verify_screen.dart';
+import 'package:on_demand_grocery/src/features/personalization/views/change_name/change_name_screen.dart';
+import 'package:on_demand_grocery/src/features/personalization/views/profile/profile_detail.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/chat_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/add_address_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/all_address_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/delivery_infomation_dart.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/widgets/list_item_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/wishlist_screen.dart';
@@ -29,147 +37,196 @@ abstract class HAppPages {
       page: () => OnboardingScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.fadeIn,
+      // transition: Transition.fadeIn,
     ),
     GetPage(
       name: HAppRoutes.login,
       page: () => const LoginScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.root,
       page: () => const RootScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.fadeIn,
+      // transition: Transition.fadeIn,
     ),
     GetPage(
       name: HAppRoutes.search,
       page: () => const SearchScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.verify,
       page: () => const VerifyScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.completeAccount,
       page: () => const CompleteCreateAccountScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.cart,
       page: () => const CartScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.checkout,
       page: () => const CheckoutScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.voucher,
       page: () => const VoucherScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.productDetail,
       page: () => ProductDetailScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.fadeIn,
+      // transition: Transition.fadeIn,
     ),
     GetPage(
       name: HAppRoutes.compare,
       page: () => const CompareProductScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.storeDetail,
       page: () => const StoreDetailScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.fadeIn,
+      // transition: Transition.fadeIn,
     ),
     GetPage(
       name: HAppRoutes.complete,
       page: () => const CompleteCheckoutScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.fadeIn,
+      // transition: Transition.fadeIn,
     ),
     GetPage(
       name: HAppRoutes.wishlist,
       page: () => const WishlistScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.downToUp,
+      // transition: Transition.downToUp,
     ),
     GetPage(
       name: HAppRoutes.wishlistItem,
       page: () => const WishlistItemScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.chat,
       page: () => const ChatScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.searchOnStore,
       page: () => const SearchOneStoreScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.signup,
       page: () => const SignUpScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.review,
       page: () => const ReviewScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.deliveryInfomation,
       page: () => const DeliveryInfomationScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: HAppRoutes.listOrder,
       page: () => const ListAllOrderScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
-      transition: Transition.rightToLeftWithFade,
+      // transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.forgetPassword,
+      page: () => const ForgetPasswordScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      // transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.sentPassword,
+      page: () => const SentPasswordScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      // transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.profileDetail,
+      page: () => const ProfileDetailScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      // transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.changePassword,
+      page: () => const ChangePasswordScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      // transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.changeName,
+      page: () => const ChangeNameScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      // transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.addAddress,
+      page: () => const AddAddressScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      // transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.allAddress,
+      page: () => const AllAddressScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      // transition: Transition.rightToLeftWithFade,
     ),
   ];
 }
@@ -196,4 +253,11 @@ abstract class HAppRoutes {
   static const review = '/review';
   static const deliveryInfomation = '/deliveryInfomation';
   static const listOrder = '/listOrder';
+  static const forgetPassword = '/forgetPassword';
+  static const sentPassword = '/sentPassword';
+  static const profileDetail = '/profileDetail';
+  static const changePassword = '/changePassword';
+  static const changeName = '/changeName';
+  static const addAddress = '/addAddress';
+  static const allAddress = '/allAddress';
 }

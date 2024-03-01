@@ -7,6 +7,7 @@ import 'package:on_demand_grocery/src/common_widgets/horizontal_list_product_wit
 import 'package:on_demand_grocery/src/common_widgets/horizontal_list_store_with_title_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_layout_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/no_found_screen_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
@@ -70,15 +71,8 @@ class _ListScreenState extends State<ListScreen>
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(left: hAppDefaultPadding),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    image: const DecorationImage(
-                        image: AssetImage('assets/logos/logo.png'),
-                        fit: BoxFit.fill),
-                  ),
+                child: UserImageLogoWidget(
+                  size: 40,
                 ),
               ),
             ),

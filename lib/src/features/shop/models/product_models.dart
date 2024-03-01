@@ -42,17 +42,23 @@ class ProductModel {
 
 List<String> categories = [
   'Trái cây',
-  'Rau củ',
-  'Thịt tươi',
-  'Hải sản',
-  'Trứng',
-  'Sữa',
-  'Gia vị',
-  'Hạt',
+  'Ăn vặt',
   'Bánh mỳ',
   'Đồ uống',
-  'Ăn vặt',
-  'Mỳ & Gạo',
+  'Mỳ, Gạo & Ngũ cốc',
+  'Thực phẩm đông lạnh',
+  'Làm bánh',
+  'Chăm sóc cá nhân',
+  'Đồ gia dụng',
+  'Dành cho bé',
+  'Rau củ',
+  'Đồ hộp',
+  'Sữa',
+  'Thịt',
+  'Cá & Hải sản',
+  'Trứng',
+  'Đồ nguội',
+  'Dầu ăn & Gia vị'
 ];
 
 List<String> names = [

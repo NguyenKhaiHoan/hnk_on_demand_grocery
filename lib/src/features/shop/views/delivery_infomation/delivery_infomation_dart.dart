@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
+import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class DeliveryInfomationScreen extends StatefulWidget {
@@ -30,6 +33,9 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
 
   int currentDateSelectedIndex = 0;
   ScrollController scrollController = ScrollController();
+
+  final addressController = Get.put(AddressController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,16 +70,116 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
               ),
               const Spacer(),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed(HAppRoutes.allAddress);
+                },
                 child: Text("Xem tất cả",
                     style: HAppStyle.paragraph3Regular
                         .copyWith(color: HAppColor.hBluePrimaryColor)),
               ),
             ]),
             gapH12,
-            const AddressInformation(isChosed: true),
-            gapH12,
-            const AddressInformation(isChosed: false),
+            Obx(() => FutureBuilder(
+                key: Key(addressController.isLoading.value.toString()),
+                future: addressController.fetchAllUserAddresses(),
+                builder: ((context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) => AddressInformation(
+                              address: AddressModel.empty(),
+                              function: () {},
+                            ),
+                        separatorBuilder: (context, index) => gapH12,
+                        itemCount: 2);
+                  }
+
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                    );
+                  }
+
+                  if (!snapshot.hasData ||
+                      snapshot.data == null ||
+                      snapshot.data!.isEmpty) {
+                    return GestureDetector(
+                      onTap: () {
+                        Get.toNamed(HAppRoutes.addAddress);
+                      },
+                      child: Container(
+                          width: HAppSize.deviceWidth,
+                          height: 50,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: HAppColor.hWhiteColor),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                EvaIcons.plusCircleOutline,
+                                size: 15,
+                              ),
+                              gapW4,
+                              Text("Thêm địa chỉ giao hàng"),
+                            ],
+                          )),
+                    );
+                  } else {
+                    final addresses = snapshot.data!;
+                    final listAddress = getTwoAddresses(addresses);
+                    return Column(
+                      children: [
+                        ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) => AddressInformation(
+                                  address: listAddress[index],
+                                  function: () {
+                                    addressController
+                                        .selectAddress(listAddress[index]);
+                                  },
+                                ),
+                            separatorBuilder: (context, index) => gapH12,
+                            itemCount: listAddress.length),
+                        listAddress.length < 2
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                    top: hAppDefaultPadding),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed(HAppRoutes.addAddress);
+                                  },
+                                  child: Container(
+                                      width: HAppSize.deviceWidth,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: HAppColor.hWhiteColor),
+                                      child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            EvaIcons.plusCircleOutline,
+                                            size: 15,
+                                          ),
+                                          gapW4,
+                                          Text("Thêm địa chỉ giao hàng"),
+                                        ],
+                                      )),
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    );
+                  }
+                }))),
             gapH24,
             Row(children: [
               const Text(
@@ -84,7 +190,7 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
               GestureDetector(
                 onTap: () {},
                 child: Text(
-                    '${days2[selectedDate.weekday - 1]}, ${selectedDate.day}-${selectedDate.month - 1}, ${selectedDate.year}',
+                    '${days2[selectedDate.weekday - 1]}, ${selectedDate.day}-${selectedDate.month}-${selectedDate.year}',
                     style: HAppStyle.paragraph3Regular
                         .copyWith(color: HAppColor.hBluePrimaryColor)),
               ),
@@ -150,43 +256,66 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
       ),
     );
   }
+
+  List<AddressModel> getTwoAddresses(List<AddressModel> addresses) {
+    if (addresses.isEmpty) {
+      return [];
+    }
+    if (addresses.length == 1) {
+      return addresses;
+    }
+    AddressModel selectedAddress = addresses.firstWhere(
+        (address) => address.selectedAddress,
+        orElse: () => addresses.first);
+    AddressModel defaultAddress = addresses.firstWhere(
+        (address) => address.isDefault && address != selectedAddress,
+        orElse: () => addresses.firstWhere(
+            (address) => address != selectedAddress,
+            orElse: () => AddressModel.empty()));
+    return [selectedAddress, defaultAddress];
+  }
 }
 
 class AddressInformation extends StatelessWidget {
-  const AddressInformation({super.key, required this.isChosed});
+  AddressInformation(
+      {super.key, required this.function, required this.address});
 
-  final bool isChosed;
+  final Function() function;
+
+  final AddressModel address;
+  final addressController = AddressController.instance;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(children: [
-          Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: HAppColor.hWhiteColor),
-            padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-            child: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Nguyễn Khải Hoàn",
-                  style: HAppStyle.label2Bold,
-                ),
-                gapH4,
-                Text("0388586955", style: HAppStyle.paragraph3Regular),
-                gapH4,
-                Text(
-                  "Số nhà 25, Ngõ 143, Đường Chiến Thắng, Xã Tân Triều, Huyện Thanh Trì, Hà Nội",
-                  style: HAppStyle.paragraph3Regular,
-                )
-              ],
-            ),
+    return GestureDetector(
+      onTap: function,
+      child: Stack(children: [
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: HAppColor.hWhiteColor),
+          padding:
+              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                address.name,
+                style: HAppStyle.label2Bold,
+              ),
+              gapH4,
+              Text(address.phoneNumber, style: HAppStyle.paragraph3Regular),
+              gapH4,
+              Text(
+                address.toString(),
+                style: HAppStyle.paragraph3Regular,
+              )
+            ],
           ),
-          isChosed
+        ),
+        Obx(
+          () => addressController.selectedAddress.value.id == address.id
               ? Positioned(
                   top: 5,
                   right: 5,
@@ -199,8 +328,8 @@ class AddressInformation extends StatelessWidget {
                     ),
                   ))
               : Container(),
-        ]),
-      ],
+        )
+      ]),
     );
   }
 }

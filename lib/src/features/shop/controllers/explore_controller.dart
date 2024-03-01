@@ -16,7 +16,7 @@ class ExploreController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    tabController = TabController(vsync: this, length: 14);
+    tabController = TabController(vsync: this, length: 20);
     scrollController = ScrollController();
   }
 

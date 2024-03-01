@@ -1,7 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/change_password_controller.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/login_controller.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/on_boarding_controller.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/sign_up_controller.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/verify_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/change_name_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/chat_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
@@ -16,7 +23,13 @@ class HAppBinding extends Bindings {
   void dependencies() {
     Get.put<NetworkController>(NetworkController(), permanent: true);
     Get.lazyPut(() => ChatController(), fenix: true);
+    Get.lazyPut(() => CategoryController(), fenix: true);
+    Get.lazyPut(() => AddressController(), fenix: true);
+    Get.lazyPut(() => ChangeNameController(), fenix: true);
+    Get.lazyPut(() => ChangePasswordController(), fenix: true);
+    Get.lazyPut(() => VerifyController(), fenix: true);
     Get.lazyPut(() => FilterStoreController(), fenix: true);
+    Get.lazyPut(() => SignUpController(), fenix: true);
     Get.lazyPut(() => OnboardingController(), fenix: true);
     Get.lazyPut(() => RootController(), fenix: true);
     Get.lazyPut(() => HomeController(), fenix: true);

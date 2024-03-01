@@ -144,7 +144,7 @@ final listStore = [
   ),
   StoreModel(
       imgStore:
-          "https://scontent.fhan20-1.fna.fbcdn.net/v/t39.30808-1/290205270_1746628129024711_2742663194988418041_n.jpg?stp=dst-jpg_p320x320&_nc_cat=108&ccb=1-7&_nc_sid=596444&_nc_ohc=MBfbienF0sQAX9cF8CU&_nc_ht=scontent.fhan20-1.fna&oh=00_AfCLBbfx7WnZUiKWSLjQ2XD2bWAtwXqiyvt3WTtTFgO9kg&oe=65DDF17B",
+          "https://www.capitaland.com/content/dam/capitaland-sites/singapore/shop/malls/bukit-panjang-plaza/tenants/BPP%20K-market.jpg.transform/cap-midres/image.jpg",
       name: 'K - Market',
       isFavourite: false,
       imgBackground:
