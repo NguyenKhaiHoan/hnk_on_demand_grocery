@@ -81,10 +81,17 @@ class RecentOrderItemWidget extends StatelessWidget {
             ],
           ),
           gapH6,
-          Text(
-            "Id - ${model.id}",
-            style: HAppStyle.heading4Style,
-          ),
+          Row(children: [
+            const Icon(
+              Icons.tag,
+              size: 15,
+            ),
+            gapW4,
+            Text(
+              model.orderId,
+              style: HAppStyle.heading5Style,
+            )
+          ]),
           Row(
             children: [
               Text(
@@ -112,7 +119,7 @@ class RecentOrderItemWidget extends StatelessWidget {
           ),
           ProductListStackWidget(
             maxItems: 5,
-            items: model.listProduct,
+            items: model.listProduct.map((product) => product.imgPath).toList(),
           ),
           Expanded(
               child: Row(

@@ -5,6 +5,7 @@ import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/date_delivery_controller.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
@@ -35,6 +36,7 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
   ScrollController scrollController = ScrollController();
 
   final addressController = Get.put(AddressController());
+  final dateDeliveryController = Get.put(DateDeliveryController());
 
   @override
   Widget build(BuildContext context) {
@@ -187,13 +189,9 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
                 style: HAppStyle.heading4Style,
               ),
               const Spacer(),
-              GestureDetector(
-                onTap: () {},
-                child: Text(
-                    '${days2[selectedDate.weekday - 1]}, ${selectedDate.day}-${selectedDate.month}-${selectedDate.year}',
-                    style: HAppStyle.paragraph3Regular
-                        .copyWith(color: HAppColor.hBluePrimaryColor)),
-              ),
+              Obx(() => Text(dateDeliveryController.date.value,
+                  style: HAppStyle.paragraph3Regular
+                      .copyWith(color: HAppColor.hBluePrimaryColor))),
             ]),
             gapH12,
             SizedBox(
@@ -208,44 +206,55 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
                       onTap: () {
-                        setState(() {
-                          currentDateSelectedIndex = index;
-                          selectedDate =
-                              DateTime.now().add(Duration(days: index));
-                        });
+                        dateDeliveryController.currentDateSelectedIndex.value =
+                            index;
+                        dateDeliveryController.selectedDate.value =
+                            DateTime.now().add(Duration(days: index));
+                        dateDeliveryController.date.value =
+                            '${days2[dateDeliveryController.selectedDate.value.weekday - 1]}, ${dateDeliveryController.selectedDate.value.day}-${dateDeliveryController.selectedDate.value.month}-${dateDeliveryController.selectedDate.value.year}';
                       },
-                      child: Container(
-                        height: 60,
-                        width: 60,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: currentDateSelectedIndex == index
-                                ? HAppColor.hBluePrimaryColor
-                                : HAppColor.hWhiteColor),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                                days[DateTime.now()
-                                            .add(Duration(days: index))
-                                            .weekday -
-                                        1]
-                                    .toString(),
-                                style: HAppStyle.paragraph2Bold.copyWith(
-                                    color: currentDateSelectedIndex == index
-                                        ? HAppColor.hWhiteColor
-                                        : HAppColor.hGreyColorShade600)),
-                            Text(
-                                DateTime.now()
-                                    .add(Duration(days: index))
-                                    .day
-                                    .toString(),
-                                style: HAppStyle.heading4Style.copyWith(
-                                    color: currentDateSelectedIndex == index
-                                        ? HAppColor.hWhiteColor
-                                        : HAppColor.hGreyColorShade600)),
-                          ],
+                      child: Obx(
+                        () => Container(
+                          height: 60,
+                          width: 60,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: dateDeliveryController
+                                          .currentDateSelectedIndex.value ==
+                                      index
+                                  ? HAppColor.hBluePrimaryColor
+                                  : HAppColor.hWhiteColor),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                  days[DateTime.now()
+                                              .add(Duration(days: index))
+                                              .weekday -
+                                          1]
+                                      .toString(),
+                                  style: HAppStyle.paragraph2Bold.copyWith(
+                                      color: dateDeliveryController
+                                                  .currentDateSelectedIndex
+                                                  .value ==
+                                              index
+                                          ? HAppColor.hWhiteColor
+                                          : HAppColor.hGreyColorShade600)),
+                              Text(
+                                  DateTime.now()
+                                      .add(Duration(days: index))
+                                      .day
+                                      .toString(),
+                                  style: HAppStyle.heading4Style.copyWith(
+                                      color: dateDeliveryController
+                                                  .currentDateSelectedIndex
+                                                  .value ==
+                                              index
+                                          ? HAppColor.hWhiteColor
+                                          : HAppColor.hGreyColorShade600)),
+                            ],
+                          ),
                         ),
                       ),
                     );

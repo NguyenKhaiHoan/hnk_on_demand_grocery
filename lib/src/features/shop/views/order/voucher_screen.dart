@@ -134,7 +134,8 @@ class _VoucherScreenState extends State<VoucherScreen> {
                                 MaterialTapTargetSize.shrinkWrap,
                             value: productController.groFastvalue!.value,
                             onChanged: (bool? value) {
-                              if (productController.productMoney.value >= 200) {
+                              if (productController.productMoney.value >=
+                                  200000) {
                                 productController.groFastvalue!.value = value!;
                                 productController.groFastvalue!.value == true
                                     ? productController.voucherAppliedSubText

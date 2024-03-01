@@ -1,6 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:on_demand_grocery/src/common_widgets/is_loading_user_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
@@ -49,10 +50,10 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                 Obx(() => userController.isUploadImageLoading.value
-                    ? Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: UserImageLogoWidget(size: 80))
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                            color: HAppColor.hBluePrimaryColor),
+                      )
                     : UserImageLogoWidget(size: 80)),
                 gapH12,
                 GestureDetector(
@@ -206,27 +207,30 @@ class SectionProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          title,
-          style: HAppStyle.paragraph2Bold,
+        Expanded(
+          flex: 3,
+          child: Text(
+            title,
+            style: HAppStyle.paragraph2Bold,
+          ),
         ),
-        const Spacer(),
-        Obx(
-          () => userController.isLoading.value
-              ? Shimmer.fromColors(
-                  baseColor: Colors.grey.shade300,
-                  highlightColor: Colors.grey.shade100,
-                  child: Text(
-                    title,
-                    style: HAppStyle.paragraph2Regular
-                        .copyWith(color: HAppColor.hGreyColorShade600),
-                  ),
-                )
-              : Text(
-                  title2,
-                  style: HAppStyle.paragraph2Regular
-                      .copyWith(color: HAppColor.hGreyColorShade600),
-                ),
+        Expanded(
+          flex: 4,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Obx(() => userController.isLoading.value
+                ? const Center(
+                    child: CircularProgressIndicator(
+                        color: HAppColor.hBluePrimaryColor),
+                  )
+                : IsLoadingUserNameWidget(
+                    widget: Text(
+                    title2,
+                    style: HAppStyle.paragraph2Regular.copyWith(
+                        color: HAppColor.hGreyColorShade600,
+                        overflow: TextOverflow.ellipsis),
+                  ))),
+          ),
         ),
         showIcon
             ? title == 'Id'

@@ -8,6 +8,38 @@ import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:toastification/toastification.dart';
 
 class HAppUtils {
+  static void showLostMobileDataConnection(String title, String message) {
+    Get.snackbar(
+      title,
+      message,
+      icon: const Icon(EvaIcons.wifiOffOutline, color: Colors.white),
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: HAppColor.hRedColor.shade400,
+      borderRadius: 10,
+      margin: const EdgeInsets.all(hAppDefaultPadding),
+      colorText: Colors.white,
+      duration: const Duration(days: 1),
+      isDismissible: true,
+      forwardAnimationCurve: Curves.easeOutBack,
+    );
+  }
+
+  static void showConnectedToMobileData(String title, String message) {
+    Get.snackbar(
+      title,
+      message,
+      icon: const Icon(EvaIcons.wifi, color: Colors.white),
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: HAppColor.hBluePrimaryColor,
+      borderRadius: 10,
+      margin: const EdgeInsets.all(hAppDefaultPadding),
+      colorText: Colors.white,
+      duration: const Duration(seconds: 3),
+      isDismissible: true,
+      forwardAnimationCurve: Curves.easeOutBack,
+    );
+  }
+
   static void showSnackBarSuccess(String title, String message) {
     Get.snackbar(
       title,

@@ -9,6 +9,7 @@ import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/home_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/recent_oder_model.dart';
@@ -39,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen>
   final rootController = Get.put(RootController());
   final exploreController = Get.put(ExploreController());
   final productController = Get.put(ProductController());
+  final orderController = Get.put(OrderController());
 
   List<String> listBanner = [
     "https://statics.vincom.com.vn/uu-dai/1-1702090213.jpg",
@@ -140,43 +142,57 @@ class _HomeScreenState extends State<HomeScreen>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    "Đơn gần đây",
-                                    style: HAppStyle.heading3Style,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Get.toNamed(HAppRoutes.listOrder);
-                                    },
-                                    child: Text("Xem tất cả",
-                                        style: HAppStyle.paragraph3Regular
-                                            .copyWith(
-                                                color: HAppColor
-                                                    .hBluePrimaryColor)),
-                                  ),
-                                ],
-                              ),
-                              gapH6,
-                              SizedBox(
-                                height: 190,
-                                child: ListView.separated(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      return RecentOrderItemWidget(
-                                        onTap: () {},
-                                        model: listOder[index],
-                                      );
-                                    },
-                                    separatorBuilder: (_, __) => gapW10,
-                                    itemCount: 3),
-                              ),
-                              gapH16,
+                              Obx(() => orderController.listOder.isNotEmpty
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Text(
+                                              "Đơn gần đây",
+                                              style: HAppStyle.heading3Style,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                Get.toNamed(
+                                                    HAppRoutes.listOrder);
+                                              },
+                                              child: Text("Xem tất cả",
+                                                  style: HAppStyle
+                                                      .paragraph3Regular
+                                                      .copyWith(
+                                                          color: HAppColor
+                                                              .hBluePrimaryColor)),
+                                            ),
+                                          ],
+                                        ),
+                                        gapH6,
+                                        SizedBox(
+                                          height: 190,
+                                          child: ListView.separated(
+                                              shrinkWrap: true,
+                                              scrollDirection: Axis.horizontal,
+                                              itemBuilder: (context, index) {
+                                                return RecentOrderItemWidget(
+                                                  onTap: () {},
+                                                  model: orderController
+                                                      .listOder[index],
+                                                );
+                                              },
+                                              separatorBuilder: (_, __) =>
+                                                  gapW10,
+                                              itemCount: orderController
+                                                  .listOder.length),
+                                        ),
+                                        gapH16,
+                                      ],
+                                    )
+                                  : Container()),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,

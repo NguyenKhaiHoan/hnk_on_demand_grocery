@@ -1,14 +1,23 @@
+import 'dart:math';
+
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/data/dummy_data.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/date_delivery_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/recent_oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/product_list_stack.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -20,11 +29,30 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String selected = 'Tiền mặt';
   final productController = Get.put(ProductController());
+  final addressController = AddressController.instance;
+  final dateDeliveryController = Get.put(DateDeliveryController());
+  final orderController = OrderController.instance;
 
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.scheduleFrameCallback((_) {});
+  }
+
+  Random random = Random();
+
+  String letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  String digits = '0123456789';
+
+  String generateId(int length) {
+    String result = '';
+    for (int i = 0; i < length ~/ 2; i++) {
+      int letterIndex = random.nextInt(letters.length);
+      result += letters[letterIndex];
+      int digitIndex = random.nextInt(digits.length);
+      result += digits[digitIndex];
+    }
+    return result;
   }
 
   @override
@@ -97,45 +125,50 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Nguyễn Khải Hoàn",
-                        style: HAppStyle.label2Bold,
-                      ),
-                      gapH8,
-                      Row(
-                        children: [
-                          gapW8,
-                          const Icon(
-                            EvaIcons.phoneOutline,
-                            size: 20,
-                          ),
-                          gapW8,
-                          Text("0388586955",
-                              style: HAppStyle.paragraph2Regular
-                                  .copyWith(overflow: TextOverflow.ellipsis))
-                        ],
-                      ),
-                      gapH8,
-                      const Row(
-                        children: [
-                          gapW6,
-                          Icon(EvaIcons.homeOutline),
-                          gapW8,
-                          Expanded(
-                            child: Text(
-                              "Số nhà 25, Ngõ 143, Đường Chiến Thắng, Xã Tân Triều, Huyện Thanh Trì, Hà Nội",
-                              style: HAppStyle.paragraph2Regular,
-                            ),
-                          )
-                        ],
-                      ),
+                      Obx(() => FutureBuilder(
+                          key:
+                              Key(addressController.isLoading.value.toString()),
+                          future: addressController.fetchAllUserAddresses(),
+                          builder: ((context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Shimmer.fromColors(
+                                  baseColor: Colors.grey.shade300,
+                                  highlightColor: Colors.grey.shade100,
+                                  child: AddressCheckoutWidget(
+                                    model: AddressModel.empty(),
+                                  ));
+                            }
+
+                            if (snapshot.hasError) {
+                              return const Center(
+                                child: Text(
+                                    'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                              );
+                            }
+
+                            if (!snapshot.hasData ||
+                                snapshot.data == null ||
+                                snapshot.data!.isEmpty) {
+                              return const Text(
+                                  'Địa chỉ giao hàng trống, hãy thêm đia chỉ giao hàng.');
+                            } else {
+                              final addresses = snapshot.data!;
+                              return AddressCheckoutWidget(
+                                  model: addresses.firstWhere(
+                                      (address) => address.selectedAddress,
+                                      orElse: () => addresses.first));
+                            }
+                          }))),
                       Divider(
                         color: HAppColor.hGreyColorShade300,
                       ),
                       gapH4,
-                      const Text(
-                        "Thứ 5, 25 - 1, 2024",
-                      )
+                      Obx(() => dateDeliveryController.date.value == ''
+                          ? Text(DateFormat('EEEE, d-M-y', 'vi')
+                              .format(DateTime.now())
+                              .toString())
+                          : Text(dateDeliveryController.date.value)),
                     ],
                   ),
                 )
@@ -230,10 +263,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Tiền hàng (${productController.isInCart.length} sản phẩm)',
-                            style: HAppStyle.label2Bold,
-                          ),
+                          Obx(() => Text(
+                                'Tiền hàng (${productController.isInCart.length} sản phẩm)',
+                                style: HAppStyle.label2Bold,
+                              )),
                           Text(DummyData.vietNamCurrencyFormatting(
                               productController.productMoney.value)),
                         ],
@@ -387,6 +420,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ElevatedButton(
                   onPressed: () {
                     Get.toNamed(HAppRoutes.complete);
+                    orderController.listOder.add(OrderModel(
+                        orderId: generateId(6),
+                        active: 'Đang chờ',
+                        date: dateDeliveryController.date.value,
+                        listProduct: productController.isInCart,
+                        price: DummyData.vietNamCurrencyFormatting(
+                            productController.productMoney.value)));
                     productController.removeAllProductInCart();
                     productController.refreshAllList();
                     productController.addMapProductInCart();
@@ -407,6 +447,56 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class AddressCheckoutWidget extends StatelessWidget {
+  const AddressCheckoutWidget({
+    super.key,
+    required this.model,
+  });
+
+  final AddressModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          model.name,
+          style: HAppStyle.label2Bold,
+        ),
+        gapH8,
+        Row(
+          children: [
+            gapW8,
+            const Icon(
+              EvaIcons.phoneOutline,
+              size: 20,
+            ),
+            gapW8,
+            Text(model.phoneNumber,
+                style: HAppStyle.paragraph2Regular
+                    .copyWith(overflow: TextOverflow.ellipsis))
+          ],
+        ),
+        gapH8,
+        Row(
+          children: [
+            gapW6,
+            Icon(EvaIcons.homeOutline),
+            gapW8,
+            Expanded(
+              child: Text(
+                model.toString(),
+                style: HAppStyle.paragraph2Regular,
+              ),
+            )
+          ],
+        ),
+      ],
     );
   }
 }

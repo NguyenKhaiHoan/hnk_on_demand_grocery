@@ -19,13 +19,6 @@ class LoginController extends GetxController {
   final userController = Get.put(UserController());
   final networkController = Get.put(NetworkController());
 
-  @override
-  void onInit() {
-    emailController.text = localStorage.read('email');
-    passController.text = localStorage.read('password');
-    super.onInit();
-  }
-
   void login() async {
     try {
       HAppUtils.loadingOverlays();
@@ -38,9 +31,6 @@ class LoginController extends GetxController {
         HAppUtils.stopLoading();
         return;
       }
-
-      localStorage.write('email', emailController.text.trim());
-      localStorage.write('password', passController.text.trim());
 
       final userCredential = await AuthenticationRepository.instance
           .loginWithEmailAndPassword(

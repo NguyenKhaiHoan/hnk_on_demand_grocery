@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:shimmer/shimmer.dart';
@@ -18,18 +19,9 @@ class UserImageLogoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => userController.isLoading.value
-        ? Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            child: GestureDetector(
-                onTap: () => rootController.animateToScreen(4),
-                child: SizedBox(
-                  width: size,
-                  height: size,
-                  child: const CircleAvatar(
-                    backgroundImage: AssetImage('assets/logos/logo.png'),
-                  ),
-                )),
+        ? const Center(
+            child:
+                CircularProgressIndicator(color: HAppColor.hBluePrimaryColor),
           )
         : userController.user.value.profileImage == ''
             ? GestureDetector(

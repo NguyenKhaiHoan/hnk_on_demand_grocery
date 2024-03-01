@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
@@ -16,6 +17,7 @@ class ChangeNameController extends GetxController {
   final userController = UserController.instance;
   final userRepository = Get.put(UserRepository());
   final rootController = RootController.instance;
+  var isLoading = false.obs;
 
   @override
   void onInit() {
@@ -29,6 +31,7 @@ class ChangeNameController extends GetxController {
 
   changeName() async {
     try {
+      isLoading.value = true;
       HAppUtils.loadingOverlays();
 
       final isConnected = await NetworkController.instance.isConnected();
@@ -51,10 +54,11 @@ class ChangeNameController extends GetxController {
       HAppUtils.showSnackBarSuccess(
           'Thành công', 'Bạn đã thay đổi tên của bạn thành công.');
 
+      isLoading.value = false;
       resetFormChangeName();
-      Get.toNamed(HAppRoutes.root);
-      rootController.animateToScreen(0);
+      Navigator.of(Get.context!).pop();
     } catch (e) {
+      isLoading.value = false;
       HAppUtils.stopLoading();
       HAppUtils.showSnackBarError('Lỗi', e.toString());
     }

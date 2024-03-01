@@ -3,6 +3,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/is_loading_user_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
@@ -75,10 +76,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                                   style: HAppStyle.heading4Style,
                                 ),
                               )
-                            : Text(
+                            : IsLoadingUserNameWidget(
+                                widget: Text(
                                 userController.user.value.name,
                                 style: HAppStyle.heading4Style,
-                              )),
+                              ))),
                         gapH4,
                         Text(
                           'Xem hồ sơ',

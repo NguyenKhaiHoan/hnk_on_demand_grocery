@@ -254,9 +254,9 @@ class ProductController extends GetxController {
       }
     }
     if (groFastvalue!.value == true &&
-        productMoney.value >= 200 &&
+        productMoney.value >= 200000 &&
         applied.value) {
-      productMoney.value = productMoney.value - 100;
+      productMoney.value = productMoney.value - 100000;
     }
   }
 

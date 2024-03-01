@@ -4,12 +4,14 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_layout_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/features/shop/models/recent_oder_model.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/recent_order_item_widget.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class ListAllOrderScreen extends StatelessWidget {
-  const ListAllOrderScreen({super.key});
+  ListAllOrderScreen({super.key});
+
+  final orderController = OrderController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +85,7 @@ class ListAllOrderScreen extends StatelessWidget {
                 widget: GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: listOder.length,
+                  itemCount: orderController.listOder.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 1,
                     crossAxisSpacing: 10.0,
@@ -92,20 +94,70 @@ class ListAllOrderScreen extends StatelessWidget {
                   ),
                   itemBuilder: (BuildContext context, int index) {
                     return RecentOrderItemWidget(
-                        onTap: () {}, model: listOder[index]);
+                        onTap: () {}, model: orderController.listOder[index]);
                   },
                 ),
                 subWidget: Container(),
               ),
             ),
-            Container(),
-            Container(),
             SingleChildScrollView(
               child: CustomLayoutWidget(
                 widget: GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: listOder
+                  itemCount: orderController.listOder
+                      .where((order) => order.active == "Đang chờ")
+                      .toList()
+                      .length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 10.0,
+                    mainAxisExtent: 190,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return RecentOrderItemWidget(
+                        onTap: () {},
+                        model: orderController.listOder
+                            .where((order) => order.active == "Đang chờ")
+                            .toList()[index]);
+                  },
+                ),
+                subWidget: Container(),
+              ),
+            ),
+            SingleChildScrollView(
+              child: CustomLayoutWidget(
+                widget: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: orderController.listOder
+                      .where((order) => order.active == "Chưa giao")
+                      .toList()
+                      .length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 10.0,
+                    mainAxisExtent: 190,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return RecentOrderItemWidget(
+                        onTap: () {},
+                        model: orderController.listOder
+                            .where((order) => order.active == "Chưa giao")
+                            .toList()[index]);
+                  },
+                ),
+                subWidget: Container(),
+              ),
+            ),
+            SingleChildScrollView(
+              child: CustomLayoutWidget(
+                widget: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: orderController.listOder
                       .where((order) => order.active == "Đang giao")
                       .toList()
                       .length,
@@ -118,7 +170,7 @@ class ListAllOrderScreen extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) {
                     return RecentOrderItemWidget(
                         onTap: () {},
-                        model: listOder
+                        model: orderController.listOder
                             .where((order) => order.active == "Đang giao")
                             .toList()[index]);
                   },
@@ -131,7 +183,7 @@ class ListAllOrderScreen extends StatelessWidget {
                 widget: GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: listOder
+                  itemCount: orderController.listOder
                       .where((order) => order.active == "Đã giao")
                       .toList()
                       .length,
@@ -144,7 +196,7 @@ class ListAllOrderScreen extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) {
                     return RecentOrderItemWidget(
                         onTap: () {},
-                        model: listOder
+                        model: orderController.listOder
                             .where((order) => order.active == "Đã giao")
                             .toList()[index]);
                   },
@@ -157,7 +209,7 @@ class ListAllOrderScreen extends StatelessWidget {
                 widget: GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: listOder
+                  itemCount: orderController.listOder
                       .where((order) => order.active == "Đã hủy")
                       .toList()
                       .length,
@@ -170,7 +222,7 @@ class ListAllOrderScreen extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) {
                     return RecentOrderItemWidget(
                         onTap: () {},
-                        model: listOder
+                        model: orderController.listOder
                             .where((order) => order.active == "Đã hủy")
                             .toList()[index]);
                   },

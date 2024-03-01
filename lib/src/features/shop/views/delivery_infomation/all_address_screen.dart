@@ -60,15 +60,10 @@ class _AllAddressScreenState extends State<AllAddressScreen> {
                 future: addressController.fetchAllUserAddresses(),
                 builder: ((context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) => AddressInformation(
-                              address: AddressModel.empty(),
-                              function: () {},
-                            ),
-                        separatorBuilder: (context, index) => gapH12,
-                        itemCount: 2);
+                    return const Center(
+                      child: CircularProgressIndicator(
+                          color: HAppColor.hBluePrimaryColor),
+                    );
                   }
 
                   if (snapshot.hasError) {
@@ -80,29 +75,7 @@ class _AllAddressScreenState extends State<AllAddressScreen> {
                   if (!snapshot.hasData ||
                       snapshot.data == null ||
                       snapshot.data!.isEmpty) {
-                    return GestureDetector(
-                      onTap: () {
-                        Get.toNamed(HAppRoutes.addAddress);
-                      },
-                      child: Container(
-                          width: HAppSize.deviceWidth,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: HAppColor.hWhiteColor),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                EvaIcons.plusCircleOutline,
-                                size: 15,
-                              ),
-                              gapW4,
-                              Text("Thêm địa chỉ giao hàng"),
-                            ],
-                          )),
-                    );
+                    return Container();
                   } else {
                     final addresses = snapshot.data!;
 
