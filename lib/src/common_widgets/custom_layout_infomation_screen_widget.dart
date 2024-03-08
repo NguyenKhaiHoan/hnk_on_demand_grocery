@@ -33,7 +33,7 @@ class CustomLayoutInformationScreenWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Lottie.asset(lottieImage, height: 250, fit: BoxFit.cover),
+            Lottie.asset(lottieImage, height: 220, fit: BoxFit.cover),
             gapH20,
             Text(
               title,

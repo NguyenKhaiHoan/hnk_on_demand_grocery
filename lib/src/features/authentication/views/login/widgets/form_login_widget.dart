@@ -82,7 +82,7 @@ class FormLoginWidget extends StatelessWidget {
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
                       icon: Icon(
-                          loginController.isHide.value
+                          !loginController.isHide.value
                               ? EneftyIcons.eye_bold
                               : EneftyIcons.eye_slash_bold,
                           color: Colors.grey),
@@ -164,7 +164,7 @@ class FormLoginWidget extends StatelessWidget {
                       color: HAppColor.hBluePrimaryColor,
                       borderRadius: BorderRadius.circular(100)),
                   child: SocialMediaButton.google(
-                    onTap: () {},
+                    onTap: () => loginController.googleSignIn(),
                     size: 30,
                     color: HAppColor.hWhiteColor,
                   ),

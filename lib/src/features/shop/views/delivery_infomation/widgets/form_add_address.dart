@@ -1,15 +1,9 @@
-import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/features/authentication/controller/change_password_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/change_name_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/district_ward_model.dart';
-import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/add_address_screen.dart';
-import 'package:on_demand_grocery/src/repositories/user_repository.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
@@ -43,7 +37,7 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                     'Hãy nhập đầy đủ các thông tin dưới đây để tiến hành thêm địa chỉ mới.',
                 style: HAppStyle.paragraph2Regular
                     .copyWith(color: HAppColor.hGreyColorShade600),
-                children: [],
+                children: const [],
               ),
             ),
             gapH24,
@@ -110,13 +104,7 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                       value: valueCity,
                       hint: const Text('Chọn Thành phố'),
                       onChanged: (String? newValue) {
-                        valueCity = newValue!;
-                        valueDistrict = null;
-                        valueWard = null;
-                        addressController.city.value = valueCity!;
-                        addressController.district.value = '';
-                        addressController.ward.value = '';
-                        setState(() {});
+                        selectCity(newValue);
                       },
                       items: <String>['Hà Nội']
                           .map<DropdownMenuItem<String>>((String value) {
@@ -148,22 +136,14 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                             value: valueDistrict,
                             hint: const Text('Chọn Quận/Huyện'),
                             onChanged: (String? newValue) {
-                              valueDistrict = newValue!;
-                              valueWard = null;
-                              addressController.district.value = valueDistrict!;
-                              addressController.ward.value = '';
-                              list.assignAll(listOfDistrictWard
-                                  .firstWhere((DistrictWardModel model) =>
-                                      model.district == valueDistrict)
-                                  .ward);
-                              setState(() {});
+                              selectDistrict(newValue);
                             },
-                            items: listOfDistrictWard
+                            items: addressController.hanoiData
                                 .map<DropdownMenuItem<String>>(
-                                    (DistrictWardModel model) {
+                                    (DistrictModel model) {
                               return DropdownMenuItem<String>(
-                                value: model.district,
-                                child: Text(model.district),
+                                value: model.name,
+                                child: Text(model.name!),
                               );
                             }).toList(),
                           ),
@@ -188,9 +168,7 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                             value: valueWard,
                             hint: const Text('Chọn Phường/Xã'),
                             onChanged: (String? newValue) {
-                              valueWard = newValue!;
-                              addressController.ward.value = valueWard!;
-                              setState(() {});
+                              selectWard(newValue);
                             },
                             items: list
                                 .map<DropdownMenuItem<String>>((String value) {
@@ -230,28 +208,6 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                 ),
               ),
             ),
-            Obx(() => SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text(
-                  'Đặt làm mặc định',
-                  style: HAppStyle.paragraph2Regular,
-                ),
-                trackOutlineColor: MaterialStateProperty.resolveWith(
-                  (final Set<MaterialState> states) {
-                    if (states.contains(MaterialState.selected)) {
-                      return null;
-                    }
-                    return HAppColor.hGreyColorShade300;
-                  },
-                ),
-                activeColor: HAppColor.hBluePrimaryColor,
-                activeTrackColor: HAppColor.hBlueSecondaryColor,
-                inactiveThumbColor: HAppColor.hWhiteColor,
-                inactiveTrackColor: HAppColor.hGreyColorShade300,
-                value: addressController.isDefault.value,
-                onChanged: (changed) {
-                  addressController.isDefault.value = changed;
-                })),
             gapH6,
             ElevatedButton(
               onPressed: () {
@@ -272,5 +228,34 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
         ),
       ),
     );
+  }
+
+  void selectWard(String? newValue) {
+    valueWard = newValue!;
+    addressController.ward.value = valueWard!;
+    setState(() {});
+  }
+
+  void selectCity(String? newValue) {
+    valueCity = newValue!;
+    valueDistrict = null;
+    valueWard = null;
+    addressController.city.value = valueCity!;
+    addressController.district.value = '';
+    addressController.ward.value = '';
+    setState(() {});
+  }
+
+  void selectDistrict(String? newValue) {
+    valueDistrict = newValue!;
+    valueWard = null;
+    addressController.district.value = valueDistrict!;
+    addressController.ward.value = '';
+    list.assignAll(List<String>.from(addressController.hanoiData
+        .firstWhere((DistrictModel model) => model.name == valueDistrict)
+        .children!
+        .map((WardModel model) => model.name)
+        .toList()));
+    setState(() {});
   }
 }

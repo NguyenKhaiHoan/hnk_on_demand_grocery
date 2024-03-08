@@ -1,6 +1,8 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_network/image_network.dart';
+import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/data/dummy_data.dart';
@@ -48,17 +50,24 @@ class ProductItemWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      image: DecorationImage(
-                          image: NetworkImage(model.imgPath),
-                          fit: BoxFit.fill)),
+              ImageNetwork(
+                image: model.imgPath,
+                height: 165,
+                width: 165,
+                duration: 500,
+                curve: Curves.easeIn,
+                onPointer: true,
+                debugPrint: false,
+                fullScreen: false,
+                fitAndroidIos: BoxFit.fill,
+                fitWeb: BoxFitWeb.fill,
+                borderRadius: BorderRadius.circular(10),
+                onLoading: CustomShimmerWidget.rectangular(height: 165),
+                onError: const Icon(
+                  Icons.error,
+                  color: Colors.red,
                 ),
+                onTap: () => null,
               ),
               storeIcon
                   ? Positioned(
@@ -66,15 +75,25 @@ class ProductItemWidget extends StatelessWidget {
                       left: 10,
                       child: GestureDetector(
                         onTap: () {},
-                        child: Container(
-                          width: 40,
+                        child: ImageNetwork(
+                          image: model.imgStore,
                           height: 40,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: HAppColor.hGreyColorShade300,
-                              image: DecorationImage(
-                                  image: NetworkImage(model.imgStore),
-                                  fit: BoxFit.cover)),
+                          width: 40,
+                          duration: 500,
+                          curve: Curves.easeIn,
+                          onPointer: true,
+                          debugPrint: false,
+                          fullScreen: false,
+                          fitAndroidIos: BoxFit.fill,
+                          fitWeb: BoxFitWeb.fill,
+                          borderRadius: BorderRadius.circular(100),
+                          onLoading: CustomShimmerWidget.circular(
+                              width: 150, height: 150),
+                          onError: const Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          ),
+                          onTap: () => null,
                         ),
                       ),
                     )
@@ -165,6 +184,7 @@ class ProductItemWidget extends StatelessWidget {
                       style: HAppStyle.label2Bold.copyWith(
                         overflow: TextOverflow.ellipsis,
                       ),
+                      maxLines: 1,
                     ),
                     gapH4,
                     Row(

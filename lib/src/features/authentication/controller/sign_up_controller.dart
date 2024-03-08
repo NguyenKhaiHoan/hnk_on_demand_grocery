@@ -18,7 +18,7 @@ class SignUpController extends GetxController {
 
   GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
 
-  var isHide = false.obs;
+  var isHide = true.obs;
   var isChoseCondition = true.obs;
 
   void signup() async {

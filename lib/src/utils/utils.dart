@@ -1,13 +1,79 @@
+import 'dart:convert';
+
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:geocode/geocode.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:toastification/toastification.dart';
 
 class HAppUtils {
+  static Future<Position> getGeoLocationPosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    print('vào lấy vị trí');
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openLocationSettings();
+      showSnackBarError('Lỗi', 'Dịch vụ định vị bị vô hiệu hóa.');
+      return Future.error('Dịch vụ định vị bị vô hiệu hóa.');
+    }
+
+    print('xong kiểm tra 1');
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        showSnackBarError('Lỗi', 'Quyền truy cập vị trí bị từ chối.');
+        return Future.error('Quyền truy cập vị trí bị từ chối.');
+      }
+    }
+
+    print('xong kiểm tra 2');
+
+    if (permission == LocationPermission.deniedForever) {
+      showSnackBarError('Lỗi',
+          'Quyền vị trí bị từ chối vĩnh viễn, chúng tôi không thể yêu cầu quyền.');
+      return Future.error(
+          'Quyền vị trí bị từ chối vĩnh viễn, chúng tôi không thể yêu cầu quyền.');
+    }
+
+    print('xong kiểm tra 3');
+
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    print('xong tất cả kiếm tra');
+
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  static Future<List<String>> getAddressFromLatLong(Position position) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      Placemark place = placemarks[0];
+      print(placemarks);
+      return [
+        place.street ?? '',
+        place.subAdministrativeArea ?? '',
+        place.administrativeArea ?? ''
+      ];
+    } catch (e) {
+      HAppUtils.showSnackBarError('Lỗi', e.toString());
+      return [];
+    }
+  }
+
   static void showLostMobileDataConnection(String title, String message) {
     Get.snackbar(
       title,
@@ -235,13 +301,47 @@ class HAppUtils {
     return null;
   }
 
+  static void loadingOverlaysAddress() {
+    showDialog(
+        context: Get.overlayContext!,
+        barrierDismissible: false,
+        builder: (_) => PopScope(
+              canPop: false,
+              child: Container(
+                color: HAppColor.hBackgroundColor,
+                width: HAppSize.deviceWidth,
+                height: HAppSize.deviceHeight,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Lottie.asset(
+                          'assets/animations/loading_address_animation.json',
+                          height: 200,
+                          width: 200,
+                          fit: BoxFit.cover),
+                      gapH20,
+                      Text(
+                        'Đang tìm vị trí ...',
+                        style: HAppStyle.paragraph2Bold
+                            .copyWith(color: HAppColor.hGreyColorShade600),
+                      )
+                    ]),
+              ),
+            ));
+  }
+
   static void loadingOverlays() {
     showDialog(
         context: Get.overlayContext!,
         barrierDismissible: false,
-        builder: (_) => Center(
-              child: PopScope(
-                canPop: false,
+        builder: (_) => PopScope(
+              canPop: false,
+              child: Container(
+                color: HAppColor.hWhiteColor,
+                height: HAppSize.deviceHeight,
+                width: HAppSize.deviceWidth,
+                alignment: Alignment.center,
                 child: Lottie.asset('assets/animations/loading_animation.json',
                     height: 80, width: 80, fit: BoxFit.cover),
               ),

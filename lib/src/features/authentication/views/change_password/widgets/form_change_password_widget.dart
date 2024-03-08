@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/change_password_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
-import 'package:on_demand_grocery/src/repositories/user_repository.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
@@ -29,7 +27,7 @@ class FormChangePasswordWidget extends StatelessWidget {
                     'Hãy nhập đầy đủ các thông tin dưới đây để tiến hành đổi mật khẩu.',
                 style: HAppStyle.paragraph2Regular
                     .copyWith(color: HAppColor.hGreyColorShade600),
-                children: [],
+                children: const [],
               ),
             ),
             gapH24,

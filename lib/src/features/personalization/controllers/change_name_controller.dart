@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
-import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/repositories/user_repository.dart';
-import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class ChangeNameController extends GetxController {
@@ -49,6 +46,7 @@ class ChangeNameController extends GetxController {
       await userRepository.updateSingleField(name);
 
       userController.user.value.name = nameController.text.trim();
+      userController.user.refresh();
 
       HAppUtils.stopLoading();
       HAppUtils.showSnackBarSuccess(

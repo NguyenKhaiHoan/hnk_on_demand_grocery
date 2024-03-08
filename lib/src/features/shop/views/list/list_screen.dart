@@ -73,6 +73,7 @@ class _ListScreenState extends State<ListScreen>
                 padding: const EdgeInsets.only(left: hAppDefaultPadding),
                 child: UserImageLogoWidget(
                   size: 40,
+                  hasFunction: true,
                 ),
               ),
             ),

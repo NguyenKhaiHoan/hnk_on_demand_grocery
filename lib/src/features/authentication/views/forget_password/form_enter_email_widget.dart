@@ -32,7 +32,7 @@ class FormEnterEmailWidget extends StatelessWidget {
                     'Đừng lo lắng, chúng tôi sẽ gửi 1 đường dẫn đến email của bạn đặt lại mật khẩu.',
                 style: HAppStyle.paragraph2Regular
                     .copyWith(color: HAppColor.hGreyColorShade600),
-                children: [],
+                children: const [],
               ),
             ),
             gapH12,

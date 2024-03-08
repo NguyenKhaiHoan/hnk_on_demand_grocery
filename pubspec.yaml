@@ -66,7 +66,7 @@ dependencies:
   fade_shimmer: ^2.2.0
   flutter_speed_dial: ^7.0.0
   toastification: ^1.2.0
-  lottie: ^3.0.0
+  lottie: any
   flutter_rating_bar: ^4.0.1
   percent_indicator: ^4.2.3
   flutter_slidable: ^3.0.1
@@ -84,6 +84,15 @@ dependencies:
     sdk: flutter
   image_picker: ^1.0.7
   firebase_storage: ^11.6.7
+  dvhcvn: ^2.0.20240201
+  image_network: ^2.5.6
+  timelines: ^0.1.0
+  easy_stepper: ^0.8.3
+  google_maps_flutter: ^2.5.3
+  geolocator: ^11.0.0
+  geocoding: ^2.2.0
+  http: ^1.2.0
+  geocode: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -113,6 +122,7 @@ flutter:
     - assets/images/category/
     - assets/images/other/
     - assets/animations/
+    - assets/json/hanoi_data.json
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

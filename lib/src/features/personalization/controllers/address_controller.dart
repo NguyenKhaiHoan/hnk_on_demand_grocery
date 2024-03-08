@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
-import 'package:on_demand_grocery/src/repositories/address_reposity.dart';
+import 'package:on_demand_grocery/src/features/personalization/models/district_ward_model.dart';
+import 'package:on_demand_grocery/src/repositories/address_repository.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class AddressController extends GetxController {
@@ -14,7 +18,7 @@ class AddressController extends GetxController {
   var selectedAddress = AddressModel.empty().obs;
   var isSelectAddressLoading = false.obs;
 
-  var isLoading = true.obs;
+  var toggleRefresh = true.obs;
   GlobalKey<FormState> addAddressFormKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
@@ -23,6 +27,23 @@ class AddressController extends GetxController {
   var district = ''.obs;
   var ward = ''.obs;
   var isDefault = true.obs;
+
+  List<DistrictModel> hanoiData = <DistrictModel>[].obs;
+
+  @override
+  void onInit() {
+    readHaNoiDataJson();
+    super.onInit();
+  }
+
+  Future<void> readHaNoiDataJson() async {
+    final String response =
+        await rootBundle.loadString('assets/json/hanoi_data.json');
+    final data = await json.decode(response);
+
+    var list = data['data'] as List<dynamic>;
+    hanoiData = list.map((e) => DistrictModel.fromJson(e)).toList();
+  }
 
   Future<List<AddressModel>> fetchAllUserAddresses() async {
     try {
@@ -48,6 +69,8 @@ class AddressController extends GetxController {
       selectedAddress.value = newSelectedAddress;
       await addressRepository.updateSelectedField(
           selectedAddress.value.id, true);
+
+      toggleRefresh.toggle();
     } catch (e) {
       HAppUtils.showSnackBarError(
           'Lỗi không thể lựa chọn địa chỉ', e.toString());
@@ -64,28 +87,26 @@ class AddressController extends GetxController {
         return;
       }
 
-      if (!addAddressFormKey.currentState!.validate()) {
-        HAppUtils.stopLoading();
-        return;
-      }
-
-      if (city.value == '' || district.value == '' || ward.value == '') {
+      if (!addAddressFormKey.currentState!.validate() ||
+          city.value == '' ||
+          district.value == '' ||
+          ward.value == '') {
         HAppUtils.stopLoading();
         HAppUtils.showSnackBarWarning('Chọn địa chỉ',
-            'Bạn chưa chọn đầy đủ địa chỉ. Hãy chọn đầy đủ Thành phố, Quận/Huyện, Phường/Xã.');
+            'Bạn chưa điền đầy đủ địa chỉ. Hãy chọn đầy đủ Thành phố, Quận/Huyện, Phường/Xã và Số nhà, đường, ngõ.');
         return;
       }
 
       final address = AddressModel(
-          id: '',
-          name: nameController.text.trim(),
-          phoneNumber: phoneController.text.trim(),
-          city: city.value,
-          district: district.value,
-          ward: ward.value,
-          street: streetController.text.trim(),
-          selectedAddress: true,
-          isDefault: isDefault.value);
+        id: '',
+        name: nameController.text.trim(),
+        phoneNumber: phoneController.text.trim(),
+        city: city.value,
+        district: district.value,
+        ward: ward.value,
+        street: streetController.text.trim(),
+        selectedAddress: true,
+      );
 
       final id =
           await AddressRepository.instance.addAndFindIdForNewAddress(address);
@@ -96,7 +117,7 @@ class AddressController extends GetxController {
       HAppUtils.showSnackBarSuccess(
           'Thành công', 'Bạn đã thêm địa chỉ giao hàng mới thành công');
 
-      isLoading.toggle();
+      toggleRefresh.toggle();
 
       resetFormAddAddress();
 

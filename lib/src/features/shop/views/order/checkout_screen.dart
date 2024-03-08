@@ -9,6 +9,7 @@ import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/date_delivery_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
@@ -17,6 +18,7 @@ import 'package:on_demand_grocery/src/features/shop/models/recent_oder_model.dar
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/product_list_stack.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -126,8 +128,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Obx(() => FutureBuilder(
-                          key:
-                              Key(addressController.isLoading.value.toString()),
+                          key: Key(
+                              addressController.toggleRefresh.value.toString()),
                           future: addressController.fetchAllUserAddresses(),
                           builder: ((context, snapshot) {
                             if (snapshot.connectionState ==
@@ -147,11 +149,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               );
                             }
 
-                            if (!snapshot.hasData ||
-                                snapshot.data == null ||
-                                snapshot.data!.isEmpty) {
+                            if (!snapshot.hasData || snapshot.data == null) {
+                              if (snapshot.data!.isEmpty) {}
                               return const Text(
-                                  'Địa chỉ giao hàng trống, hãy thêm đia chỉ giao hàng.');
+                                  'Địa chỉ giao hàng trống, hãy thêm địa chỉ giao hàng.');
                             } else {
                               final addresses = snapshot.data!;
                               return AddressCheckoutWidget(
@@ -164,11 +165,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         color: HAppColor.hGreyColorShade300,
                       ),
                       gapH4,
-                      Obx(() => dateDeliveryController.date.value == ''
-                          ? Text(DateFormat('EEEE, d-M-y', 'vi')
-                              .format(DateTime.now())
-                              .toString())
-                          : Text(dateDeliveryController.date.value)),
+                      Obx(() => Text(dateDeliveryController.date.value)),
                     ],
                   ),
                 )
@@ -419,18 +416,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Get.toNamed(HAppRoutes.complete);
-                    orderController.listOder.add(OrderModel(
-                        orderId: generateId(6),
-                        active: 'Đang chờ',
-                        date: dateDeliveryController.date.value,
-                        listProduct: productController.isInCart,
-                        price: DummyData.vietNamCurrencyFormatting(
-                            productController.productMoney.value)));
-                    productController.removeAllProductInCart();
-                    productController.refreshAllList();
-                    productController.addMapProductInCart();
-                    productController.productMoney.value = 0;
+                    if (UserController
+                        .instance.user.value.phoneNumber.isEmpty) {
+                      HAppUtils.showSnackBarWarning('Hoàn thành đầy đủ địa chỉ',
+                          'Có vẻ bạn chưa nhập số điện thoại. Hãy nhập số điện thoại để hoàn tất đặt hàng');
+                    } else {
+                      Get.toNamed(HAppRoutes.complete);
+                      orderController.listOder.add(OrderModel(
+                          orderId: generateId(6),
+                          active: 'Đang chờ',
+                          date: dateDeliveryController.date.value,
+                          listProduct: productController.isInCart,
+                          price: DummyData.vietNamCurrencyFormatting(
+                              productController.productMoney.value)));
+                      productController.removeAllProductInCart();
+                      productController.refreshAllList();
+                      productController.addMapProductInCart();
+                      productController.productMoney.value = 0;
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(HAppSize.deviceWidth * 0.45, 50),
@@ -477,16 +480,22 @@ class AddressCheckoutWidget extends StatelessWidget {
               size: 20,
             ),
             gapW8,
-            Text(model.phoneNumber,
-                style: HAppStyle.paragraph2Regular
-                    .copyWith(overflow: TextOverflow.ellipsis))
+            Text(
+                model.phoneNumber == ''
+                    ? 'Số điện thoại còn trống'
+                    : model.phoneNumber,
+                style: HAppStyle.paragraph2Regular.copyWith(
+                    overflow: TextOverflow.ellipsis,
+                    color: model.phoneNumber == ''
+                        ? HAppColor.hRedColor
+                        : HAppColor.hDarkColor))
           ],
         ),
         gapH8,
         Row(
           children: [
             gapW6,
-            Icon(EvaIcons.homeOutline),
+            const Icon(EvaIcons.homeOutline),
             gapW8,
             Expanded(
               child: Text(

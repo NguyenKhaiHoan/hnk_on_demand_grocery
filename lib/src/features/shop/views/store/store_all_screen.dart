@@ -57,6 +57,7 @@ class _AllStoreScreenState extends State<AllStoreScreen>
             padding: const EdgeInsets.only(left: hAppDefaultPadding),
             child: UserImageLogoWidget(
               size: 40,
+              hasFunction: true,
             ),
           ),
         ),

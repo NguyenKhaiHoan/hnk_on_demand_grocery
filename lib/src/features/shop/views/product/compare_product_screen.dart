@@ -39,7 +39,7 @@ class _CompareProductScreenState extends State<CompareProductScreen> {
                     width: 1.5,
                   ),
                   color: HAppColor.hBackgroundColor),
-              child: Center(
+              child: const Center(
                 child: Icon(
                   EvaIcons.arrowBackOutline,
                 ),
@@ -48,7 +48,7 @@ class _CompareProductScreenState extends State<CompareProductScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Padding(
             padding: hAppDefaultPaddingLR,
             child: Center(

@@ -167,6 +167,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
                           style: HAppStyle.label2Bold.copyWith(
                             overflow: TextOverflow.ellipsis,
                           ),
+                          maxLines: 1,
                         ),
                         gapH8,
                         Row(

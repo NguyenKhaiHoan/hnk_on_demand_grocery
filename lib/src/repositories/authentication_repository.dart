@@ -1,15 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:on_demand_grocery/src/common_widgets/splash_screen_widget.dart';
 import 'package:on_demand_grocery/src/exceptions/firebase_auth_exceptions.dart';
 import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
-import 'package:on_demand_grocery/src/features/shop/views/root/root_screen.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
@@ -27,8 +31,12 @@ class AuthenticationRepository extends GetxController {
     final user = _auth.currentUser;
     FlutterNativeSplash.remove();
     if (user != null) {
+      print('user không null');
+      print(user.displayName);
       if (user.emailVerified) {
-        Get.offAll(const SplashScreen(widget: RootScreen()));
+        final userController = Get.put(UserController());
+        Get.offAllNamed(HAppRoutes.root);
+        await userController.fetchCurrentPosition();
       } else {
         Get.offAllNamed(HAppRoutes.verify, arguments: {'email': user.email});
       }

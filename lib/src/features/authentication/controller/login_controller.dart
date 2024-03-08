@@ -14,9 +14,9 @@ class LoginController extends GetxController {
   GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
 
   final localStorage = GetStorage();
-  var isHide = false.obs;
+  var isHide = true.obs;
   var isLoading = false.obs;
-  final userController = Get.put(UserController());
+  final userController = UserController.instance;
   final networkController = Get.put(NetworkController());
 
   void login() async {
@@ -47,10 +47,7 @@ class LoginController extends GetxController {
   void googleSignIn() async {
     try {
       isLoading.value = true;
-      if (!loginFormKey.currentState!.validate()) {
-        HAppUtils.stopLoading();
-        return;
-      }
+
       final isConnected = await NetworkController.instance.isConnected();
       if (!isConnected) {
         HAppUtils.stopLoading();

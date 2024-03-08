@@ -10,8 +10,11 @@ class AddressRepository extends GetxController {
 
   Future<List<AddressModel>> getAllUserAddress() async {
     try {
+      print('Vào get all user address');
+
       final userId = AuthenticationRepository.instance.authUser!.uid;
       if (userId.isEmpty) throw 'Không có thông tin người dùng';
+      print('Có thông tin người dùng');
 
       final addresses = await _db
           .collection('Users')

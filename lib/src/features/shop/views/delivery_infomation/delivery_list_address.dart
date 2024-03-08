@@ -29,7 +29,7 @@ class DeliveryAddress extends StatelessWidget {
         title: const Text("Địa chỉ"),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(),
+      body: const SingleChildScrollView(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: HAppColor.hBluePrimaryColor,
         shape: const CircleBorder(),

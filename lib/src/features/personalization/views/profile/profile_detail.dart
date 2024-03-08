@@ -1,14 +1,14 @@
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:on_demand_grocery/src/common_widgets/is_loading_user_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/change_name_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/change_phone_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/views/profile/widgets/section_profile.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
-import 'package:shimmer/shimmer.dart';
 
 class ProfileDetailScreen extends StatefulWidget {
   const ProfileDetailScreen({super.key});
@@ -19,6 +19,10 @@ class ProfileDetailScreen extends StatefulWidget {
 
 class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   final userController = UserController.instance;
+  final changeNameController = ChangeNameController.instance;
+
+  var changePhoneController = Get.put(ChangePhoneController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,12 +53,10 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                Obx(() => userController.isUploadImageLoading.value
-                    ? const Center(
-                        child: CircularProgressIndicator(
-                            color: HAppColor.hBluePrimaryColor),
-                      )
-                    : UserImageLogoWidget(size: 80)),
+                UserImageLogoWidget(
+                  size: 80,
+                  hasFunction: false,
+                ),
                 gapH12,
                 GestureDetector(
                   onTap: () {
@@ -76,14 +78,15 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                 borderRadius: BorderRadius.circular(10)),
             child: Column(
               children: [
-                SectionProfileWidget(
-                  title: 'Tên',
-                  showIcon: true,
-                  function: () {
-                    Get.toNamed(HAppRoutes.changeName);
-                  },
-                  title2: userController.user.value.name,
-                ),
+                Obx(() => SectionProfileWidget(
+                      title: 'Tên',
+                      showIcon: true,
+                      function: () {
+                        Get.toNamed(HAppRoutes.changeName);
+                      },
+                      title2: userController.user.value.name,
+                      isSubLoading: changeNameController.isLoading.value,
+                    )),
                 gapH6,
                 Divider(
                   color: HAppColor.hGreyColorShade300,
@@ -93,18 +96,22 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   title: 'Id',
                   showIcon: true,
                   title2: userController.user.value.id,
+                  isSubLoading: false,
                 ),
                 gapH6,
                 Divider(
                   color: HAppColor.hGreyColorShade300,
                 ),
                 gapH6,
-                SectionProfileWidget(
-                  title: 'Số điện thoại',
-                  showIcon: true,
-                  function: () {},
-                  title2: userController.user.value.phoneNumber,
-                ),
+                Obx(() => SectionProfileWidget(
+                      title: 'Số điện thoại',
+                      showIcon: true,
+                      function: () {
+                        Get.toNamed(HAppRoutes.changePhone);
+                      },
+                      title2: userController.user.value.phoneNumber,
+                      isSubLoading: changePhoneController.isLoading.value,
+                    )),
                 gapH6,
                 Divider(
                   color: HAppColor.hGreyColorShade300,
@@ -114,6 +121,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   title: 'Email',
                   showIcon: false,
                   title2: userController.user.value.email,
+                  isSubLoading: false,
                 ),
                 gapH6,
                 Divider(
@@ -124,6 +132,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   title: 'Ngày tạo',
                   showIcon: false,
                   title2: userController.user.value.creationDate,
+                  isSubLoading: false,
                 ),
               ],
             ),
@@ -141,6 +150,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   title: 'Hình thức đăng nhập',
                   showIcon: false,
                   title2: userController.user.value.authenticationBy,
+                  isSubLoading: false,
                 ),
                 userController.user.value.authenticationBy == 'Email'
                     ? Column(
@@ -157,6 +167,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                             function: () {
                               Get.toNamed(HAppRoutes.changePassword);
                             },
+                            isSubLoading: false,
                           )
                         ],
                       )
@@ -178,88 +189,13 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   showIcon: true,
                   function: () {},
                   title2: '',
+                  isSubLoading: false,
                 ),
               ],
             ),
           )
         ]),
       ),
-    );
-  }
-}
-
-class SectionProfileWidget extends StatelessWidget {
-  SectionProfileWidget({
-    super.key,
-    required this.title,
-    required this.title2,
-    required this.showIcon,
-    this.function,
-  });
-
-  final userController = UserController.instance;
-  final String title2;
-  final Function()? function;
-  final bool showIcon;
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 3,
-          child: Text(
-            title,
-            style: HAppStyle.paragraph2Bold,
-          ),
-        ),
-        Expanded(
-          flex: 4,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Obx(() => userController.isLoading.value
-                ? const Center(
-                    child: CircularProgressIndicator(
-                        color: HAppColor.hBluePrimaryColor),
-                  )
-                : IsLoadingUserNameWidget(
-                    widget: Text(
-                    title2,
-                    style: HAppStyle.paragraph2Regular.copyWith(
-                        color: HAppColor.hGreyColorShade600,
-                        overflow: TextOverflow.ellipsis),
-                  ))),
-          ),
-        ),
-        showIcon
-            ? title == 'Id'
-                ? Row(
-                    children: [
-                      gapW6,
-                      GestureDetector(
-                        onTap: function,
-                        child: const Icon(
-                          EvaIcons.copyOutline,
-                          size: 20,
-                        ),
-                      )
-                    ],
-                  )
-                : Row(
-                    children: [
-                      gapW6,
-                      GestureDetector(
-                        onTap: function,
-                        child: const Icon(
-                          EvaIcons.arrowIosForwardOutline,
-                          size: 20,
-                        ),
-                      )
-                    ],
-                  )
-            : Container()
-      ],
     );
   }
 }

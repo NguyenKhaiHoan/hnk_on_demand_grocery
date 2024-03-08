@@ -1,0 +1,3109 @@
+{
+    "data": [
+        {
+            "district_id": "001",
+            "name": "Quận Ba Đình",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00001",
+                    "name": "Phường Phúc Xá",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00004",
+                    "name": "Phường Trúc Bạch",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00006",
+                    "name": "Phường Vĩnh Phúc",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00007",
+                    "name": "Phường Cống Vị",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00008",
+                    "name": "Phường Liễu Giai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00010",
+                    "name": "Phường Nguyễn Trung Trực",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00013",
+                    "name": "Phường Quán Thánh",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00016",
+                    "name": "Phường Ngọc Hà",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00019",
+                    "name": "Phường Điện Biên",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00022",
+                    "name": "Phường Đội Cấn",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00025",
+                    "name": "Phường Ngọc Khánh",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00028",
+                    "name": "Phường Kim Mã",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00031",
+                    "name": "Phường Giảng Võ",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00034",
+                    "name": "Phường Thành Công",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "002",
+            "name": "Quận Hoàn Kiếm",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00037",
+                    "name": "Phường Phúc Tân",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00040",
+                    "name": "Phường Đồng Xuân",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00043",
+                    "name": "Phường Hàng Mã",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00046",
+                    "name": "Phường Hàng Buồm",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00049",
+                    "name": "Phường Hàng Đào",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00052",
+                    "name": "Phường Hàng Bồ",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00055",
+                    "name": "Phường Cửa Đông",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00058",
+                    "name": "Phường Lý Thái Tổ",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00061",
+                    "name": "Phường Hàng Bạc",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00064",
+                    "name": "Phường Hàng Gai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00067",
+                    "name": "Phường Chương Dương",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00070",
+                    "name": "Phường Hàng Trống",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00073",
+                    "name": "Phường Cửa Nam",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00076",
+                    "name": "Phường Hàng Bông",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00079",
+                    "name": "Phường Tràng Tiền",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00082",
+                    "name": "Phường Trần Hưng Đạo",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00085",
+                    "name": "Phường Phan Chu Trinh",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00088",
+                    "name": "Phường Hàng Bài",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "003",
+            "name": "Quận Tây Hồ",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00091",
+                    "name": "Phường Phú Thượng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00094",
+                    "name": "Phường Nhật Tân",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00097",
+                    "name": "Phường Tứ Liên",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00100",
+                    "name": "Phường Quảng An",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00103",
+                    "name": "Phường Xuân La",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00106",
+                    "name": "Phường Yên Phụ",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00109",
+                    "name": "Phường Bưởi",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00112",
+                    "name": "Phường Thụy Khuê",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "004",
+            "name": "Quận Long Biên",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00115",
+                    "name": "Phường Thượng Thanh",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00118",
+                    "name": "Phường Ngọc Thụy",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00121",
+                    "name": "Phường Giang Biên",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00124",
+                    "name": "Phường Đức Giang",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00127",
+                    "name": "Phường Việt Hưng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00130",
+                    "name": "Phường Gia Thụy",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00133",
+                    "name": "Phường Ngọc Lâm",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00136",
+                    "name": "Phường Phúc Lợi",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00139",
+                    "name": "Phường Bồ Đề",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00142",
+                    "name": "Phường Sài Đồng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00145",
+                    "name": "Phường Long Biên",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00148",
+                    "name": "Phường Thạch Bàn",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00151",
+                    "name": "Phường Phúc Đồng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00154",
+                    "name": "Phường Cự Khối",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "005",
+            "name": "Quận Cầu Giấy",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00157",
+                    "name": "Phường Nghĩa Đô",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00160",
+                    "name": "Phường Nghĩa Tân",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00163",
+                    "name": "Phường Mai Dịch",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00166",
+                    "name": "Phường Dịch Vọng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00167",
+                    "name": "Phường Dịch Vọng Hậu",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00169",
+                    "name": "Phường Quan Hoa",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00172",
+                    "name": "Phường Yên Hoà",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00175",
+                    "name": "Phường Trung Hoà",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "006",
+            "name": "Quận Đống Đa",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00178",
+                    "name": "Phường Cát Linh",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00181",
+                    "name": "Phường Văn Miếu",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00184",
+                    "name": "Phường Quốc Tử Giám",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00187",
+                    "name": "Phường Láng Thượng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00190",
+                    "name": "Phường Ô Chợ Dừa",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00193",
+                    "name": "Phường Văn Chương",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00196",
+                    "name": "Phường Hàng Bột",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00199",
+                    "name": "Phường Láng Hạ",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00202",
+                    "name": "Phường Khâm Thiên",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00205",
+                    "name": "Phường Thổ Quan",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00208",
+                    "name": "Phường Nam Đồng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00211",
+                    "name": "Phường Trung Phụng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00214",
+                    "name": "Phường Quang Trung",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00217",
+                    "name": "Phường Trung Liệt",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00220",
+                    "name": "Phường Phương Liên",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00223",
+                    "name": "Phường Thịnh Quang",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00226",
+                    "name": "Phường Trung Tự",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00229",
+                    "name": "Phường Kim Liên",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00232",
+                    "name": "Phường Phương Mai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00235",
+                    "name": "Phường Ngã Tư Sở",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00238",
+                    "name": "Phường Khương Thượng",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "007",
+            "name": "Quận Hai Bà Trưng",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00241",
+                    "name": "Phường Nguyễn Du",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00244",
+                    "name": "Phường Bạch Đằng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00247",
+                    "name": "Phường Phạm Đình Hổ",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00256",
+                    "name": "Phường Lê Đại Hành",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00259",
+                    "name": "Phường Đồng Nhân",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00262",
+                    "name": "Phường Phố Huế",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00265",
+                    "name": "Phường Đống Mác",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00268",
+                    "name": "Phường Thanh Lương",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00271",
+                    "name": "Phường Thanh Nhàn",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00274",
+                    "name": "Phường Cầu Dền",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00277",
+                    "name": "Phường Bách Khoa",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00280",
+                    "name": "Phường Đồng Tâm",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00283",
+                    "name": "Phường Vĩnh Tuy",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00286",
+                    "name": "Phường Bạch Mai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00289",
+                    "name": "Phường Quỳnh Mai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00292",
+                    "name": "Phường Quỳnh Lôi",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00295",
+                    "name": "Phường Minh Khai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00298",
+                    "name": "Phường Trương Định",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "008",
+            "name": "Quận Hoàng Mai",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00301",
+                    "name": "Phường Thanh Trì",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00304",
+                    "name": "Phường Vĩnh Hưng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00307",
+                    "name": "Phường Định Công",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00310",
+                    "name": "Phường Mai Động",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00313",
+                    "name": "Phường Tương Mai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00316",
+                    "name": "Phường Đại Kim",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00319",
+                    "name": "Phường Tân Mai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00322",
+                    "name": "Phường Hoàng Văn Thụ",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00325",
+                    "name": "Phường Giáp Bát",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00328",
+                    "name": "Phường Lĩnh Nam",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00331",
+                    "name": "Phường Thịnh Liệt",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00334",
+                    "name": "Phường Trần Phú",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00337",
+                    "name": "Phường Hoàng Liệt",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00340",
+                    "name": "Phường Yên Sở",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "009",
+            "name": "Quận Thanh Xuân",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00343",
+                    "name": "Phường Nhân Chính",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00346",
+                    "name": "Phường Thượng Đình",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00349",
+                    "name": "Phường Khương Trung",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00352",
+                    "name": "Phường Khương Mai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00355",
+                    "name": "Phường Thanh Xuân Trung",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00358",
+                    "name": "Phường Phương Liệt",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00361",
+                    "name": "Phường Hạ Đình",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00364",
+                    "name": "Phường Khương Đình",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00367",
+                    "name": "Phường Thanh Xuân Bắc",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00370",
+                    "name": "Phường Thanh Xuân Nam",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00373",
+                    "name": "Phường Kim Giang",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "016",
+            "name": "Huyện Sóc Sơn",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "00376",
+                    "name": "Thị trấn Sóc Sơn",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "00379",
+                    "name": "Xã Bắc Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00382",
+                    "name": "Xã Minh Trí",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00385",
+                    "name": "Xã Hồng Kỳ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00388",
+                    "name": "Xã Nam Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00391",
+                    "name": "Xã Trung Giã",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00394",
+                    "name": "Xã Tân Hưng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00397",
+                    "name": "Xã Minh Phú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00400",
+                    "name": "Xã Phù Linh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00403",
+                    "name": "Xã Bắc Phú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00406",
+                    "name": "Xã Tân Minh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00409",
+                    "name": "Xã Quang Tiến",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00412",
+                    "name": "Xã Hiền Ninh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00415",
+                    "name": "Xã Tân Dân",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00418",
+                    "name": "Xã Tiên Dược",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00421",
+                    "name": "Xã Việt Long",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00424",
+                    "name": "Xã Xuân Giang",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00427",
+                    "name": "Xã Mai Đình",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00430",
+                    "name": "Xã Đức Hoà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00433",
+                    "name": "Xã Thanh Xuân",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00436",
+                    "name": "Xã Đông Xuân",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00439",
+                    "name": "Xã Kim Lũ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00442",
+                    "name": "Xã Phú Cường",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00445",
+                    "name": "Xã Phú Minh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00448",
+                    "name": "Xã Phù Lỗ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00451",
+                    "name": "Xã Xuân Thu",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "017",
+            "name": "Huyện Đông Anh",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "00454",
+                    "name": "Thị trấn Đông Anh",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "00457",
+                    "name": "Xã Xuân Nộn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00460",
+                    "name": "Xã Thuỵ Lâm",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00463",
+                    "name": "Xã Bắc Hồng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00466",
+                    "name": "Xã Nguyên Khê",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00469",
+                    "name": "Xã Nam Hồng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00472",
+                    "name": "Xã Tiên Dương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00475",
+                    "name": "Xã Vân Hà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00478",
+                    "name": "Xã Uy Nỗ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00481",
+                    "name": "Xã Vân Nội",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00484",
+                    "name": "Xã Liên Hà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00487",
+                    "name": "Xã Việt Hùng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00490",
+                    "name": "Xã Kim Nỗ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00493",
+                    "name": "Xã Kim Chung",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00496",
+                    "name": "Xã Dục Tú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00499",
+                    "name": "Xã Đại Mạch",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00502",
+                    "name": "Xã Vĩnh Ngọc",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00505",
+                    "name": "Xã Cổ Loa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00508",
+                    "name": "Xã Hải Bối",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00511",
+                    "name": "Xã Xuân Canh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00514",
+                    "name": "Xã Võng La",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00517",
+                    "name": "Xã Tàm Xá",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00520",
+                    "name": "Xã Mai Lâm",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00523",
+                    "name": "Xã Đông Hội",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "018",
+            "name": "Huyện Gia Lâm",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "00526",
+                    "name": "Thị trấn Yên Viên",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "00529",
+                    "name": "Xã Yên Thường",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00532",
+                    "name": "Xã Yên Viên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00535",
+                    "name": "Xã Ninh Hiệp",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00538",
+                    "name": "Xã Đình Xuyên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00541",
+                    "name": "Xã Dương Hà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00544",
+                    "name": "Xã Phù Đổng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00547",
+                    "name": "Xã Trung Mầu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00550",
+                    "name": "Xã Lệ Chi",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00553",
+                    "name": "Xã Cổ Bi",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00556",
+                    "name": "Xã Đặng Xá",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00559",
+                    "name": "Xã Phú Thị",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00562",
+                    "name": "Xã Kim Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00565",
+                    "name": "Thị trấn Trâu Quỳ",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "00568",
+                    "name": "Xã Dương Quang",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00571",
+                    "name": "Xã Dương Xá",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00574",
+                    "name": "Xã Đông Dư",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00577",
+                    "name": "Xã Đa Tốn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00580",
+                    "name": "Xã Kiêu Kỵ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00583",
+                    "name": "Xã Bát Tràng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00586",
+                    "name": "Xã Kim Lan",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00589",
+                    "name": "Xã Văn Đức",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "019",
+            "name": "Quận Nam Từ Liêm",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00592",
+                    "name": "Phường Cầu Diễn",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00622",
+                    "name": "Phường Xuân Phương",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00623",
+                    "name": "Phường Phương Canh",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00625",
+                    "name": "Phường Mỹ Đình 1",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00626",
+                    "name": "Phường Mỹ Đình 2",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00628",
+                    "name": "Phường Tây Mỗ",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00631",
+                    "name": "Phường Mễ Trì",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00632",
+                    "name": "Phường Phú Đô",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00634",
+                    "name": "Phường Đại Mỗ",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00637",
+                    "name": "Phường Trung Văn",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "020",
+            "name": "Huyện Thanh Trì",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "00640",
+                    "name": "Thị trấn Văn Điển",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "00643",
+                    "name": "Xã Tân Triều",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00646",
+                    "name": "Xã Thanh Liệt",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00649",
+                    "name": "Xã Tả Thanh Oai",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00652",
+                    "name": "Xã Hữu Hoà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00655",
+                    "name": "Xã Tam Hiệp",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00658",
+                    "name": "Xã Tứ Hiệp",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00661",
+                    "name": "Xã Yên Mỹ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00664",
+                    "name": "Xã Vĩnh Quỳnh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00667",
+                    "name": "Xã Ngũ Hiệp",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00670",
+                    "name": "Xã Duyên Hà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00673",
+                    "name": "Xã Ngọc Hồi",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00676",
+                    "name": "Xã Vạn Phúc",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00679",
+                    "name": "Xã Đại áng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00682",
+                    "name": "Xã Liên Ninh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "00685",
+                    "name": "Xã Đông Mỹ",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "021",
+            "name": "Quận Bắc Từ Liêm",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "00595",
+                    "name": "Phường Thượng Cát",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00598",
+                    "name": "Phường Liên Mạc",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00601",
+                    "name": "Phường Đông Ngạc",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00602",
+                    "name": "Phường Đức Thắng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00604",
+                    "name": "Phường Thụy Phương",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00607",
+                    "name": "Phường Tây Tựu",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00610",
+                    "name": "Phường Xuân Đỉnh",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00611",
+                    "name": "Phường Xuân Tảo",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00613",
+                    "name": "Phường Minh Khai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00616",
+                    "name": "Phường Cổ Nhuế 1",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00617",
+                    "name": "Phường Cổ Nhuế 2",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00619",
+                    "name": "Phường Phú Diễn",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "00620",
+                    "name": "Phường Phúc Diễn",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "250",
+            "name": "Huyện Mê Linh",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "08973",
+                    "name": "Thị trấn Chi Đông",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "08974",
+                    "name": "Xã Đại Thịnh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "08977",
+                    "name": "Xã Kim Hoa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "08980",
+                    "name": "Xã Thạch Đà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "08983",
+                    "name": "Xã Tiến Thắng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "08986",
+                    "name": "Xã Tự Lập",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "08989",
+                    "name": "Thị trấn Quang Minh",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "08992",
+                    "name": "Xã Thanh Lâm",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "08995",
+                    "name": "Xã Tam Đồng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "08998",
+                    "name": "Xã Liên Mạc",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09001",
+                    "name": "Xã Vạn Yên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09004",
+                    "name": "Xã Chu Phan",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09007",
+                    "name": "Xã Tiến Thịnh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09010",
+                    "name": "Xã Mê Linh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09013",
+                    "name": "Xã Văn Khê",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09016",
+                    "name": "Xã Hoàng Kim",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09019",
+                    "name": "Xã Tiền Phong",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09022",
+                    "name": "Xã Tráng Việt",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "268",
+            "name": "Quận Hà Đông",
+            "type": "Quận",
+            "children": [
+                {
+                    "ward_id": "09538",
+                    "name": "Phường Nguyễn Trãi",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09541",
+                    "name": "Phường Mộ Lao",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09542",
+                    "name": "Phường Văn Quán",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09544",
+                    "name": "Phường Vạn Phúc",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09547",
+                    "name": "Phường Yết Kiêu",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09550",
+                    "name": "Phường Quang Trung",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09551",
+                    "name": "Phường La Khê",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09552",
+                    "name": "Phường Phú La",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09553",
+                    "name": "Phường Phúc La",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09556",
+                    "name": "Phường Hà Cầu",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09562",
+                    "name": "Phường Yên Nghĩa",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09565",
+                    "name": "Phường Kiến Hưng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09568",
+                    "name": "Phường Phú Lãm",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09571",
+                    "name": "Phường Phú Lương",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09886",
+                    "name": "Phường Dương Nội",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "10117",
+                    "name": "Phường Đồng Mai",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "10123",
+                    "name": "Phường Biên Giang",
+                    "type": "Phường"
+                }
+            ]
+        },
+        {
+            "district_id": "269",
+            "name": "Thị xã Sơn Tây",
+            "type": "Thị xã",
+            "children": [
+                {
+                    "ward_id": "09574",
+                    "name": "Phường Lê Lợi",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09577",
+                    "name": "Phường Phú Thịnh",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09580",
+                    "name": "Phường Ngô Quyền",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09583",
+                    "name": "Phường Quang Trung",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09586",
+                    "name": "Phường Sơn Lộc",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09589",
+                    "name": "Phường Xuân Khanh",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09592",
+                    "name": "Xã Đường Lâm",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09595",
+                    "name": "Phường Viên Sơn",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09598",
+                    "name": "Xã Xuân Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09601",
+                    "name": "Phường Trung Hưng",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09604",
+                    "name": "Xã Thanh Mỹ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09607",
+                    "name": "Phường Trung Sơn Trầm",
+                    "type": "Phường"
+                },
+                {
+                    "ward_id": "09610",
+                    "name": "Xã Kim Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09613",
+                    "name": "Xã Sơn Đông",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09616",
+                    "name": "Xã Cổ Đông",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "271",
+            "name": "Huyện Ba Vì",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "09619",
+                    "name": "Thị trấn Tây Đằng",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "09625",
+                    "name": "Xã Phú Cường",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09628",
+                    "name": "Xã Cổ Đô",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09631",
+                    "name": "Xã Tản Hồng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09634",
+                    "name": "Xã Vạn Thắng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09637",
+                    "name": "Xã Châu Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09640",
+                    "name": "Xã Phong Vân",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09643",
+                    "name": "Xã Phú Đông",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09646",
+                    "name": "Xã Phú Phương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09649",
+                    "name": "Xã Phú Châu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09652",
+                    "name": "Xã Thái Hòa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09655",
+                    "name": "Xã Đồng Thái",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09658",
+                    "name": "Xã Phú Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09661",
+                    "name": "Xã Minh Châu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09664",
+                    "name": "Xã Vật Lại",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09667",
+                    "name": "Xã Chu Minh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09670",
+                    "name": "Xã Tòng Bạt",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09673",
+                    "name": "Xã Cẩm Lĩnh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09676",
+                    "name": "Xã Sơn Đà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09679",
+                    "name": "Xã Đông Quang",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09682",
+                    "name": "Xã Tiên Phong",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09685",
+                    "name": "Xã Thụy An",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09688",
+                    "name": "Xã Cam Thượng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09691",
+                    "name": "Xã Thuần Mỹ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09694",
+                    "name": "Xã Tản Lĩnh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09697",
+                    "name": "Xã Ba Trại",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09700",
+                    "name": "Xã Minh Quang",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09703",
+                    "name": "Xã Ba Vì",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09706",
+                    "name": "Xã Vân Hòa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09709",
+                    "name": "Xã Yên Bài",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09712",
+                    "name": "Xã Khánh Thượng",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "272",
+            "name": "Huyện Phúc Thọ",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "09715",
+                    "name": "Thị trấn Phúc Thọ",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "09718",
+                    "name": "Xã Vân Hà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09721",
+                    "name": "Xã Vân Phúc",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09724",
+                    "name": "Xã Vân Nam",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09727",
+                    "name": "Xã Xuân Đình",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09733",
+                    "name": "Xã Sen Phương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09739",
+                    "name": "Xã Võng Xuyên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09742",
+                    "name": "Xã Thọ Lộc",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09745",
+                    "name": "Xã Long Xuyên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09748",
+                    "name": "Xã Thượng Cốc",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09751",
+                    "name": "Xã Hát Môn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09754",
+                    "name": "Xã Tích Giang",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09757",
+                    "name": "Xã Thanh Đa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09760",
+                    "name": "Xã Trạch Mỹ Lộc",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09763",
+                    "name": "Xã Phúc Hòa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09766",
+                    "name": "Xã Ngọc Tảo",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09769",
+                    "name": "Xã Phụng Thượng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09772",
+                    "name": "Xã Tam Thuấn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09775",
+                    "name": "Xã Tam Hiệp",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09778",
+                    "name": "Xã Hiệp Thuận",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09781",
+                    "name": "Xã Liên Hiệp",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "273",
+            "name": "Huyện Đan Phượng",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "09784",
+                    "name": "Thị trấn Phùng",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "09787",
+                    "name": "Xã Trung Châu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09790",
+                    "name": "Xã Thọ An",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09793",
+                    "name": "Xã Thọ Xuân",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09796",
+                    "name": "Xã Hồng Hà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09799",
+                    "name": "Xã Liên Hồng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09802",
+                    "name": "Xã Liên Hà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09805",
+                    "name": "Xã Hạ Mỗ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09808",
+                    "name": "Xã Liên Trung",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09811",
+                    "name": "Xã Phương Đình",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09814",
+                    "name": "Xã Thượng Mỗ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09817",
+                    "name": "Xã Tân Hội",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09820",
+                    "name": "Xã Tân Lập",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09823",
+                    "name": "Xã Đan Phượng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09826",
+                    "name": "Xã Đồng Tháp",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09829",
+                    "name": "Xã Song Phượng",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "274",
+            "name": "Huyện Hoài Đức",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "09832",
+                    "name": "Thị trấn Trạm Trôi",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "09835",
+                    "name": "Xã Đức Thượng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09838",
+                    "name": "Xã Minh Khai",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09841",
+                    "name": "Xã Dương Liễu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09844",
+                    "name": "Xã Di Trạch",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09847",
+                    "name": "Xã Đức Giang",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09850",
+                    "name": "Xã Cát Quế",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09853",
+                    "name": "Xã Kim Chung",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09856",
+                    "name": "Xã Yên Sở",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09859",
+                    "name": "Xã Sơn Đồng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09862",
+                    "name": "Xã Vân Canh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09865",
+                    "name": "Xã Đắc Sở",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09868",
+                    "name": "Xã Lại Yên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09871",
+                    "name": "Xã Tiền Yên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09874",
+                    "name": "Xã Song Phương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09877",
+                    "name": "Xã An Khánh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09880",
+                    "name": "Xã An Thượng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09883",
+                    "name": "Xã Vân Côn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09889",
+                    "name": "Xã La Phù",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09892",
+                    "name": "Xã Đông La",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "275",
+            "name": "Huyện Quốc Oai",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "04939",
+                    "name": "Xã Đông Xuân",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09895",
+                    "name": "Thị trấn Quốc Oai",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "09898",
+                    "name": "Xã Sài Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09901",
+                    "name": "Xã Phượng Cách",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09904",
+                    "name": "Xã Yên Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09907",
+                    "name": "Xã Ngọc Liệp",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09910",
+                    "name": "Xã Ngọc Mỹ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09913",
+                    "name": "Xã Liệp Tuyết",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09916",
+                    "name": "Xã Thạch Thán",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09919",
+                    "name": "Xã Đồng Quang",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09922",
+                    "name": "Xã Phú Cát",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09925",
+                    "name": "Xã Tuyết Nghĩa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09928",
+                    "name": "Xã Nghĩa Hương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09931",
+                    "name": "Xã Cộng Hòa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09934",
+                    "name": "Xã Tân Phú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09937",
+                    "name": "Xã Đại Thành",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09940",
+                    "name": "Xã Phú Mãn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09943",
+                    "name": "Xã Cấn Hữu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09946",
+                    "name": "Xã Tân Hòa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09949",
+                    "name": "Xã Hòa Thạch",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09952",
+                    "name": "Xã Đông Yên",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "276",
+            "name": "Huyện Thạch Thất",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "04927",
+                    "name": "Xã Yên Trung",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "04930",
+                    "name": "Xã Yên Bình",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "04936",
+                    "name": "Xã Tiến Xuân",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09955",
+                    "name": "Thị trấn Liên Quan",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "09958",
+                    "name": "Xã Đại Đồng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09961",
+                    "name": "Xã Cẩm Yên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09964",
+                    "name": "Xã Lại Thượng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09967",
+                    "name": "Xã Phú Kim",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09970",
+                    "name": "Xã Hương Ngải",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09973",
+                    "name": "Xã Canh Nậu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09976",
+                    "name": "Xã Kim Quan",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09979",
+                    "name": "Xã Dị Nậu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09982",
+                    "name": "Xã Bình Yên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09985",
+                    "name": "Xã Chàng Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09988",
+                    "name": "Xã Thạch Hoà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09991",
+                    "name": "Xã Cần Kiệm",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09994",
+                    "name": "Xã Hữu Bằng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "09997",
+                    "name": "Xã Phùng Xá",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10000",
+                    "name": "Xã Tân Xã",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10003",
+                    "name": "Xã Thạch Xá",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10006",
+                    "name": "Xã Bình Phú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10009",
+                    "name": "Xã Hạ Bằng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10012",
+                    "name": "Xã Đồng Trúc",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "277",
+            "name": "Huyện Chương Mỹ",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "10015",
+                    "name": "Thị trấn Chúc Sơn",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "10018",
+                    "name": "Thị trấn Xuân Mai",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "10021",
+                    "name": "Xã Phụng Châu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10024",
+                    "name": "Xã Tiên Phương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10027",
+                    "name": "Xã Đông Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10030",
+                    "name": "Xã Đông Phương Yên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10033",
+                    "name": "Xã Phú Nghĩa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10039",
+                    "name": "Xã Trường Yên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10042",
+                    "name": "Xã Ngọc Hòa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10045",
+                    "name": "Xã Thủy Xuân Tiên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10048",
+                    "name": "Xã Thanh Bình",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10051",
+                    "name": "Xã Trung Hòa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10054",
+                    "name": "Xã Đại Yên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10057",
+                    "name": "Xã Thụy Hương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10060",
+                    "name": "Xã Tốt Động",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10063",
+                    "name": "Xã Lam Điền",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10066",
+                    "name": "Xã Tân Tiến",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10069",
+                    "name": "Xã Nam Phương Tiến",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10072",
+                    "name": "Xã Hợp Đồng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10075",
+                    "name": "Xã Hoàng Văn Thụ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10078",
+                    "name": "Xã Hoàng Diệu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10081",
+                    "name": "Xã Hữu Văn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10084",
+                    "name": "Xã Quảng Bị",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10087",
+                    "name": "Xã Mỹ Lương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10090",
+                    "name": "Xã Thượng Vực",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10093",
+                    "name": "Xã Hồng Phong",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10096",
+                    "name": "Xã Đồng Phú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10099",
+                    "name": "Xã Trần Phú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10102",
+                    "name": "Xã Văn Võ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10105",
+                    "name": "Xã Đồng Lạc",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10108",
+                    "name": "Xã Hòa Chính",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10111",
+                    "name": "Xã Phú Nam An",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "278",
+            "name": "Huyện Thanh Oai",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "10114",
+                    "name": "Thị trấn Kim Bài",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "10120",
+                    "name": "Xã Cự Khê",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10126",
+                    "name": "Xã Bích Hòa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10129",
+                    "name": "Xã Mỹ Hưng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10132",
+                    "name": "Xã Cao Viên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10135",
+                    "name": "Xã Bình Minh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10138",
+                    "name": "Xã Tam Hưng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10141",
+                    "name": "Xã Thanh Cao",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10144",
+                    "name": "Xã Thanh Thùy",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10147",
+                    "name": "Xã Thanh Mai",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10150",
+                    "name": "Xã Thanh Văn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10153",
+                    "name": "Xã Đỗ Động",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10156",
+                    "name": "Xã Kim An",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10159",
+                    "name": "Xã Kim Thư",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10162",
+                    "name": "Xã Phương Trung",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10165",
+                    "name": "Xã Tân Ước",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10168",
+                    "name": "Xã Dân Hòa",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10171",
+                    "name": "Xã Liên Châu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10174",
+                    "name": "Xã Cao Dương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10177",
+                    "name": "Xã Xuân Dương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10180",
+                    "name": "Xã Hồng Dương",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "279",
+            "name": "Huyện Thường Tín",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "10183",
+                    "name": "Thị trấn Thường Tín",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "10186",
+                    "name": "Xã Ninh Sở",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10189",
+                    "name": "Xã Nhị Khê",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10192",
+                    "name": "Xã Duyên Thái",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10195",
+                    "name": "Xã Khánh Hà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10198",
+                    "name": "Xã Hòa Bình",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10201",
+                    "name": "Xã Văn Bình",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10204",
+                    "name": "Xã Hiền Giang",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10207",
+                    "name": "Xã Hồng Vân",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10210",
+                    "name": "Xã Vân Tảo",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10213",
+                    "name": "Xã Liên Phương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10216",
+                    "name": "Xã Văn Phú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10219",
+                    "name": "Xã Tự Nhiên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10222",
+                    "name": "Xã Tiền Phong",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10225",
+                    "name": "Xã Hà Hồi",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10228",
+                    "name": "Xã Thư Phú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10231",
+                    "name": "Xã Nguyễn Trãi",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10234",
+                    "name": "Xã Quất Động",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10237",
+                    "name": "Xã Chương Dương",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10240",
+                    "name": "Xã Tân Minh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10243",
+                    "name": "Xã Lê Lợi",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10246",
+                    "name": "Xã Thắng Lợi",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10249",
+                    "name": "Xã Dũng Tiến",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10252",
+                    "name": "Xã Thống Nhất",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10255",
+                    "name": "Xã Nghiêm Xuyên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10258",
+                    "name": "Xã Tô Hiệu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10261",
+                    "name": "Xã Văn Tự",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10264",
+                    "name": "Xã Vạn Điểm",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10267",
+                    "name": "Xã Minh Cường",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "280",
+            "name": "Huyện Phú Xuyên",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "10270",
+                    "name": "Thị trấn Phú Minh",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "10273",
+                    "name": "Thị trấn Phú Xuyên",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "10276",
+                    "name": "Xã Hồng Minh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10279",
+                    "name": "Xã Phượng Dực",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10282",
+                    "name": "Xã Nam Tiến",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10288",
+                    "name": "Xã Tri Trung",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10291",
+                    "name": "Xã Đại Thắng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10294",
+                    "name": "Xã Phú Túc",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10297",
+                    "name": "Xã Văn Hoàng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10300",
+                    "name": "Xã Hồng Thái",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10303",
+                    "name": "Xã Hoàng Long",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10306",
+                    "name": "Xã Quang Trung",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10309",
+                    "name": "Xã Nam Phong",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10312",
+                    "name": "Xã Nam Triều",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10315",
+                    "name": "Xã Tân Dân",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10318",
+                    "name": "Xã Sơn Hà",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10321",
+                    "name": "Xã Chuyên Mỹ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10324",
+                    "name": "Xã Khai Thái",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10327",
+                    "name": "Xã Phúc Tiến",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10330",
+                    "name": "Xã Vân Từ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10333",
+                    "name": "Xã Tri Thủy",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10336",
+                    "name": "Xã Đại Xuyên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10339",
+                    "name": "Xã Phú Yên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10342",
+                    "name": "Xã Bạch Hạ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10345",
+                    "name": "Xã Quang Lãng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10348",
+                    "name": "Xã Châu Can",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10351",
+                    "name": "Xã Minh Tân",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "281",
+            "name": "Huyện Ứng Hòa",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "10354",
+                    "name": "Thị trấn Vân Đình",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "10357",
+                    "name": "Xã Viên An",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10360",
+                    "name": "Xã Viên Nội",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10363",
+                    "name": "Xã Hoa Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10366",
+                    "name": "Xã Quảng Phú Cầu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10369",
+                    "name": "Xã Trường Thịnh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10372",
+                    "name": "Xã Cao Thành",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10375",
+                    "name": "Xã Liên Bạt",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10378",
+                    "name": "Xã Sơn Công",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10381",
+                    "name": "Xã Đồng Tiến",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10384",
+                    "name": "Xã Phương Tú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10387",
+                    "name": "Xã Trung Tú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10390",
+                    "name": "Xã Đồng Tân",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10393",
+                    "name": "Xã Tảo Dương Văn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10396",
+                    "name": "Xã Vạn Thái",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10399",
+                    "name": "Xã Minh Đức",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10402",
+                    "name": "Xã Hòa Lâm",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10405",
+                    "name": "Xã Hòa Xá",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10408",
+                    "name": "Xã Trầm Lộng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10411",
+                    "name": "Xã Kim Đường",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10414",
+                    "name": "Xã Hòa Nam",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10417",
+                    "name": "Xã Hòa Phú",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10420",
+                    "name": "Xã Đội Bình",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10423",
+                    "name": "Xã Đại Hùng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10426",
+                    "name": "Xã Đông Lỗ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10429",
+                    "name": "Xã Phù Lưu",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10432",
+                    "name": "Xã Đại Cường",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10435",
+                    "name": "Xã Lưu Hoàng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10438",
+                    "name": "Xã Hồng Quang",
+                    "type": "Xã"
+                }
+            ]
+        },
+        {
+            "district_id": "282",
+            "name": "Huyện Mỹ Đức",
+            "type": "Huyện",
+            "children": [
+                {
+                    "ward_id": "10441",
+                    "name": "Thị trấn Đại Nghĩa",
+                    "type": "Thị trấn"
+                },
+                {
+                    "ward_id": "10444",
+                    "name": "Xã Đồng Tâm",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10447",
+                    "name": "Xã Thượng Lâm",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10450",
+                    "name": "Xã Tuy Lai",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10453",
+                    "name": "Xã Phúc Lâm",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10456",
+                    "name": "Xã Mỹ Thành",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10459",
+                    "name": "Xã Bột Xuyên",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10462",
+                    "name": "Xã An Mỹ",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10465",
+                    "name": "Xã Hồng Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10468",
+                    "name": "Xã Lê Thanh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10471",
+                    "name": "Xã Xuy Xá",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10474",
+                    "name": "Xã Phùng Xá",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10477",
+                    "name": "Xã Phù Lưu Tế",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10480",
+                    "name": "Xã Đại Hưng",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10483",
+                    "name": "Xã Vạn Kim",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10486",
+                    "name": "Xã Đốc Tín",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10489",
+                    "name": "Xã Hương Sơn",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10492",
+                    "name": "Xã Hùng Tiến",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10495",
+                    "name": "Xã An Tiến",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10498",
+                    "name": "Xã Hợp Tiến",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10501",
+                    "name": "Xã Hợp Thanh",
+                    "type": "Xã"
+                },
+                {
+                    "ward_id": "10504",
+                    "name": "Xã An Phú",
+                    "type": "Xã"
+                }
+            ]
+        }
+    ]
+}

@@ -3,6 +3,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:image_network/image_network.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
@@ -42,13 +43,25 @@ class ProductDetailScreen extends StatelessWidget {
       body: SafeArea(
           child: Stack(
         children: [
-          SizedBox(
+          ImageNetwork(
+            image: model.imgPath,
             height: HAppSize.deviceHeight * 0.5,
             width: HAppSize.deviceWidth,
-            child: Image.network(
-              model.imgPath,
-              fit: BoxFit.cover,
+            duration: 500,
+            curve: Curves.easeIn,
+            onPointer: true,
+            debugPrint: false,
+            fullScreen: false,
+            fitAndroidIos: BoxFit.cover,
+            fitWeb: BoxFitWeb.cover,
+            onLoading: const CircularProgressIndicator(
+              color: HAppColor.hBluePrimaryColor,
             ),
+            onError: const Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
+            onTap: () => null,
           ),
           Obx(() => SizedBox(
                 height: 80,

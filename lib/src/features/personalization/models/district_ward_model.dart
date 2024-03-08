@@ -1,74 +1,57 @@
-class DistrictWardModel {
-  final String district;
-  final List<String> ward;
+class DistrictModel {
+  String? districtId;
+  String? name;
+  String? type;
+  List<WardModel>? children;
 
-  DistrictWardModel({required this.district, required this.ward});
+  DistrictModel({this.districtId, this.name, this.type, this.children});
+
+  factory DistrictModel.fromJson(Map<String, dynamic> json) {
+    List<WardModel>? children;
+    if (json['children'] != null) {
+      children = <WardModel>[];
+      json['children'].forEach((v) {
+        children!.add(WardModel.fromJson(v));
+      });
+    }
+    return DistrictModel(
+        districtId: json['district_id'] ?? '',
+        name: json['name'] ?? '',
+        type: json['type'] ?? '',
+        children: children ?? []);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['district_id'] = districtId;
+    data['name'] = name;
+    data['type'] = type;
+    if (children != null) {
+      data['children'] = children!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
 }
 
-final listOfDistrictWard = [
-  DistrictWardModel(district: 'Quận Ba Đình', ward: [
-    'Phường Cống Vị',
-    'Phường Điện Biên',
-    'Phường Đội Cấn',
-    'Phường Giảng Võ',
-    'Phường Kim Mã',
-    'Phường Liễu Giai',
-    'Phường Ngọc Hà',
-    'Phường Ngọc Khánh',
-    'Phường Nguyễn Trung Trực',
-    'Phường Phúc Xá',
-    'Phường Quán Thánh',
-    'Phường Thành Công',
-    'Phường Trúc Bạch',
-    'Phường Vĩnh Phúc'
-  ]),
-  DistrictWardModel(district: 'Quận Cầu Giấy', ward: [
-    'Phường Dịch Vọng',
-    'Phường Dịch Vọng Hậu',
-    'Phường Mai Dịch',
-    'Phường Nghĩa Đô',
-    'Phường Nghĩa Tân',
-    'Phường Quan Hoa',
-    'Phường Trung Hoà',
-    'Phường Yên Hoà'
-  ]),
-  DistrictWardModel(district: 'Quận Hai Bà Trưng', ward: [
-    'Phường Bạch Đằng',
-    'Phường Bách Khoa',
-    'Phường Bạch Mai',
-    'Phường Cầu Dền',
-    'Phường Đống Mác',
-    'Phường Đồng Nhân',
-    'Phường Đồng Tâm',
-    'Phường Lê Đại Hành',
-    'Phường Minh Khai',
-    'Phường Ngô Thì Nhậm',
-    'Phường Nguyễn Du',
-    'Phường Phạm Đình Hổ',
-    'Phường Phố Huế',
-    'Phường Quỳnh Lôi',
-    'Phường Quỳnh Mai',
-    'Phường Thanh Lương',
-    'Phường Thanh Nhàn',
-    'Phường Trương Định',
-    'Phường Vĩnh Tuy'
-  ]),
-  DistrictWardModel(district: 'Huyện Thanh Trì', ward: [
-    'Thị Trấn Văn Điển'
-        'Xã Đại Áng',
-    'Xã Đông Mỹ',
-    'Xã Duyên Hà',
-    'Xã Hữu Hòa',
-    'Xã Liên Ninh',
-    'Xã Ngọc Hồi',
-    'Xã Ngũ Hiệp',
-    'Xã Tả Thanh Oai',
-    'Xã Tam Hiệp',
-    'Xã Tân Triều',
-    'Xã Thanh Liệt',
-    'Xã Tứ Hiệp',
-    'Xã Vạn Phúc',
-    'Xã Vĩnh Quỳnh',
-    'Xã Yên Mỹ',
-  ])
-];
+class WardModel {
+  String? wardId;
+  String? name;
+  String? type;
+
+  WardModel({this.wardId, this.name, this.type});
+
+  factory WardModel.fromJson(Map<String, dynamic> json) {
+    return WardModel(
+        wardId: json['ward_id'] ?? '',
+        name: json['name'] ?? '',
+        type: json['type'] ?? '');
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['ward_id'] = wardId;
+    data['name'] = name;
+    data['type'] = type;
+    return data;
+  }
+}

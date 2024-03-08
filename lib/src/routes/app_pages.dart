@@ -9,13 +9,17 @@ import 'package:on_demand_grocery/src/features/authentication/views/signup/sign_
 import 'package:on_demand_grocery/src/features/authentication/views/verify/complete_create_account_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/verify/verify_screen.dart';
 import 'package:on_demand_grocery/src/features/personalization/views/change_name/change_name_screen.dart';
+import 'package:on_demand_grocery/src/features/personalization/views/change_phone_number/change_phone_screen.dart';
+import 'package:on_demand_grocery/src/features/personalization/views/no_deliver/no_deliver_screen.dart';
 import 'package:on_demand_grocery/src/features/personalization/views/profile/profile_detail.dart';
+import 'package:on_demand_grocery/src/features/personalization/views/select_delivery_address/select_delivery_address_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/chat_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/add_address_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/all_address_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/delivery_infomation_dart.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/widgets/list_item_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/wishlist_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/live_tracking/live_tracking_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/cart_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/checkout_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/complete_order_screen.dart';
@@ -214,6 +218,13 @@ abstract class HAppPages {
       transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
+      name: HAppRoutes.changePhone,
+      page: () => const ChangePhoneScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
       name: HAppRoutes.addAddress,
       page: () => const AddAddressScreen(),
       transitionDuration: const Duration(milliseconds: 500),
@@ -226,6 +237,27 @@ abstract class HAppPages {
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.liveTracking,
+      page: () => LiveTrackingScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.noDeliver,
+      page: () => const NoDeliverScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: HAppRoutes.selectDeliveryAddress,
+      page: () => const SelectDeliveryAddressScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.fadeIn,
     ),
   ];
 }
@@ -259,4 +291,8 @@ abstract class HAppRoutes {
   static const changeName = '/changeName';
   static const addAddress = '/addAddress';
   static const allAddress = '/allAddress';
+  static const changePhone = '/changePhone';
+  static const liveTracking = '/liveTracking';
+  static const noDeliver = '/noDeliver';
+  static const selectDeliveryAddress = '/selectDeliveryAddress';
 }

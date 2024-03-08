@@ -153,6 +153,7 @@ class ReviewItemWidget extends StatelessWidget {
           children: [
             UserImageLogoWidget(
               size: 40,
+              hasFunction: false,
             ),
             gapW10,
             Column(

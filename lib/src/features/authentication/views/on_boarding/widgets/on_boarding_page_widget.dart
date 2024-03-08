@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/features/authentication/controller/on_boarding_controller.dart';
 import 'package:on_demand_grocery/src/features/authentication/models/on_boarding_model.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 

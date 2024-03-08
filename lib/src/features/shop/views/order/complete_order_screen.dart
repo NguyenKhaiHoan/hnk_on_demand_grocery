@@ -1,7 +1,5 @@
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_layout_infomation_screen_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
@@ -25,7 +23,7 @@ class _CompleteCheckoutScreenState extends State<CompleteCheckoutScreen> {
         lottieImage: 'assets/animations/complete_checkout.json',
         title: 'Đặt hàng thành công!',
         widget1: ElevatedButton(
-          onPressed: () {},
+          onPressed: () => Get.toNamed(HAppRoutes.liveTracking),
           style: ElevatedButton.styleFrom(
             minimumSize: Size(HAppSize.deviceWidth * 0.5, 50),
             backgroundColor: HAppColor.hBluePrimaryColor,

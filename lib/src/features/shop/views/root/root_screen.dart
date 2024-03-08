@@ -5,7 +5,6 @@ import 'package:on_demand_grocery/src/features/personalization/views/profile/pro
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/views/explore/explore_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/home_screen.dart';
-import 'package:on_demand_grocery/src/features/shop/views/notification/notification_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/root/widgets/bottom_nav_bar.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/list_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/store/store_all_screen.dart';

@@ -38,6 +38,8 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
   final addressController = Get.put(AddressController());
   final dateDeliveryController = Get.put(DateDeliveryController());
 
+  bool isExtend = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +84,7 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
             ]),
             gapH12,
             Obx(() => FutureBuilder(
-                key: Key(addressController.isLoading.value.toString()),
+                key: Key(addressController.toggleRefresh.value.toString()),
                 future: addressController.fetchAllUserAddresses(),
                 builder: ((context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -91,10 +93,10 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) => AddressInformation(
                               address: AddressModel.empty(),
-                              function: () {},
+                              function: () => null,
                             ),
                         separatorBuilder: (context, index) => gapH12,
-                        itemCount: 2);
+                        itemCount: 3);
                   }
 
                   if (snapshot.hasError) {
@@ -131,7 +133,17 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
                     );
                   } else {
                     final addresses = snapshot.data!;
-                    final listAddress = getTwoAddresses(addresses);
+                    addresses.sort((a, b) {
+                      if (a.selectedAddress && !b.selectedAddress) {
+                        return -1;
+                      }
+                      if (!a.selectedAddress && b.selectedAddress) {
+                        return 1;
+                      }
+                      return 0;
+                    });
+                    final listAddress =
+                        !isExtend ? getTwoAddresses(addresses) : addresses;
                     return Column(
                       children: [
                         ListView.separated(
@@ -146,7 +158,7 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
                                 ),
                             separatorBuilder: (context, index) => gapH12,
                             itemCount: listAddress.length),
-                        listAddress.length < 2
+                        listAddress.isEmpty || addresses.length < 3
                             ? Padding(
                                 padding: const EdgeInsets.only(
                                     top: hAppDefaultPadding),
@@ -177,7 +189,41 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
                                       )),
                                 ),
                               )
-                            : Container(),
+                            : Padding(
+                                padding: const EdgeInsets.only(
+                                    top: hAppDefaultPadding),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    isExtend = !isExtend;
+                                    addressController.toggleRefresh.toggle();
+                                  },
+                                  child: Container(
+                                      width: HAppSize.deviceWidth,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: HAppColor.hWhiteColor),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            !isExtend
+                                                ? EvaIcons.arrowDownwardOutline
+                                                : EvaIcons.arrowUpwardOutline,
+                                            size: 15,
+                                          ),
+                                          gapW4,
+                                          Text(!isExtend
+                                              ? 'Hiển thị thêm (${addresses.length - listAddress.length} địa chỉ)'
+                                              : 'Thu gọn'),
+                                        ],
+                                      )),
+                                ),
+                              ),
                       ],
                     );
                   }
@@ -276,12 +322,10 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
     AddressModel selectedAddress = addresses.firstWhere(
         (address) => address.selectedAddress,
         orElse: () => addresses.first);
-    AddressModel defaultAddress = addresses.firstWhere(
-        (address) => address.isDefault && address != selectedAddress,
-        orElse: () => addresses.firstWhere(
-            (address) => address != selectedAddress,
-            orElse: () => AddressModel.empty()));
-    return [selectedAddress, defaultAddress];
+    AddressModel anotherAddress = addresses.reversed.firstWhere(
+        (address) => address != selectedAddress,
+        orElse: () => AddressModel.empty());
+    return [selectedAddress, anotherAddress];
   }
 }
 
@@ -298,47 +342,57 @@ class AddressInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: function,
-      child: Stack(children: [
-        Container(
+      child: Container(
+          width: HAppSize.deviceWidth,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: HAppColor.hWhiteColor),
           padding:
               const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(
-                address.name,
-                style: HAppStyle.label2Bold,
+              Obx(
+                () => Icon(
+                  EvaIcons.checkmarkCircle,
+                  color:
+                      addressController.selectedAddress.value.id == address.id
+                          ? HAppColor.hBluePrimaryColor
+                          : HAppColor.hGreyColorShade300,
+                  size: 20,
+                ),
               ),
-              gapH4,
-              Text(address.phoneNumber, style: HAppStyle.paragraph3Regular),
-              gapH4,
-              Text(
-                address.toString(),
-                style: HAppStyle.paragraph3Regular,
-              )
-            ],
-          ),
-        ),
-        Obx(
-          () => addressController.selectedAddress.value.id == address.id
-              ? Positioned(
-                  top: 5,
-                  right: 5,
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      EvaIcons.checkmarkCircle,
-                      color: HAppColor.hBluePrimaryColor,
-                      size: 20,
+              gapW10,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      address.name,
+                      style: HAppStyle.label2Bold,
                     ),
-                  ))
-              : Container(),
-        )
-      ]),
+                    gapH4,
+                    Text(address.phoneNumber,
+                        style: HAppStyle.paragraph3Regular.copyWith(
+                            color:
+                                address.phoneNumber == 'Số điện thoại còn trống'
+                                    ? HAppColor.hRedColor
+                                    : HAppColor.hDarkColor)),
+                    gapH4,
+                    Text(
+                      address.toString(),
+                      style: HAppStyle.paragraph3Regular,
+                    )
+                  ],
+                ),
+              ),
+              gapW10,
+              const Icon(
+                EvaIcons.editOutline,
+                size: 20,
+              ),
+            ],
+          )),
     );
   }
 }

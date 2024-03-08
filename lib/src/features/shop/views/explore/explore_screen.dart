@@ -136,6 +136,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                 padding: const EdgeInsets.only(left: hAppDefaultPadding),
                 child: UserImageLogoWidget(
                   size: 40,
+                  hasFunction: true,
                 ),
               ),
             ),

@@ -2,6 +2,8 @@ import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_network/image_network.dart';
+import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/swipe_action_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
@@ -88,7 +90,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: hAppDefaultPadding, left: 10),
+            padding: const EdgeInsets.only(right: hAppDefaultPadding, left: 10),
             child: GestureDetector(
               child: const Icon(Icons.more_horiz_outlined),
               onTap: () {},
@@ -137,14 +139,26 @@ class _ChatScreenState extends State<ChatScreen> {
                               children: <Widget>[
                                 Stack(
                                   children: [
-                                    ClipRRect(
+                                    ImageNetwork(
+                                      image: model.imgPath,
+                                      height: 80,
+                                      width: 80,
+                                      duration: 500,
+                                      curve: Curves.easeIn,
+                                      onPointer: true,
+                                      debugPrint: false,
+                                      fullScreen: false,
+                                      fitAndroidIos: BoxFit.cover,
+                                      fitWeb: BoxFitWeb.cover,
                                       borderRadius: BorderRadius.circular(10),
-                                      child: Image.network(
-                                        model.imgPath,
-                                        height: 80,
-                                        width: 80,
-                                        fit: BoxFit.cover,
+                                      onLoading:
+                                          CustomShimmerWidget.rectangular(
+                                              width: 80, height: 80),
+                                      onError: const Icon(
+                                        Icons.error,
+                                        color: Colors.red,
                                       ),
+                                      onTap: () => null,
                                     ),
                                     model.salePersent != 0
                                         ? Positioned(

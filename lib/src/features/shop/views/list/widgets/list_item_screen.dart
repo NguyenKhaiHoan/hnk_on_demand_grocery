@@ -37,7 +37,7 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
           )
         ],
         title: Obx(() =>
-            list.isNotEmpty ? Text("${title} (${list.length})") : Text(title)),
+            list.isNotEmpty ? Text("$title (${list.length})") : Text(title)),
         centerTitle: true,
         toolbarHeight: 80,
         leadingWidth: 80,

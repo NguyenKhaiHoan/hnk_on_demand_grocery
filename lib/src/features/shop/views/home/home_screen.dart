@@ -1,18 +1,20 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/banner_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/home_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/recent_oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/home_appbar_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/home_category.dart';
@@ -22,6 +24,7 @@ import 'package:on_demand_grocery/src/features/shop/views/home/widgets/store_men
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,16 +40,15 @@ class _HomeScreenState extends State<HomeScreen>
 
   final categoryController = Get.put(CategoryController());
   final homeController = Get.put(HomeController());
+  final bannerController = Get.put(BannerController());
   final rootController = Get.put(RootController());
   final exploreController = Get.put(ExploreController());
   final productController = Get.put(ProductController());
   final orderController = Get.put(OrderController());
 
-  List<String> listBanner = [
-    "https://statics.vincom.com.vn/uu-dai/1-1702090213.jpg",
-  ];
-
   ScrollController controller = ScrollController();
+
+  final userController = UserController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -113,29 +115,36 @@ class _HomeScreenState extends State<HomeScreen>
                         ]),
                       ),
                       gapH16,
-                      CarouselSlider(
-                        carouselController: homeController.controller,
-                        items: listBanner
-                            .map((item) => Container(
-                                  margin:
-                                      const EdgeInsets.only(left: 5, right: 5),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      image: DecorationImage(
-                                        image: NetworkImage(item),
-                                        fit: BoxFit.fill,
-                                      )),
-                                ))
-                            .toList(),
-                        options: CarouselOptions(
-                          enableInfiniteScroll: false,
-                          height: 200,
-                          viewportFraction: (HAppSize.deviceWidth - 38) /
-                              HAppSize.deviceWidth,
-                          onPageChanged: (index, reason) =>
-                              homeController.onPageChanged(index),
-                        ),
-                      ),
+                      Obx(() => bannerController.isLoading.value
+                          ? Padding(
+                              padding: hAppDefaultPaddingLR,
+                              child:
+                                  CustomShimmerWidget.rectangular(height: 200),
+                            )
+                          : CarouselSlider(
+                              carouselController: bannerController.controller,
+                              items: bannerController.listOfBanner
+                                  .map((item) => Container(
+                                        margin: const EdgeInsets.only(
+                                            left: 5, right: 5),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            image: DecorationImage(
+                                              image: NetworkImage(item.image),
+                                              fit: BoxFit.fill,
+                                            )),
+                                      ))
+                                  .toList(),
+                              options: CarouselOptions(
+                                enableInfiniteScroll: false,
+                                height: 200,
+                                viewportFraction: (HAppSize.deviceWidth - 38) /
+                                    HAppSize.deviceWidth,
+                                onPageChanged: (index, reason) =>
+                                    bannerController.onPageChanged(index),
+                              ),
+                            )),
                       gapH16,
                       Padding(
                           padding: hAppDefaultPaddingLR,
@@ -341,7 +350,9 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> loadingData() async {
-    setState(() {});
-    return await Future.delayed(const Duration(seconds: 2));
+    return await Future.delayed(const Duration(seconds: 1), () async {
+      Position position = await HAppUtils.getGeoLocationPosition();
+      print(HAppUtils.getAddressFromLatLong(position));
+    });
   }
 }

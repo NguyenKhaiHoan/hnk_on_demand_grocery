@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_layout_infomation_screen_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
@@ -17,7 +16,7 @@ class CompleteCreateAccountScreen extends StatelessWidget {
         title: 'Tạo tài khoản thành công!',
         widget1: ElevatedButton(
           onPressed: () {
-            AuthenticationRepository.instance.screenRedirect();
+            Get.offAllNamed(HAppRoutes.login);
           },
           style: ElevatedButton.styleFrom(
             minimumSize: Size(HAppSize.deviceWidth * 0.5, 50),

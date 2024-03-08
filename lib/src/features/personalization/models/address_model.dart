@@ -9,18 +9,17 @@ class AddressModel {
   String ward;
   String street;
   bool selectedAddress;
-  bool isDefault;
 
-  AddressModel(
-      {required this.id,
-      required this.name,
-      required this.phoneNumber,
-      this.city = 'Hà Nội',
-      required this.district,
-      required this.ward,
-      required this.street,
-      this.selectedAddress = true,
-      this.isDefault = true});
+  AddressModel({
+    required this.id,
+    required this.name,
+    required this.phoneNumber,
+    this.city = 'Hà Nội',
+    required this.district,
+    required this.ward,
+    required this.street,
+    this.selectedAddress = true,
+  });
 
   static AddressModel empty() => AddressModel(
         id: '',
@@ -33,7 +32,7 @@ class AddressModel {
 
   @override
   String toString() {
-    return '$street, $ward, $district, $city';
+    return '$street, ${ward.isEmpty ? '' : '$ward,'} $district, $city';
   }
 
   Map<String, dynamic> toJon() {
@@ -46,7 +45,6 @@ class AddressModel {
       'Ward': ward,
       'Street': street,
       'SelectedAddress': selectedAddress,
-      'IsDefault': isDefault,
     };
   }
 
@@ -62,7 +60,8 @@ class AddressModel {
       ward: data['Ward'] ?? '',
       street: data['Street'] ?? '',
       selectedAddress: data['SelectedAddress'] as bool,
-      isDefault: data['IsDefault'] as bool,
     );
   }
 }
+
+List<AddressModel> tempList = [];

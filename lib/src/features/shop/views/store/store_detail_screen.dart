@@ -2,6 +2,7 @@ import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_network/image_network.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
@@ -154,14 +155,26 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                         children: [
                           Container(
                             padding: const EdgeInsets.only(bottom: 110),
-                            child: Container(
-                              color: HAppColor.hGreyColor,
-                              child: Image.network(
-                                model.imgBackground,
-                                width: double.infinity,
-                                height: coverHeight,
-                                fit: BoxFit.cover,
+                            child: ImageNetwork(
+                              image: model.imgBackground,
+                              height: coverHeight,
+                              width: HAppSize.deviceWidth,
+                              duration: 500,
+                              curve: Curves.easeIn,
+                              onPointer: true,
+                              debugPrint: false,
+                              fullScreen: false,
+                              fitAndroidIos: BoxFit.cover,
+                              fitWeb: BoxFitWeb.cover,
+                              borderRadius: BorderRadius.circular(10),
+                              onLoading: const CircularProgressIndicator(
+                                color: HAppColor.hBluePrimaryColor,
                               ),
+                              onError: const Icon(
+                                Icons.error,
+                                color: Colors.red,
+                              ),
+                              onTap: () => null,
                             ),
                           ),
                           Positioned(

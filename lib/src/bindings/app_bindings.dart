@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/change_password_controller.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/login_controller.dart';
@@ -8,6 +7,7 @@ import 'package:on_demand_grocery/src/features/authentication/controller/sign_up
 import 'package:on_demand_grocery/src/features/authentication/controller/verify_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/change_name_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/chat_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
@@ -22,6 +22,7 @@ class HAppBinding extends Bindings {
   @override
   void dependencies() {
     Get.put<NetworkController>(NetworkController(), permanent: true);
+    Get.lazyPut(() => UserController(), fenix: true);
     Get.lazyPut(() => ChatController(), fenix: true);
     Get.lazyPut(() => CategoryController(), fenix: true);
     Get.lazyPut(() => AddressController(), fenix: true);

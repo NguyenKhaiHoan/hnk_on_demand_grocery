@@ -22,12 +22,10 @@ class CategoryController extends GetxController {
 
   Future<void> fetchCategories() async {
     try {
-      print('vào fetch');
       isLoading.value = true;
       final categories = await categoryRepository.getAllCategories();
       listOfCategory.assignAll(categories);
       isLoading.value = false;
-      print('xong fetch');
     } catch (e) {
       isLoading.value = false;
       HAppUtils.showSnackBarError('Lỗi', e.toString());

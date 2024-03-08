@@ -93,7 +93,6 @@ class FormSignUpWidget extends StatelessWidget {
             enableSuggestions: true,
             autocorrect: true,
             controller: signupController.phoneController,
-            validator: (value) => HAppUtils.validatePhoneNumber(value),
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                   borderSide:
@@ -103,7 +102,7 @@ class FormSignUpWidget extends StatelessWidget {
                   borderSide:
                       BorderSide(color: HAppColor.hGreyColorShade300, width: 1),
                   borderRadius: BorderRadius.circular(10)),
-              hintText: 'Nhập số điện thoại của bạn',
+              hintText: 'Nhập số điện thoại của bạn (tùy chọn)',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -120,7 +119,7 @@ class FormSignUpWidget extends StatelessWidget {
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
                     icon: Icon(
-                        signupController.isHide.value
+                        !signupController.isHide.value
                             ? EneftyIcons.eye_bold
                             : EneftyIcons.eye_slash_bold,
                         color: Colors.grey),
