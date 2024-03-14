@@ -30,7 +30,6 @@ class ImageMessage extends StatelessWidget {
               Icons.error,
               color: Colors.red,
             ),
-            onTap: () => null,
           ),
         ],
       ),

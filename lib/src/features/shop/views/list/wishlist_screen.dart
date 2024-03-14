@@ -1,6 +1,9 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:on_demand_grocery/src/common_widgets/custom_layout_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/no_found_screen_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
@@ -8,6 +11,8 @@ import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_control
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/product_list_stack.dart';
+import 'package:on_demand_grocery/src/features/shop/views/list/widgets/wishlist_item_widget.dart';
+import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class WishlistScreen extends StatefulWidget {
@@ -19,7 +24,7 @@ class WishlistScreen extends StatefulWidget {
 
 class _WishlistScreenState extends State<WishlistScreen> {
   final wishlistController = Get.put(WishlistController());
-  final productController = Get.put(ProductController());
+  final productController = ProductController.instance;
 
   final ProductModel model = Get.arguments['model'];
 
@@ -44,116 +49,246 @@ class _WishlistScreenState extends State<WishlistScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: hAppDefaultPaddingLR,
-          child: Column(
-            children: [
-              Obx(() => ListView.builder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  itemCount: productController.productInWishList.keys.length,
-                  itemBuilder: (context, index) {
-                    if (model.wishlistName.contains(productController
-                        .productInWishList.keys
-                        .elementAt(index))) {
-                      productController.wishlistList[index].isChecked = true;
-                    } else {
-                      productController.wishlistList[index].isChecked = false;
-                    }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+          child: Obx(() => FutureBuilder(
+              key: Key(wishlistController.refreshWishlistData.value.toString()),
+              future: wishlistController.fetchAllWishlist(),
+              builder: ((context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CustomLayoutWidget(
+                      widget: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            return const ShimmerWishlistItemWidget();
+                          }),
+                      subWidget: Container());
+                }
+
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                  );
+                }
+
+                if (!snapshot.hasData ||
+                    snapshot.data == null ||
+                    snapshot.data!.isEmpty) {
+                  return Container();
+                } else {
+                  final data = snapshot.data!;
+                  return ListView.builder(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final wishlist = data[index];
+                        RxBool isAdded = false.obs;
+                        if (wishlist.listIds.contains(model.id)) {
+                          isAdded.value = true;
+                        } else {
+                          isAdded.value = false;
+                        }
+                        return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                                child: Column(
+                            Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  productController.productInWishList.keys
-                                      .elementAt(index),
-                                  style: HAppStyle.heading4Style,
-                                ),
-                                gapH4,
-                                Text(
-                                  productController.findSubtitleWishList(
-                                      productController.productInWishList.keys
-                                          .elementAt(index)),
-                                  style: HAppStyle.paragraph3Regular.copyWith(
-                                      color: HAppColor.hGreyColorShade600),
-                                ),
-                                productController.productInWishList.values
-                                        .elementAt(index)
-                                        .isNotEmpty
-                                    ? Column(
-                                        children: [
-                                          gapH10,
-                                          ProductListStackWidget(
-                                            maxItems: 8,
-                                            items: productController
-                                                .productInWishList.values
-                                                .elementAt(index)
-                                                .map((product) =>
-                                                    product.imgPath)
-                                                .toList(),
-                                          ),
-                                        ],
-                                      )
-                                    : Container(),
+                                Expanded(
+                                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      wishlist.title,
+                                      style: HAppStyle.heading4Style,
+                                    ),
+                                    gapH4,
+                                    Text(
+                                      wishlist.description,
+                                      style: HAppStyle.paragraph3Regular
+                                          .copyWith(
+                                              color:
+                                                  HAppColor.hGreyColorShade600),
+                                    ),
+                                    FutureBuilder(
+                                        key: Key(WishlistController.instance
+                                            .refreshWishlistItemData.value
+                                            .toString()),
+                                        future: ProductRepository.instance
+                                            .getProductsFromListIds(
+                                                wishlist.listIds),
+                                        builder: ((context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return CustomShimmerWidget
+                                                .rectangular(height: 60);
+                                          }
+
+                                          if (snapshot.hasError) {
+                                            return const Center(
+                                              child: Text(
+                                                  'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                                            );
+                                          }
+
+                                          if (!snapshot.hasData ||
+                                              snapshot.data == null ||
+                                              snapshot.data!.isEmpty) {
+                                            return Container();
+                                          } else {
+                                            final data = snapshot.data!;
+                                            return Column(
+                                              children: [
+                                                gapH10,
+                                                ProductListStackWidget(
+                                                  maxItems: 8,
+                                                  items: data
+                                                      .map((product) =>
+                                                          product.image)
+                                                      .toList(),
+                                                ),
+                                              ],
+                                            );
+                                          }
+                                        })),
+                                  ],
+                                )),
+                                Checkbox(
+                                    activeColor: HAppColor.hBluePrimaryColor,
+                                    value: isAdded.value,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        isAdded.value = val!;
+                                        if (wishlist.listIds
+                                            .contains(model.id)) {
+                                          isAdded.value = true;
+                                          wishlist.listIds.remove(model.id);
+                                        } else {
+                                          isAdded.value = false;
+                                          wishlist.listIds.add(model.id);
+                                        }
+                                        wishlistController
+                                            .addOrRemoveProductInWishlist(
+                                                wishlist.id, wishlist.listIds);
+                                      });
+                                    }),
                               ],
-                            )),
-                            Checkbox(
-                                activeColor: HAppColor.hBluePrimaryColor,
-                                value: productController
-                                    .wishlistList[index].isChecked,
-                                onChanged: (val) {
-                                  setState(() {
-                                    productController
-                                        .wishlistList[index].isChecked = val!;
-                                    if (productController
-                                        .wishlistList[index].isChecked) {
-                                      if (!model.wishlistName.contains(
-                                          productController
-                                              .productInWishList.keys
-                                              .elementAt(index))) {
-                                        model.wishlistName += productController
-                                            .productInWishList.keys
-                                            .elementAt(index);
-                                      }
-                                    } else {
-                                      if (model.wishlistName.contains(
-                                          productController
-                                              .productInWishList.keys
-                                              .elementAt(index))) {
-                                        String substr = productController
-                                            .productInWishList.keys
-                                            .elementAt(index);
-                                        String replacement = "";
-                                        model.wishlistName = model.wishlistName
-                                            .replaceAll(substr, replacement);
-                                      }
-                                    }
-                                    productController.listProducts.refresh();
-                                    productController.addMapProductInWishList();
-                                  });
-                                }),
+                            ),
+                            gapH4,
+                            Divider(
+                              color: HAppColor.hGreyColorShade300,
+                            )
                           ],
-                        ),
-                        gapH4,
-                        Divider(
-                          color: HAppColor.hGreyColorShade300,
-                        )
-                      ],
-                    );
-                  }))
-            ],
-          ),
+                        );
+                      });
+                }
+              }))),
+          // child: ListView.builder(
+          //     padding: EdgeInsets.zero,
+          //     shrinkWrap: true,
+          //     itemCount: productController.productInWishList.keys.length,
+          //     itemBuilder: (context, index) {
+          //       bool isAdded = false;
+          //       if (model.wishlistName.contains(productController
+          //           .productInWishList.keys
+          //           .elementAt(index))) {
+          //         productController.wishlistList[index].isChecked = true;
+          //       } else {
+          //         productController.wishlistList[index].isChecked = false;
+          //       }
+          //       return Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Row(
+          //             crossAxisAlignment: CrossAxisAlignment.start,
+          //             children: [
+          //               Expanded(
+          //                   child: Column(
+          //                 crossAxisAlignment: CrossAxisAlignment.start,
+          //                 children: [
+          //                   Text(
+          //                     productController.productInWishList.keys
+          //                         .elementAt(index),
+          //                     style: HAppStyle.heading4Style,
+          //                   ),
+          //                   gapH4,
+          //                   Text(
+          //                     productController.findSubtitleWishList(
+          //                         productController.productInWishList.keys
+          //                             .elementAt(index)),
+          //                     style: HAppStyle.paragraph3Regular.copyWith(
+          //                         color: HAppColor.hGreyColorShade600),
+          //                   ),
+          //                   productController.productInWishList.values
+          //                           .elementAt(index)
+          //                           .isNotEmpty
+          //                       ? Column(
+          //                           children: [
+          //                             gapH10,
+          //                             ProductListStackWidget(
+          //                               maxItems: 8,
+          //                               items: productController
+          //                                   .productInWishList.values
+          //                                   .elementAt(index)
+          //                                   .map((product) => product.imgPath)
+          //                                   .toList(),
+          //                             ),
+          //                           ],
+          //                         )
+          //                       : Container(),
+          //                 ],
+          //               )),
+          //               Checkbox(
+          //                   activeColor: HAppColor.hBluePrimaryColor,
+          //                   value:
+          //                       productController.wishlistList[index].isChecked,
+          //                   onChanged: (val) {
+          //                     setState(() {
+          //                       productController
+          //                           .wishlistList[index].isChecked = val!;
+          //                       if (productController
+          //                           .wishlistList[index].isChecked) {
+          //                         if (!model.wishlistName.contains(
+          //                             productController.productInWishList.keys
+          //                                 .elementAt(index))) {
+          //                           model.wishlistName += productController
+          //                               .productInWishList.keys
+          //                               .elementAt(index);
+          //                         }
+          //                       } else {
+          //                         if (model.wishlistName.contains(
+          //                             productController.productInWishList.keys
+          //                                 .elementAt(index))) {
+          //                           String substr = productController
+          //                               .productInWishList.keys
+          //                               .elementAt(index);
+          //                           String replacement = "";
+          //                           model.wishlistName = model.wishlistName
+          //                               .replaceAll(substr, replacement);
+          //                         }
+          //                       }
+          //                       productController.listProducts.refresh();
+          //                       productController.addMapProductInWishList();
+          //                     });
+          //                   }),
+          //             ],
+          //           ),
+          //           gapH4,
+          //           Divider(
+          //             color: HAppColor.hGreyColorShade300,
+          //           )
+          //         ],
+          //       );
+          //     }),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: HAppColor.hBluePrimaryColor,
         shape: const CircleBorder(),
         onPressed: () {
-          openCreateFormWishlish();
+          wishlistController.openCreateFormWishlish();
         },
         child: const Icon(
           EvaIcons.plus,
@@ -162,64 +297,4 @@ class _WishlistScreenState extends State<WishlistScreen> {
       ),
     );
   }
-
-  Future openCreateFormWishlish() => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            surfaceTintColor: Colors.transparent,
-            backgroundColor: HAppColor.hBackgroundColor,
-            title: const Text('Tạo danh sách mong ước'),
-            content: Column(mainAxisSize: MainAxisSize.min, children: [
-              TextField(
-                textAlignVertical: TextAlignVertical.center,
-                controller: wishlistController.titleController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: HAppColor.hBluePrimaryColor, width: 2.0),
-                  ),
-                  hintStyle: HAppStyle.paragraph1Bold
-                      .copyWith(color: HAppColor.hGreyColor),
-                  isCollapsed: true,
-                  contentPadding: const EdgeInsets.all(9),
-                  hintText: "Nhập tiêu đề",
-                ),
-              ),
-              gapH10,
-              TextField(
-                textAlignVertical: TextAlignVertical.center,
-                controller: wishlistController.subtitleController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: HAppColor.hBluePrimaryColor, width: 2.0),
-                  ),
-                  hintStyle: HAppStyle.paragraph1Bold
-                      .copyWith(color: HAppColor.hGreyColor),
-                  isCollapsed: true,
-                  contentPadding: const EdgeInsets.all(9),
-                  hintText: "Nhập mô tả",
-                ),
-              ),
-            ]),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Get.back();
-                    var wishlist = Wishlist(
-                        title: wishlistController.titleController.text,
-                        subTitle: wishlistController.subtitleController.text,
-                        isChecked: false);
-                    productController.wishlistList.addIf(
-                        !productController.wishlistList.contains(wishlist),
-                        wishlist);
-                    productController.addMapProductInWishList();
-                  },
-                  child: Text('Tạo',
-                      style: HAppStyle.label3Bold
-                          .copyWith(color: HAppColor.hDarkColor)))
-            ],
-          ));
 }

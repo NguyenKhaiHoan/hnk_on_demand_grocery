@@ -15,7 +15,7 @@ class SearchOneStoreScreen extends StatefulWidget {
 }
 
 class _SearchOneStoreScreenState extends State<SearchOneStoreScreen> {
-  RxList<ProductModel> list = Get.arguments['list'];
+  List<ProductModel> list = Get.arguments['list'];
   String nameStore = Get.arguments['nameStore'];
 
   final searchController = Get.put(SearchProductController());
@@ -57,8 +57,7 @@ class _SearchOneStoreScreenState extends State<SearchOneStoreScreen> {
             child: Text('Tìm kiếm: ${searchController.controller.text}'),
           ),
           CustomLayoutWidget(
-              widget: ListProductExploreBuilder(
-                  list: list, storeIcon: false, compare: false),
+              widget: ListProductExploreBuilder(list: list, compare: false),
               subWidget: Container())
         ],
       )),

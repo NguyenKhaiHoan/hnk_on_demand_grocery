@@ -1,4 +1,3 @@
-
 class HAppAsset {
   static const onboardingImage =
       'assets/images/on_boarding_screen/on_boarding.jpg';

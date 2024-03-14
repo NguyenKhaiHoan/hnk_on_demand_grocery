@@ -55,17 +55,15 @@ class _AllAddressScreenState extends State<AllAddressScreen> {
                 future: addressController.fetchAllUserAddresses(),
                 builder: ((context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    Future.delayed(const Duration(seconds: 3)).then((value) {
-                      return ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) => AddressInformation(
-                                address: AddressModel.empty(),
-                                function: () => null,
-                              ),
-                          separatorBuilder: (context, index) => gapH12,
-                          itemCount: 3);
-                    });
+                    return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) => AddressInformation(
+                              address: AddressModel.empty(),
+                              function: () => null,
+                            ),
+                        separatorBuilder: (context, index) => gapH12,
+                        itemCount: 3);
                   }
 
                   if (snapshot.hasError) {
@@ -77,16 +75,6 @@ class _AllAddressScreenState extends State<AllAddressScreen> {
                   if (!snapshot.hasData ||
                       snapshot.data == null ||
                       snapshot.data!.isEmpty) {
-                    ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) => AddressInformation(
-                              address: AddressModel.empty(),
-                              function: () => null,
-                            ),
-                        separatorBuilder: (context, index) => gapH12,
-                        itemCount: 3);
-                    Future.delayed(const Duration(seconds: 3)).then((value) {});
                     return Container();
                   } else {
                     final addresses = snapshot.data!;

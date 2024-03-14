@@ -93,6 +93,8 @@ dependencies:
   geocoding: ^2.2.0
   http: ^1.2.0
   geocode: ^1.0.3
+  tuple: ^2.0.2
+  firebase_ui_firestore: ^1.6.2
 
 dev_dependencies:
   flutter_test:

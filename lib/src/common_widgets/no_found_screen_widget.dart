@@ -30,9 +30,9 @@ class NotFoundScreenWidget extends StatelessWidget {
             Container(
               width: HAppSize.deviceWidth * 0.4,
               height: HAppSize.deviceWidth * 0.4,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  image: const DecorationImage(
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
                       image: AssetImage('assets/images/other/not_found.jpg'),
                       fit: BoxFit.cover)),
             ),

@@ -16,6 +16,7 @@ import 'package:on_demand_grocery/src/features/personalization/views/select_deli
 import 'package:on_demand_grocery/src/features/shop/views/chat/chat_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/add_address_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/all_address_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/change_address_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/delivery_infomation_dart.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/widgets/list_item_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/wishlist_screen.dart';
@@ -232,6 +233,13 @@ abstract class HAppPages {
       transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
+      name: HAppRoutes.changeAddress,
+      page: () => const ChangeAddressScreen(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
       name: HAppRoutes.allAddress,
       page: () => const AllAddressScreen(),
       transitionDuration: const Duration(milliseconds: 500),
@@ -295,4 +303,5 @@ abstract class HAppRoutes {
   static const liveTracking = '/liveTracking';
   static const noDeliver = '/noDeliver';
   static const selectDeliveryAddress = '/selectDeliveryAddress';
+  static const changeAddress = '/changeAddress';
 }

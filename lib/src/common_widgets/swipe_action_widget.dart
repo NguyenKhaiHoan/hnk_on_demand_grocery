@@ -67,7 +67,7 @@ class SwipeActionWidget extends StatelessWidget {
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
+                    shape: BoxShape.circle,
                     color: backgroundColorIcon,
                   ),
                   child: Icon(

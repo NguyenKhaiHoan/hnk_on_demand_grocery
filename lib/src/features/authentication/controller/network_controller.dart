@@ -18,8 +18,19 @@ class NetworkController extends GetxController {
       ConnectivityResult connectivityResult) async {
     connectivityStatus.value = connectivityResult;
     if (connectivityStatus.value == ConnectivityResult.none) {
-      HAppUtils.showSnackBarError(
-          'Mất kết nối', 'Hãy kết nối lại dữ liệu di động');
+      HAppUtils.showLostMobileDataConnection('Mất kết nối dữ liệu',
+          'Hãy kiểm tra kết nối Wifi hoặc dữ liệu di động để tiếp tục truy cập ứng dụng.');
+    } else {
+      if (Get.isSnackbarOpen) {
+        Get.closeCurrentSnackbar();
+      }
+      // if (connectivityResult == ConnectivityResult.wifi) {
+      //   HAppUtils.showConnectedToMobileData('Đã kết nối qua Wifi',
+      //       'Giờ đây, bạn có thể tiếp tục truy cập đầy đủ và trải nghiệm ứng dụng.');
+      // } else if (connectivityResult == ConnectivityResult.mobile) {
+      //   HAppUtils.showConnectedToMobileData('Đã kết nối qua dữ liệu di động',
+      //       'Giờ đây, bạn có thể tiếp tục truy cập đầy đủ và trải nghiệm ứng dụng.');
+      // }
     }
   }
 

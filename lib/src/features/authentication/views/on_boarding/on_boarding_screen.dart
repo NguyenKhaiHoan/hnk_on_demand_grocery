@@ -189,7 +189,7 @@ class OnboardingScreen extends StatelessWidget {
       width: onboardingController.currentPage.value == index ? 40 : 16,
       margin: const EdgeInsets.only(right: 5),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(100),
+        shape: BoxShape.circle,
         color: onboardingController.currentPage.value == index
             ? HAppColor.hBluePrimaryColor
             : HAppColor.hBlueSecondaryColor,

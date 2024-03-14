@@ -5,6 +5,8 @@ import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart'
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
+import 'package:on_demand_grocery/src/repositories/address_repository.dart';
+import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
@@ -16,8 +18,15 @@ class StoreMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () =>
-          Get.toNamed(HAppRoutes.storeDetail, arguments: {'model': model}),
+      onTap: () async {
+        final store =
+            await StoreRepository.instance.getStoreInformation(model.id);
+        final address =
+            await AddressRepository.instance.getStoreAddress(model.id);
+        final stringAddress = address.first.toString();
+        Get.toNamed(HAppRoutes.storeDetail,
+            arguments: {'model': store, 'address': stringAddress});
+      },
       child: Column(children: [
         Container(
           width: 90,
@@ -26,7 +35,7 @@ class StoreMenu extends StatelessWidget {
               color: HAppColor.hWhiteColor,
               borderRadius: BorderRadius.circular(10)),
           child: ImageNetwork(
-            image: model.imgStore,
+            image: model.storeImage,
             height: 80,
             width: 90,
             duration: 500,
@@ -45,7 +54,6 @@ class StoreMenu extends StatelessWidget {
               Icons.error,
               color: Colors.red,
             ),
-            onTap: () => null,
           ),
         ),
         gapH4,

@@ -21,28 +21,15 @@ class CategoryMenu extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           width: 50,
           height: 50,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: HAppColor.hWhiteColor,
-            borderRadius: BorderRadius.circular(100),
+            shape: BoxShape.circle,
           ),
-          child: ImageNetwork(
-            image: model.image,
+          child: Image.network(
+            model.image,
             height: 30,
             width: 30,
-            duration: 500,
-            curve: Curves.easeIn,
-            onPointer: true,
-            debugPrint: false,
-            fullScreen: false,
-            fitAndroidIos: BoxFit.cover,
-            fitWeb: BoxFitWeb.cover,
-            borderRadius: BorderRadius.circular(10),
-            onLoading: Container(),
-            onError: const Icon(
-              Icons.error,
-              color: Colors.red,
-            ),
-            onTap: () => null,
+            fit: BoxFit.cover,
           ),
         ),
         gapH4,

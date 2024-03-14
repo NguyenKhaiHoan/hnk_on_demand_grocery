@@ -9,9 +9,8 @@ class ExploreController extends GetxController
   late ScrollController scrollController;
 
   final showFab = false.obs;
-  var isLoading = false.obs;
-  var isLoadingAdd = false.obs;
   var index = 0.obs;
+  var refreshData = false.obs;
 
   @override
   void onInit() {

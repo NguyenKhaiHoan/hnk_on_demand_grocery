@@ -1,18 +1,26 @@
+import 'dart:ui';
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:image_network/image_network.dart';
-import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/data/dummy_data.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
-import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
+import 'package:on_demand_grocery/src/repositories/address_repository.dart';
+import 'package:on_demand_grocery/src/repositories/store_repository.dart';
+import 'package:on_demand_grocery/src/repositories/user_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
@@ -23,28 +31,28 @@ import 'package:toastification/toastification.dart';
 class ProductDetailScreen extends StatelessWidget {
   ProductDetailScreen({super.key});
 
-  final detailController = Get.put(DetailController());
-  final productController = Get.put(ProductController());
-  final String discription =
-      loremIpsum(words: 30, paragraphs: 2, initWithLorem: true);
+  final detailController = DetailController.instance;
+  final productController = ProductController.instance;
+  final storeController = StoreController.instance;
+  final wishlistController = WishlistController.instance;
+  final cartController = CartController.instance;
 
-  final ProductModel model = Get.arguments['model'];
-  final RxList<ProductModel> list = Get.arguments['list'];
+  final ProductModel product = Get.arguments['product'];
+  final StoreModel store = Get.arguments['store'];
+
   final List<double> rates = [0.1, 0.3, 0.5, 0.7, 0.9];
-
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () {
+    Future.delayed(Duration.zero, () async {
       detailController.showAppBar.value = false;
       detailController.showNameInAppBar.value = false;
-      detailController.setCount(model);
     });
     return Scaffold(
       body: SafeArea(
           child: Stack(
         children: [
           ImageNetwork(
-            image: model.imgPath,
+            image: product.image,
             height: HAppSize.deviceHeight * 0.5,
             width: HAppSize.deviceWidth,
             duration: 500,
@@ -61,7 +69,7 @@ class ProductDetailScreen extends StatelessWidget {
               Icons.error,
               color: Colors.red,
             ),
-            onTap: () => null,
+            onTap: () => detailController.showLargeImage(product.image),
           ),
           Obx(() => SizedBox(
                 height: 80,
@@ -89,7 +97,7 @@ class ProductDetailScreen extends StatelessWidget {
                                 width: 40,
                                 height: 40,
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
+                                    shape: BoxShape.circle,
                                     border: Border.all(
                                       color: HAppColor.hGreyColorShade300,
                                       width: 1.5,
@@ -110,7 +118,7 @@ class ProductDetailScreen extends StatelessWidget {
                                     : 0,
                                 duration: const Duration(milliseconds: 300),
                                 child: Text(
-                                  model.name,
+                                  product.name,
                                   style: HAppStyle.heading4Style,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -126,62 +134,9 @@ class ProductDetailScreen extends StatelessWidget {
                           duration: const Duration(milliseconds: 300),
                           child: GestureDetector(
                             onTap: () {
-                              productController.addProductInFavorited(model);
-                              if (productController.isFavoritedProducts
-                                  .contains(model)) {
-                                HAppUtils.showToastSuccess(
-                                    Text(
-                                      'Thêm vào Yêu thích!',
-                                      style: HAppStyle.label2Bold.copyWith(
-                                          color: HAppColor.hBluePrimaryColor),
-                                    ),
-                                    RichText(
-                                        text: TextSpan(
-                                            style: HAppStyle.paragraph2Regular
-                                                .copyWith(
-                                                    color: HAppColor
-                                                        .hGreyColorShade600),
-                                            text: 'Bạn đã thêm thành công',
-                                            children: [
-                                          TextSpan(
-                                              text: ' ${model.name} ',
-                                              style: HAppStyle.paragraph2Regular
-                                                  .copyWith(
-                                                      color: HAppColor
-                                                          .hBluePrimaryColor)),
-                                          const TextSpan(text: 'vào Yêu thích.')
-                                        ])),
-                                    1,
-                                    context,
-                                    const ToastificationCallbacks());
-                              } else {
-                                HAppUtils.showToastSuccess(
-                                    Text(
-                                      'Xóa khỏi Yêu thích!',
-                                      style: HAppStyle.label2Bold.copyWith(
-                                          color: HAppColor.hBluePrimaryColor),
-                                    ),
-                                    RichText(
-                                        text: TextSpan(
-                                            style: HAppStyle.paragraph2Regular
-                                                .copyWith(
-                                                    color: HAppColor
-                                                        .hGreyColorShade600),
-                                            text: 'Bạn đã xóa thành công',
-                                            children: [
-                                          TextSpan(
-                                              text: ' ${model.name} ',
-                                              style: HAppStyle.paragraph2Regular
-                                                  .copyWith(
-                                                      color: HAppColor
-                                                          .hBluePrimaryColor)),
-                                          const TextSpan(
-                                              text: 'khỏi Yêu thích.')
-                                        ])),
-                                    1,
-                                    context,
-                                    const ToastificationCallbacks());
-                              }
+                              wishlistController
+                                  .addOrRemoveProductInFavoriteList(product.id);
+                              showSnackbarFavorite(context, product);
                             },
                             child: Container(
                               width: 40,
@@ -194,9 +149,9 @@ class ProductDetailScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(100),
                                   color: HAppColor.hBackgroundColor),
                               child: Center(
-                                  child: Obx(() => productController
-                                          .isFavoritedProducts
-                                          .contains(model)
+                                  child: Obx(() => UserController.instance.user
+                                          .value.listOfFavoriteProduct
+                                          .contains(product.id)
                                       ? const Icon(
                                           EvaIcons.heart,
                                           color: HAppColor.hRedColor,
@@ -296,7 +251,11 @@ class ProductDetailScreen extends StatelessWidget {
                                 ),
                                 gapW4,
                                 Text(
-                                  model.category,
+                                  CategoryController
+                                      .instance
+                                      .listOfCategory[
+                                          int.parse(product.categoryId)]
+                                      .name,
                                   style: HAppStyle.paragraph2Regular.copyWith(
                                       color: HAppColor.hGreyColorShade600),
                                 ),
@@ -307,74 +266,10 @@ class ProductDetailScreen extends StatelessWidget {
                                   duration: const Duration(milliseconds: 300),
                                   child: GestureDetector(
                                     onTap: () {
-                                      productController
-                                          .addProductInFavorited(model);
-                                      if (productController.isFavoritedProducts
-                                          .contains(model)) {
-                                        HAppUtils.showToastSuccess(
-                                            Text(
-                                              'Thêm vào Yêu thích!',
-                                              style: HAppStyle.label2Bold
-                                                  .copyWith(
-                                                      color: HAppColor
-                                                          .hBluePrimaryColor),
-                                            ),
-                                            RichText(
-                                                text: TextSpan(
-                                                    style: HAppStyle
-                                                        .paragraph2Regular
-                                                        .copyWith(
-                                                            color: HAppColor
-                                                                .hGreyColorShade600),
-                                                    text:
-                                                        'Bạn đã thêm thành công',
-                                                    children: [
-                                                  TextSpan(
-                                                      text: ' ${model.name} ',
-                                                      style: HAppStyle
-                                                          .paragraph2Regular
-                                                          .copyWith(
-                                                              color: HAppColor
-                                                                  .hBluePrimaryColor)),
-                                                  const TextSpan(
-                                                      text: 'vào Yêu thích.')
-                                                ])),
-                                            1,
-                                            context,
-                                            const ToastificationCallbacks());
-                                      } else {
-                                        HAppUtils.showToastSuccess(
-                                            Text(
-                                              'Xóa khỏi Yêu thích!',
-                                              style: HAppStyle.label2Bold
-                                                  .copyWith(
-                                                      color: HAppColor
-                                                          .hBluePrimaryColor),
-                                            ),
-                                            RichText(
-                                                text: TextSpan(
-                                                    style: HAppStyle
-                                                        .paragraph2Regular
-                                                        .copyWith(
-                                                            color: HAppColor
-                                                                .hGreyColorShade600),
-                                                    text:
-                                                        'Bạn đã xóa thành công',
-                                                    children: [
-                                                  TextSpan(
-                                                      text: ' ${model.name} ',
-                                                      style: HAppStyle
-                                                          .paragraph2Regular
-                                                          .copyWith(
-                                                              color: HAppColor
-                                                                  .hBluePrimaryColor)),
-                                                  const TextSpan(
-                                                      text: 'khỏi Yêu thích.')
-                                                ])),
-                                            1,
-                                            context,
-                                            const ToastificationCallbacks());
-                                      }
+                                      wishlistController
+                                          .addOrRemoveProductInFavoriteList(
+                                              product.id);
+                                      showSnackbarFavorite(context, product);
                                     },
                                     child: Container(
                                       width: 40,
@@ -388,9 +283,12 @@ class ProductDetailScreen extends StatelessWidget {
                                               BorderRadius.circular(100),
                                           color: HAppColor.hBackgroundColor),
                                       child: Center(
-                                          child: Obx(() => productController
-                                                  .isFavoritedProducts
-                                                  .contains(model)
+                                          child: Obx(() => UserController
+                                                  .instance
+                                                  .user
+                                                  .value
+                                                  .listOfFavoriteProduct
+                                                  .contains(product.id)
                                               ? const Icon(
                                                   EvaIcons.heart,
                                                   color: HAppColor.hRedColor,
@@ -406,7 +304,7 @@ class ProductDetailScreen extends StatelessWidget {
                             ),
                             gapH12,
                             Text(
-                              model.name,
+                              product.name,
                               style: HAppStyle.heading2Style,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -425,7 +323,7 @@ class ProductDetailScreen extends StatelessWidget {
                                     Text.rich(
                                       TextSpan(
                                         style: HAppStyle.paragraph1Bold,
-                                        text: model.rating.toStringAsFixed(1),
+                                        text: product.rating.toStringAsFixed(1),
                                         children: [
                                           TextSpan(
                                             text: '/5',
@@ -450,7 +348,7 @@ class ProductDetailScreen extends StatelessWidget {
                                 Text.rich(
                                   TextSpan(
                                     style: HAppStyle.paragraph1Bold,
-                                    text: "2.3k+ ",
+                                    text: "Chưa có ",
                                     children: [
                                       TextSpan(
                                         text: 'Nhận xét',
@@ -473,7 +371,7 @@ class ProductDetailScreen extends StatelessWidget {
                                 Text.rich(
                                   TextSpan(
                                     style: HAppStyle.paragraph1Bold,
-                                    text: '${model.countBuyed} ',
+                                    text: '${product.countBuyed} ',
                                     children: [
                                       TextSpan(
                                         text: 'Đã bán',
@@ -486,120 +384,120 @@ class ProductDetailScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            gapH12,
-                            ExpansionTile(
-                              initiallyExpanded: false,
-                              tilePadding: EdgeInsets.zero,
-                              shape: const Border(),
-                              onExpansionChanged: (value) {
-                                if (value) {
-                                  productController
-                                      .getComparePriceProduct(model);
-                                }
-                              },
-                              title: Row(
-                                children: [
-                                  model.salePersent == 0
-                                      ? Text(
-                                          DummyData.vietNamCurrencyFormatting(
-                                              model.price),
-                                          style: HAppStyle.label1Bold.copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor),
-                                        )
-                                      : Text.rich(
-                                          TextSpan(
-                                            style:
-                                                HAppStyle.label1Bold.copyWith(
-                                              color: HAppColor.hOrangeColor,
-                                            ),
-                                            text:
-                                                '${DummyData.vietNamCurrencyFormatting(model.priceSale)} ',
-                                            children: [
-                                              TextSpan(
-                                                text: DummyData
-                                                    .vietNamCurrencyFormatting(
-                                                        model.price),
-                                                style: HAppStyle.paragraph2Bold
-                                                    .copyWith(
-                                                        color: HAppColor
-                                                            .hGreyColor,
-                                                        decoration:
-                                                            TextDecoration
-                                                                .lineThrough),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                  const Spacer(),
-                                  const Text("So sánh giá")
-                                ],
-                              ),
-                              children: [
-                                SizedBox(
-                                    width: double.infinity,
-                                    height: 315,
-                                    child: Obx(() => ListView.separated(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: productController
-                                              .comparePriceProducts.length,
-                                          itemBuilder:
-                                              (BuildContext context, index) {
-                                            String differentText = "";
-                                            String compareOperator = "";
-                                            String comparePrice = "";
+                            // gapH12,
+                            // ExpansionTile(
+                            //   initiallyExpanded: false,
+                            //   tilePadding: EdgeInsets.zero,
+                            //   shape: const Border(),
+                            //   onExpansionChanged: (value) {
+                            //     if (value) {
+                            //       productController
+                            //           .getComparePriceProduct(model);
+                            //     }
+                            //   },
+                            //   title: Row(
+                            //     children: [
+                            //       model.salePersent == 0
+                            //           ? Text(
+                            //               HAppUtils.vietNamCurrencyFormatting(
+                            //                   model.price),
+                            //               style: HAppStyle.label1Bold.copyWith(
+                            //                   color:
+                            //                       HAppColor.hBluePrimaryColor),
+                            //             )
+                            //           : Text.rich(
+                            //               TextSpan(
+                            //                 style:
+                            //                     HAppStyle.label1Bold.copyWith(
+                            //                   color: HAppColor.hOrangeColor,
+                            //                 ),
+                            //                 text:
+                            //                     '${HAppUtils.vietNamCurrencyFormatting(model.priceSale)} ',
+                            //                 children: [
+                            //                   TextSpan(
+                            //                     text: DummyData
+                            //                         .vietNamCurrencyFormatting(
+                            //                             model.price),
+                            //                     style: HAppStyle.paragraph2Bold
+                            //                         .copyWith(
+                            //                             color: HAppColor
+                            //                                 .hGreyColor,
+                            //                             decoration:
+                            //                                 TextDecoration
+                            //                                     .lineThrough),
+                            //                   ),
+                            //                 ],
+                            //               ),
+                            //             ),
+                            //       const Spacer(),
+                            //       const Text("So sánh giá")
+                            //     ],
+                            //   ),
+                            //   children: [
+                            //     SizedBox(
+                            //         width: double.infinity,
+                            //         height: 315,
+                            //         child: Obx(() => ListView.separated(
+                            //               scrollDirection: Axis.horizontal,
+                            //               itemCount: productController
+                            //                   .comparePriceProducts.length,
+                            //               itemBuilder:
+                            //                   (BuildContext context, index) {
+                            //                 String differentText = "";
+                            //                 String compareOperator = "";
+                            //                 String comparePrice = "";
 
-                                            if (model.salePersent == 0) {
-                                              differentText = detailController
-                                                  .calculatingDifference(
-                                                      productController
-                                                              .comparePriceProducts[
-                                                          index],
-                                                      model.price);
-                                              compareOperator = detailController
-                                                  .comparePrice(differentText);
-                                              comparePrice = detailController
-                                                  .comparePriceNumber(
-                                                      differentText);
-                                            } else {
-                                              differentText = detailController
-                                                  .calculatingDifference(
-                                                      productController
-                                                              .comparePriceProducts[
-                                                          index],
-                                                      model.priceSale);
-                                              compareOperator = detailController
-                                                  .comparePrice(differentText);
-                                              comparePrice = detailController
-                                                  .comparePriceNumber(
-                                                      differentText);
-                                            }
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 16),
-                                              child: ProductItemWidget(
-                                                storeIcon: true,
-                                                model: productController
-                                                        .comparePriceProducts[
-                                                    index],
-                                                list: productController
-                                                    .comparePriceProducts,
-                                                compare: true,
-                                                differentText: differentText,
-                                                compareOperator:
-                                                    compareOperator,
-                                                comparePrice: comparePrice,
-                                              ),
-                                            );
-                                          },
-                                          separatorBuilder:
-                                              (BuildContext context,
-                                                      int index) =>
-                                                  gapW10,
-                                        )))
-                              ],
-                            ),
-                            gapH12,
+                            //                 if (model.salePersent == 0) {
+                            //                   differentText = detailController
+                            //                       .calculatingDifference(
+                            //                           productController
+                            //                                   .comparePriceProducts[
+                            //                               index],
+                            //                           model.price);
+                            //                   compareOperator = detailController
+                            //                       .comparePrice(differentText);
+                            //                   comparePrice = detailController
+                            //                       .comparePriceNumber(
+                            //                           differentText);
+                            //                 } else {
+                            //                   differentText = detailController
+                            //                       .calculatingDifference(
+                            //                           productController
+                            //                                   .comparePriceProducts[
+                            //                               index],
+                            //                           model.priceSale);
+                            //                   compareOperator = detailController
+                            //                       .comparePrice(differentText);
+                            //                   comparePrice = detailController
+                            //                       .comparePriceNumber(
+                            //                           differentText);
+                            //                 }
+                            //                 return Padding(
+                            //                   padding: const EdgeInsets.only(
+                            //                       bottom: 16),
+                            //                   child: ProductItemWidget(
+                            //                     storeIcon: true,
+                            //                     model: productController
+                            //                             .comparePriceProducts[
+                            //                         index],
+                            //                     list: productController
+                            //                         .comparePriceProducts,
+                            //                     compare: true,
+                            //                     differentText: differentText,
+                            //                     compareOperator:
+                            //                         compareOperator,
+                            //                     comparePrice: comparePrice,
+                            //                   ),
+                            //                 );
+                            //               },
+                            //               separatorBuilder:
+                            //                   (BuildContext context,
+                            //                           int index) =>
+                            //                       gapW10,
+                            //             )))
+                            //   ],
+                            // ),
+                            gapH24,
                             Row(
                               children: [
                                 const Text(
@@ -607,13 +505,17 @@ class ProductDetailScreen extends StatelessWidget {
                                   style: HAppStyle.heading4Style,
                                 ),
                                 const Spacer(),
-                                model.status == ""
+                                product.status == "Còn hàng"
                                     ? Row(
                                         children: [
                                           GestureDetector(
-                                            onTap: () {
-                                              detailController.changeCount("-");
-                                            },
+                                            onTap: () => cartController
+                                                        .productQuantityInCart
+                                                        .value <
+                                                    1
+                                                ? null
+                                                : cartController
+                                                    .productQuantityInCart -= 1,
                                             child: Container(
                                                 height: 30,
                                                 width: 30,
@@ -634,11 +536,19 @@ class ProductDetailScreen extends StatelessWidget {
                                                 TextSpan(
                                                   style:
                                                       HAppStyle.paragraph1Bold,
-                                                  text: detailController
-                                                      .countText.value,
+                                                  text: cartController
+                                                              .productQuantityInCart
+                                                              .value ==
+                                                          0
+                                                      ? '1'
+                                                      : cartController
+                                                          .productQuantityInCart
+                                                          .value
+                                                          .toString(),
                                                   children: [
                                                     TextSpan(
-                                                      text: '  /${model.unit}',
+                                                      text:
+                                                          '  /${product.unit}',
                                                       style: HAppStyle
                                                           .paragraph3Regular
                                                           .copyWith(
@@ -652,7 +562,17 @@ class ProductDetailScreen extends StatelessWidget {
                                           gapW16,
                                           GestureDetector(
                                             onTap: () {
-                                              detailController.changeCount("+");
+                                              if (cartController
+                                                      .productQuantityInCart
+                                                      .value ==
+                                                  0) {
+                                                cartController
+                                                    .productQuantityInCart
+                                                    .value += 1;
+                                              }
+                                              cartController
+                                                  .productQuantityInCart
+                                                  .value += 1;
                                             },
                                             child: Container(
                                                 height: 30,
@@ -683,7 +603,7 @@ class ProductDetailScreen extends StatelessWidget {
                                                 HAppColor.hGreyColorShade300),
                                         child: Center(
                                             child: Text(
-                                          model.status,
+                                          product.status,
                                           style: HAppStyle.label3Regular,
                                         )),
                                       ),
@@ -692,15 +612,24 @@ class ProductDetailScreen extends StatelessWidget {
                             gapH24,
                             Row(
                               children: [
-                                Container(
-                                  width: 80,
+                                ImageNetwork(
+                                  image: store.storeImage,
                                   height: 80,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: HAppColor.hGreyColorShade300,
-                                      image: DecorationImage(
-                                          image: NetworkImage(model.imgStore),
-                                          fit: BoxFit.cover)),
+                                  width: 80,
+                                  duration: 500,
+                                  curve: Curves.easeIn,
+                                  onPointer: true,
+                                  debugPrint: false,
+                                  fullScreen: false,
+                                  fitAndroidIos: BoxFit.cover,
+                                  fitWeb: BoxFitWeb.cover,
+                                  borderRadius: BorderRadius.circular(100),
+                                  onLoading: const CustomShimmerWidget.circular(
+                                      width: 80, height: 80),
+                                  onError: const Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                  ),
                                 ),
                                 gapW10,
                                 Expanded(
@@ -709,7 +638,7 @@ class ProductDetailScreen extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        model.nameStore,
+                                        store.name,
                                         style: HAppStyle.heading4Style,
                                       ),
                                       gapH4,
@@ -724,9 +653,7 @@ class ProductDetailScreen extends StatelessWidget {
                                           Text.rich(
                                             TextSpan(
                                               style: HAppStyle.paragraph2Bold,
-                                              text: productController
-                                                  .findStoreFromProduct(model)
-                                                  .rating
+                                              text: store.rating
                                                   .toStringAsFixed(1),
                                               children: [
                                                 TextSpan(
@@ -742,48 +669,35 @@ class ProductDetailScreen extends StatelessWidget {
                                           ),
                                         ],
                                       ),
-                                      gapH4,
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            EneftyIcons.location_outline,
-                                            size: 15,
-                                            color: HAppColor.hDarkColor,
-                                          ),
-                                          gapW4,
-                                          Text('Hà Nội',
-                                              style: HAppStyle.paragraph2Regular
-                                                  .copyWith(
-                                                      color: HAppColor
-                                                          .hGreyColorShade600))
-                                        ],
-                                      )
                                     ],
                                   ),
                                 ),
                                 gapW10,
                                 GestureDetector(
-                                  child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                        color: HAppColor.hGreyColorShade300,
-                                      ),
-                                      child: const Icon(
-                                        EvaIcons.messageSquare,
-                                        color: HAppColor.hBluePrimaryColor,
-                                        size: 20,
-                                      )),
-                                  onTap: () =>
+                                    child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          color: HAppColor.hGreyColorShade300,
+                                        ),
+                                        child: const Icon(
+                                          EvaIcons.messageSquare,
+                                          color: HAppColor.hBluePrimaryColor,
+                                          size: 20,
+                                        )),
+                                    onTap: () async {
+                                      final store = await StoreRepository
+                                          .instance
+                                          .getStoreInformation(product.storeId);
+
                                       Get.toNamed(HAppRoutes.chat, arguments: {
-                                    'model': model,
-                                    'store': productController
-                                        .checkProductInStore(model),
-                                    'check': true
-                                  }),
-                                ),
+                                        'model': product,
+                                        'store': store,
+                                        'check': true,
+                                      });
+                                    }),
                                 gapW10,
                                 GestureDetector(
                                   child: Container(
@@ -799,12 +713,20 @@ class ProductDetailScreen extends StatelessWidget {
                                         color: HAppColor.hBluePrimaryColor,
                                         size: 20,
                                       )),
-                                  onTap: () => Get.toNamed(
-                                      HAppRoutes.storeDetail,
-                                      arguments: {
-                                        'model': productController
-                                            .checkProductInStore(model)
-                                      }),
+                                  onTap: () async {
+                                    final model = await StoreRepository.instance
+                                        .getStoreInformation(product.storeId);
+                                    final address = await AddressRepository
+                                        .instance
+                                        .getStoreAddress(product.storeId);
+                                    final stringAddress =
+                                        address.first.toString();
+                                    Get.toNamed(HAppRoutes.storeDetail,
+                                        arguments: {
+                                          'model': model,
+                                          'address': stringAddress
+                                        });
+                                  },
                                 ),
                               ],
                             ),
@@ -812,7 +734,7 @@ class ProductDetailScreen extends StatelessWidget {
                             OutlinedButton(
                                 onPressed: () {
                                   Get.toNamed(HAppRoutes.wishlist,
-                                      arguments: {'model': model});
+                                      arguments: {'model': product});
                                 },
                                 style: ElevatedButton.styleFrom(
                                     minimumSize:
@@ -854,7 +776,7 @@ class ProductDetailScreen extends StatelessWidget {
                                         children: [
                                           Text.rich(TextSpan(
                                               style: HAppStyle.heading3Style,
-                                              text: model.rating
+                                              text: product.rating
                                                   .toStringAsFixed(1),
                                               children: [
                                                 TextSpan(
@@ -866,7 +788,7 @@ class ProductDetailScreen extends StatelessWidget {
                                                                 .hGreyColorShade600))
                                               ])),
                                           Text(
-                                            '2.3k+ Nhận xét',
+                                            'Chưa có nhận xét',
                                             style: HAppStyle.paragraph2Regular
                                                 .copyWith(
                                                     color: HAppColor
@@ -944,7 +866,7 @@ class ProductDetailScreen extends StatelessWidget {
                             ),
                             gapH12,
                             ReadMoreText(
-                              discription,
+                              product.description,
                               trimLines: 3,
                               style: HAppStyle.paragraph2Regular.copyWith(
                                   color: HAppColor.hGreyColorShade600),
@@ -965,7 +887,7 @@ class ProductDetailScreen extends StatelessWidget {
                                     style: HAppStyle.paragraph2Regular,
                                   ),
                                   Text(
-                                    model.origin,
+                                    product.origin,
                                     style: HAppStyle.paragraph2Regular.copyWith(
                                         color: HAppColor.hGreyColorShade600),
                                   )
@@ -976,7 +898,7 @@ class ProductDetailScreen extends StatelessWidget {
                                     style: HAppStyle.paragraph2Regular,
                                   ),
                                   Text(
-                                    model.unit,
+                                    product.unit,
                                     style: HAppStyle.paragraph2Regular.copyWith(
                                         color: HAppColor.hGreyColorShade600),
                                   )
@@ -1010,227 +932,221 @@ class ProductDetailScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            model.status == ""
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Obx(() => Text.rich(
+            if (product.status == "Còn hàng")
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Obx(() => Text.rich(
+                        TextSpan(
+                          text: "Giá:\n",
+                          children: [
                             TextSpan(
-                              text: "Giá:\n",
-                              children: [
-                                TextSpan(
-                                  text: model.priceSale != 0
-                                      ? DummyData.vietNamCurrencyFormatting(
-                                          model.priceSale *
-                                              int.parse(detailController
-                                                  .countText.value))
-                                      : DummyData.vietNamCurrencyFormatting(
-                                          model.price *
-                                              int.parse(detailController
-                                                  .countText.value)),
-                                  style: HAppStyle.heading4Style.copyWith(
-                                      color: HAppColor.hBluePrimaryColor),
-                                ),
-                              ],
+                              text: cartController
+                                          .productQuantityInCart.value ==
+                                      0
+                                  ? product.priceSale != 0
+                                      ? HAppUtils.vietNamCurrencyFormatting(
+                                          product.priceSale)
+                                      : HAppUtils.vietNamCurrencyFormatting(
+                                          product.price)
+                                  : product.priceSale != 0
+                                      ? HAppUtils.vietNamCurrencyFormatting(
+                                          product.priceSale *
+                                              cartController
+                                                  .productQuantityInCart.value)
+                                      : HAppUtils.vietNamCurrencyFormatting(
+                                          product.price *
+                                              cartController
+                                                  .productQuantityInCart.value),
+                              style: HAppStyle.heading4Style
+                                  .copyWith(color: HAppColor.hBluePrimaryColor),
                             ),
-                          )),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (model.quantity == 0) {
-                            productController.addProductInCart(model);
-                          }
-                          model.quantity =
-                              int.parse(detailController.countText.value);
-                          detailController.setCount(model);
-                          productController.refreshAllList();
-                          productController
-                              .refreshList(productController.isInCart);
-                          productController.addMapProductInCart();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: Size(HAppSize.deviceWidth * 0.1, 50),
-                          backgroundColor: HAppColor.hBluePrimaryColor,
+                          ],
                         ),
-                        child: Obx(() => Text(
-                              productController.isInCart.contains(model)
-                                  ? "Cập nhật Giỏ hàng"
-                                  : "Thêm vào Giỏ hàng",
-                              style: HAppStyle.label2Bold
-                                  .copyWith(color: HAppColor.hWhiteColor),
-                            )),
-                      ),
-                    ],
-                  )
-                : Row(children: [
-                    GestureDetector(
-                      onTap: () {
-                        productController
-                            .addRegisterNotificationProducts(model);
-                        if (productController.registerNotificationProducts
-                            .contains(model)) {
-                          HAppUtils.showToastSuccess(
-                              Text(
-                                'Đăng ký nhận thông báo khi có hàng!',
-                                style: HAppStyle.label2Bold.copyWith(
-                                    color: HAppColor.hBluePrimaryColor),
-                              ),
-                              RichText(
-                                  text: TextSpan(
-                                      style: HAppStyle.paragraph2Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hGreyColorShade600),
-                                      text:
-                                          'Chúng tôi sẽ gửi cho bạn thông báo khi sản phẩm',
-                                      children: [
-                                    TextSpan(
-                                        text: ' ${model.name} ',
-                                        style: HAppStyle.paragraph2Regular
-                                            .copyWith(
-                                                color: HAppColor
-                                                    .hBluePrimaryColor)),
-                                    const TextSpan(
-                                        text:
-                                            'có sẵn để đặt hàng. Bạn có thể hủy đăng ký bất cứ lúc nào bằng cách nhấn lại nút thông báo.')
-                                  ])),
-                              5,
-                              context,
-                              const ToastificationCallbacks());
-                        } else {
-                          HAppUtils.showToastSuccess(
-                              Text(
-                                'Hủy đăng ký nhận thông báo khi có hàng!',
-                                style: HAppStyle.label2Bold.copyWith(
-                                    color: HAppColor.hBluePrimaryColor),
-                              ),
-                              RichText(
-                                  text: TextSpan(
-                                      style: HAppStyle.paragraph2Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hGreyColorShade600),
-                                      text:
-                                          'Bạn đã được gỡ khỏi danh sách nhận thông báo về sản phẩm',
-                                      children: [
-                                    TextSpan(
-                                        text: ' ${model.name}',
-                                        style: HAppStyle.paragraph2Regular
-                                            .copyWith(
-                                                color: HAppColor
-                                                    .hBluePrimaryColor)),
-                                    const TextSpan(
-                                        text:
-                                            '. Nếu bạn muốn đăng ký lại, bạn có thể nhấn vào nút chuông bất cứ lúc nào.')
-                                  ])),
-                              5,
-                              context,
-                              const ToastificationCallbacks());
-                        }
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              color: HAppColor.hGreyColorShade300,
-                              width: 1.5,
-                            ),
-                            borderRadius: BorderRadius.circular(100),
-                            color: HAppColor.hBackgroundColor),
-                        child: Center(
-                            child: Obx(() => !productController
-                                    .registerNotificationProducts
-                                    .contains(model)
-                                ? const Icon(
-                                    EneftyIcons.notification_bing_outline)
-                                : const Icon(
-                                    EneftyIcons.notification_bing_bold,
-                                    color: HAppColor.hBluePrimaryColor,
-                                  ))),
-                      ),
+                      )),
+                  ElevatedButton(
+                    onPressed: () {
+                      cartController.addToCart(product);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(HAppSize.deviceWidth * 0.1, 50),
+                      backgroundColor: HAppColor.hBluePrimaryColor,
                     ),
-                    gapW10,
-                    Expanded(
-                      child: ElevatedButton(
-                          onPressed: () {
-                            productController.addProductInFavorited(model);
-                            if (productController.isFavoritedProducts
-                                .contains(model)) {
-                              HAppUtils.showToastSuccess(
-                                  Text(
-                                    'Thêm vào Yêu thích!',
-                                    style: HAppStyle.label2Bold.copyWith(
-                                        color: HAppColor.hBluePrimaryColor),
-                                  ),
-                                  RichText(
-                                      text: TextSpan(
-                                          style: HAppStyle.paragraph2Regular
-                                              .copyWith(
-                                                  color: HAppColor
-                                                      .hGreyColorShade600),
-                                          text: 'Bạn đã thêm thành công',
-                                          children: [
-                                        TextSpan(
-                                            text: ' ${model.name} ',
-                                            style: HAppStyle.paragraph2Regular
-                                                .copyWith(
-                                                    color: HAppColor
-                                                        .hBluePrimaryColor)),
-                                        const TextSpan(text: 'vào Yêu thích.')
-                                      ])),
-                                  1,
-                                  context,
-                                  const ToastificationCallbacks());
-                            } else {
-                              HAppUtils.showToastSuccess(
-                                  Text(
-                                    'Xóa khỏi Yêu thích!',
-                                    style: HAppStyle.label2Bold.copyWith(
-                                        color: HAppColor.hBluePrimaryColor),
-                                  ),
-                                  RichText(
-                                      text: TextSpan(
-                                          style: HAppStyle.paragraph2Regular
-                                              .copyWith(
-                                                  color: HAppColor
-                                                      .hGreyColorShade600),
-                                          text: 'Bạn đã xóa thành công',
-                                          children: [
-                                        TextSpan(
-                                            text: ' ${model.name} ',
-                                            style: HAppStyle.paragraph2Regular
-                                                .copyWith(
-                                                    color: HAppColor
-                                                        .hBluePrimaryColor)),
-                                        const TextSpan(text: 'khỏi Yêu thích.')
-                                      ])),
-                                  1,
-                                  context,
-                                  const ToastificationCallbacks());
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: HAppColor.hBluePrimaryColor,
+                    child: Obx(() => Text(
+                          key: Key(
+                              cartController.refreshButton.value.toString()),
+                          cartController.findIndexProductInCart(cartController
+                                      .convertToCartProduct(product, 1)) <
+                                  0
+                              ? "Thêm vào Giỏ hàng"
+                              : "Cập nhật Giỏ hàng",
+                          style: HAppStyle.label2Bold
+                              .copyWith(color: HAppColor.hWhiteColor),
+                        )),
+                  ),
+                ],
+              )
+            else
+              Row(children: [
+                GestureDetector(
+                  onTap: () {
+                    wishlistController
+                        .addOrRemoveProductInRegisterNotificationList(
+                            product.id);
+                    showSnackbarRegisterNotification(context, product);
+                  },
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: HAppColor.hGreyColorShade300,
+                          width: 1.5,
+                        ),
+                        shape: BoxShape.circle,
+                        color: HAppColor.hBackgroundColor),
+                    child: Center(
+                        child: Obx(() => !UserController.instance.user.value
+                                .listOfRegisterNotificationProduct
+                                .contains(product.id)
+                            ? const Icon(EneftyIcons.notification_bing_outline)
+                            : const Icon(
+                                EneftyIcons.notification_bing_bold,
+                                color: HAppColor.hBluePrimaryColor,
+                              ))),
+                  ),
+                ),
+                gapW10,
+                Expanded(
+                    child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: HAppColor.hBluePrimaryColor,
+                  ),
+                  child: Obx(
+                    () => UserController
+                            .instance.user.value.listOfFavoriteProduct
+                            .contains(product.id)
+                        ? Text(
+                            "Xóa khỏi Yêu thích",
+                            style: HAppStyle.label2Bold
+                                .copyWith(color: HAppColor.hWhiteColor),
+                          )
+                        : Text(
+                            "Thêm vào Yêu thích",
+                            style: HAppStyle.label2Bold
+                                .copyWith(color: HAppColor.hWhiteColor),
                           ),
-                          child: Obx(
-                            () => productController.isFavoritedProducts
-                                    .contains(model)
-                                ? Text(
-                                    "Xóa khỏi Yêu thích",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )
-                                : Text(
-                                    "Thêm vào Yêu thích",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  ),
-                          )),
-                    ),
-                  ]),
+                  ),
+                )),
+              ]),
           ],
         ),
       ),
     );
+  }
+
+  void showSnackbarFavorite(BuildContext context, ProductModel model) {
+    if (UserController.instance.user.value.listOfFavoriteProduct
+        .contains(model.id)) {
+      HAppUtils.showToastSuccess(
+          Text(
+            'Thêm vào Yêu thích!',
+            style: HAppStyle.label2Bold
+                .copyWith(color: HAppColor.hBluePrimaryColor),
+          ),
+          RichText(
+              text: TextSpan(
+                  style: HAppStyle.paragraph2Regular
+                      .copyWith(color: HAppColor.hGreyColorShade600),
+                  text: 'Bạn đã thêm thành công',
+                  children: [
+                TextSpan(
+                    text: ' ${model.name} ',
+                    style: HAppStyle.paragraph2Regular
+                        .copyWith(color: HAppColor.hBluePrimaryColor)),
+                const TextSpan(text: 'vào Yêu thích.')
+              ])),
+          1,
+          context,
+          const ToastificationCallbacks());
+    } else {
+      HAppUtils.showToastSuccess(
+          Text(
+            'Xóa khỏi Yêu thích!',
+            style: HAppStyle.label2Bold
+                .copyWith(color: HAppColor.hBluePrimaryColor),
+          ),
+          RichText(
+              text: TextSpan(
+                  style: HAppStyle.paragraph2Regular
+                      .copyWith(color: HAppColor.hGreyColorShade600),
+                  text: 'Bạn đã xóa thành công',
+                  children: [
+                TextSpan(
+                    text: ' ${model.name} ',
+                    style: HAppStyle.paragraph2Regular
+                        .copyWith(color: HAppColor.hBluePrimaryColor)),
+                const TextSpan(text: 'khỏi Yêu thích.')
+              ])),
+          1,
+          context,
+          const ToastificationCallbacks());
+    }
+  }
+
+  void showSnackbarRegisterNotification(
+      BuildContext context, ProductModel model) {
+    if (UserController.instance.user.value.listOfRegisterNotificationProduct
+        .contains(model.id)) {
+      HAppUtils.showToastSuccess(
+          Text(
+            'Đăng ký nhận thông báo khi có hàng!',
+            style: HAppStyle.label2Bold
+                .copyWith(color: HAppColor.hBluePrimaryColor),
+          ),
+          RichText(
+              text: TextSpan(
+                  style: HAppStyle.paragraph2Regular
+                      .copyWith(color: HAppColor.hGreyColorShade600),
+                  text: 'Chúng tôi sẽ gửi cho bạn thông báo khi sản phẩm',
+                  children: [
+                TextSpan(
+                    text: ' ${model.name} ',
+                    style: HAppStyle.paragraph2Regular
+                        .copyWith(color: HAppColor.hBluePrimaryColor)),
+                const TextSpan(
+                    text:
+                        'có sẵn để đặt hàng. Bạn có thể hủy đăng ký bất cứ lúc nào bằng cách nhấn lại nút thông báo.')
+              ])),
+          5,
+          context,
+          const ToastificationCallbacks());
+    } else {
+      HAppUtils.showToastSuccess(
+          Text(
+            'Hủy đăng ký nhận thông báo khi có hàng!',
+            style: HAppStyle.label2Bold
+                .copyWith(color: HAppColor.hBluePrimaryColor),
+          ),
+          RichText(
+              text: TextSpan(
+                  style: HAppStyle.paragraph2Regular
+                      .copyWith(color: HAppColor.hGreyColorShade600),
+                  text:
+                      'Bạn đã được gỡ khỏi danh sách nhận thông báo về sản phẩm',
+                  children: [
+                TextSpan(
+                    text: ' ${model.name}',
+                    style: HAppStyle.paragraph2Regular
+                        .copyWith(color: HAppColor.hBluePrimaryColor)),
+                const TextSpan(
+                    text:
+                        '. Nếu bạn muốn đăng ký lại, bạn có thể nhấn vào nút chuông bất cứ lúc nào.')
+              ])),
+          5,
+          context,
+          const ToastificationCallbacks());
+    }
   }
 }

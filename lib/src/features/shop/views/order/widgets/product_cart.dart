@@ -1,46 +1,34 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_network/image_network.dart';
+import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/swipe_action_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/data/dummy_data.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/repositories/product_repository.dart';
+import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 import 'package:toastification/toastification.dart';
 
-class ProductCartWidget extends StatefulWidget {
-  const ProductCartWidget({
+class ProductCartWidget extends StatelessWidget {
+  ProductCartWidget({
     super.key,
     required this.model,
-    required this.list,
   });
-  final ProductModel model;
-  final RxList<ProductModel> list;
+  final ProductInCartModel model;
 
-  @override
-  State<ProductCartWidget> createState() => _ProductCartWidgetState();
-}
-
-class _ProductCartWidgetState extends State<ProductCartWidget> {
-  final productController = Get.put(ProductController());
+  final cartController = CartController.instance;
   final detailController = Get.put(DetailController());
-
-  late ProductModel model;
-  late int index;
-  late int modelQuantity;
-
-  @override
-  void initState() {
-    super.initState();
-    model = widget.model;
-    index = 0;
-    modelQuantity = widget.model.quantity;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,38 +38,10 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
       colorIcon: HAppColor.hRedColor,
       icon: EvaIcons.trashOutline,
       function: (_) {
-        removeProduct();
-
-        HAppUtils.showToastSuccess(
-            Text(
-              'Xóa khỏi Giỏ hàng!',
-              style: HAppStyle.label2Bold
-                  .copyWith(color: HAppColor.hBluePrimaryColor),
-            ),
-            RichText(
-                text: TextSpan(
-                    style: HAppStyle.paragraph2Regular
-                        .copyWith(color: HAppColor.hGreyColorShade600),
-                    text: 'Bạn đã xóa ',
-                    children: [
-                  TextSpan(
-                      text: ' ${model.name} ',
-                      style: HAppStyle.paragraph2Regular
-                          .copyWith(color: HAppColor.hBluePrimaryColor)),
-                  const TextSpan(
-                      text:
-                          'khỏi giỏ hàng, có thể nhấn vào để hoàn tác lại sản phẩm vào giỏ hàng .')
-                ])),
-            3,
-            context, ToastificationCallbacks(
-          onTap: (toastItem) {
-            undoProduct();
-          },
-        ));
+        cartController.removeProduct(model);
       },
       child: GestureDetector(
         child: Container(
-          height: 130,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: HAppColor.hWhiteColor,
@@ -90,28 +50,14 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
           child: Row(children: [
             Stack(
               children: [
-                Container(
-                  height: 110,
-                  width: 110,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      image: DecorationImage(
-                          image: NetworkImage(widget.model.imgPath),
-                          fit: BoxFit.fill)),
+                ImageNetwork(
+                  image: model.image!,
+                  height: 70,
+                  width: 70,
+                  onLoading: CustomShimmerWidget.rectangular(height: 70),
+                  duration: 100,
+                  onError: const Icon(Icons.error),
                 ),
-                widget.model.salePersent != 0
-                    ? Positioned(
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: HAppColor.hOrangeColor),
-                          child: Text('${widget.model.salePersent}%',
-                              style: HAppStyle.paragraph3Regular
-                                  .copyWith(color: HAppColor.hWhiteColor)),
-                        ),
-                      )
-                    : Container(),
               ],
             ),
             gapW10,
@@ -120,8 +66,14 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Text(
+                        CategoryController.instance
+                            .listOfCategory[int.parse(model.categoryId!)].name,
+                        style: HAppStyle.paragraph3Regular
+                            .copyWith(color: HAppColor.hGreyColor),
+                      ),
                       GestureDetector(
                           onTap: () {},
                           child: const Row(
@@ -139,65 +91,35 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                           )),
                     ],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  gapH6,
+                  Row(
                     children: [
                       Text(
-                        widget.model.name,
+                        model.productName ?? '',
                         maxLines: 2,
                         style: HAppStyle.heading4Style
                             .copyWith(overflow: TextOverflow.ellipsis),
                       ),
-                      gapH6,
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            EvaIcons.star,
-                            color: HAppColor.hOrangeColor,
-                            size: 20,
-                          ),
-                          gapW6,
-                          Text(
-                            '4.3 (100+)',
-                            style: HAppStyle.paragraph3Regular
-                                .copyWith(color: HAppColor.hGreyColor),
-                          ),
-                        ],
-                      ),
+                      Spacer()
                     ],
                   ),
+                  gapH6,
                   Row(
                     children: [
                       Row(
                         children: [
                           GestureDetector(
                             onTap: () {
-                              if (mounted) {
-                                setState(() {
-                                  if (widget.model.quantity > 1) {
-                                    widget.model.quantity--;
-                                  } else if (widget.model.quantity == 1) {
-                                    productController.isInCart
-                                        .remove(widget.model);
-                                    widget.model.quantity = 0;
-                                  }
-                                  productController.refreshAllList();
-                                  productController
-                                      .refreshList(productController.isInCart);
-                                  productController.addMapProductInCart();
-                                  productController.sumProductMoney();
-                                });
-                              }
+                              cartController.removeSingleProductInCart(model);
                             },
                             child: Container(
                                 height: 25,
                                 width: 25,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
                                     color: HAppColor.hBackgroundColor),
                                 child: Center(
-                                  child: widget.model.quantity == 1
+                                  child: model.quantity == 1
                                       ? const Icon(
                                           EvaIcons.trashOutline,
                                           size: 15,
@@ -210,27 +132,19 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                           ),
                           gapW6,
                           Text(
-                            "${widget.model.quantity}",
+                            model.quantity.toString(),
                             style: HAppStyle.paragraph2Bold,
                           ),
                           gapW6,
                           GestureDetector(
                             onTap: () {
-                              if (mounted) {
-                                setState(() {
-                                  widget.model.quantity++;
-                                  productController.refreshAllList();
-                                  productController
-                                      .refreshList(productController.isInCart);
-                                  productController.addMapProductInCart();
-                                });
-                              }
+                              cartController.addSingleProductInCart(model);
                             },
                             child: Container(
                                 height: 25,
                                 width: 25,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
                                     color: HAppColor.hBluePrimaryColor),
                                 child: const Center(
                                   child: Icon(
@@ -246,35 +160,12 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          widget.model.salePersent == ''
-                              ? Text(
-                                  DummyData.vietNamCurrencyFormatting(
-                                      widget.model.price *
-                                          widget.model.quantity),
-                                  style: HAppStyle.label2Bold.copyWith(
-                                      color: HAppColor.hBluePrimaryColor),
-                                )
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                        DummyData.vietNamCurrencyFormatting(
-                                            widget.model.price *
-                                                widget.model.quantity),
-                                        style: HAppStyle.paragraph3Bold
-                                            .copyWith(
-                                                color: HAppColor.hGreyColor,
-                                                decoration: TextDecoration
-                                                    .lineThrough)),
-                                    Text(
-                                        DummyData.vietNamCurrencyFormatting(
-                                            widget.model.priceSale *
-                                                widget.model.quantity),
-                                        style: HAppStyle.label2Bold.copyWith(
-                                            color: HAppColor.hOrangeColor,
-                                            decoration: TextDecoration.none))
-                                  ],
-                                ),
+                          Text(
+                            HAppUtils.vietNamCurrencyFormatting(
+                                model.price! * model.quantity),
+                            style: HAppStyle.label2Bold
+                                .copyWith(color: HAppColor.hBluePrimaryColor),
+                          )
                         ],
                       ),
                     ],
@@ -284,37 +175,23 @@ class _ProductCartWidgetState extends State<ProductCartWidget> {
             )
           ]),
         ),
-        onTap: () => Get.toNamed(
-          HAppRoutes.productDetail,
-          arguments: {
-            'model': widget.model,
-            'list': widget.list,
-          },
-        ),
+        onTap: () async {
+          final product = await ProductRepository.instance
+              .getProductInformation(model.productId);
+          final store = await StoreRepository.instance
+              .getStoreInformation(model.productId);
+          cartController.productQuantityInCart.value =
+              cartController.getProductQuantity(model.productId);
+          Get.toNamed(
+            HAppRoutes.productDetail,
+            arguments: {
+              'product': product,
+              'store': store,
+            },
+            preventDuplicates: false,
+          );
+        },
       ),
     );
-  }
-
-  void undoProduct() {
-    if (!productController.isInCart.contains(model)) {
-      widget.model.quantity = modelQuantity;
-      productController.isInCart.insert(index, model);
-      productController.refreshAllList();
-      productController.refreshList(productController.isInCart);
-      productController.addMapProductInCart();
-      productController.sumProductMoney();
-    }
-  }
-
-  void removeProduct() async {
-    if (productController.isInCart.contains(model)) {
-      index = productController.isInCart.indexOf(widget.model);
-      productController.isInCart.removeAt(index);
-      widget.model.quantity = 0;
-      productController.refreshAllList();
-      productController.refreshList(productController.isInCart);
-      productController.addMapProductInCart();
-      productController.sumProductMoney();
-    }
   }
 }

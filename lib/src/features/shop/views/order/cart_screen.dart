@@ -1,12 +1,17 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_network/image_network.dart';
+import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/data/dummy_data.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/check_box_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/widgets/product_cart.dart';
+import 'package:on_demand_grocery/src/features/shop/views/order/widgets/voucher_widget.dart';
+import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
@@ -21,6 +26,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   final productController = Get.put(ProductController());
+  final cartController = CartController.instance;
   bool? check1 = false;
 
   @override
@@ -35,43 +41,11 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                     surfaceTintColor: HAppColor.hBackgroundColor,
                     itemBuilder: (context) => [
                           PopupMenuItem(
-                            child: Text(productController.allChooseBool.value &&
-                                    productController.isInCart.isNotEmpty
-                                ? "Bỏ chọn tất cả"
-                                : "Chọn tất cả"),
-                            onTap: () {
-                              if (mounted) {
-                                setState(() {
-                                  productController.changeAllChoose();
-                                  productController.sumProductMoney();
-                                });
-                              }
-                            },
-                          ),
-                          PopupMenuItem(
                             child: const Text("Xóa tất cả"),
                             onTap: () {
-                              productController.removeAllProductInCart();
-                              productController.refreshAllList();
-                              productController.addMapProductInCart();
-                              productController.addMapProductInWishList();
-                              productController.productMoney.value = 0;
-                              HAppUtils.showToastSuccess(
-                                  Text(
-                                    'Xóa khỏi Giỏ hàng!',
-                                    style: HAppStyle.label2Bold.copyWith(
-                                        color: HAppColor.hBluePrimaryColor),
-                                  ),
-                                  RichText(
-                                      text: TextSpan(
-                                    style: HAppStyle.paragraph2Regular.copyWith(
-                                        color: HAppColor.hGreyColorShade600),
-                                    text:
-                                        'Bạn đã xóa thành công tất cả sản phẩm trong Giỏ hàng!',
-                                  )),
-                                  2,
-                                  context,
-                                  const ToastificationCallbacks());
+                              cartController.clearCart();
+                              HAppUtils.showSnackBarSuccess('Xóa khỏi giỏ hàng',
+                                  'Bạn đã xóa thành công tất cả sản phẩm trong giỏ hàng');
                             },
                           ),
                         ],
@@ -80,8 +54,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
               ],
             )
           ],
-          title: Obx(() => productController.isInCart.isNotEmpty
-              ? Text("Giỏ hàng (${productController.isInCart.length})")
+          title: Obx(() => cartController.cartProducts.isNotEmpty
+              ? Text("Giỏ hàng (${cartController.cartProducts.length})")
               : const Text("Giỏ hàng")),
           centerTitle: true,
           toolbarHeight: 80,
@@ -95,7 +69,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
+                      shape: BoxShape.circle,
                       border: Border.all(
                         color: HAppColor.hGreyColorShade300,
                         width: 1.5,
@@ -156,95 +130,28 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                 ),
               ),
               gapH12,
-              Obx(
-                () => productController.productInCart.isEmpty
-                    ? Container()
-                    : ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: productController.productInCart.keys.length,
-                        itemBuilder: (context, index) {
-                          String image = productController.findImgStore(
-                              productController.productInCart.keys
-                                  .elementAt(index));
-                          String title = productController.productInCart.keys
-                              .elementAt(index);
-                          int length = productController.productInCart.values
-                              .elementAt(index)
-                              .length;
-                          return ExpansionTile(
-                            initiallyExpanded: true,
-                            tilePadding: EdgeInsets.zero,
-                            shape: const Border(),
-                            leading: Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(
-                                      image: NetworkImage(image),
-                                      fit: BoxFit.fill)),
-                            ),
-                            title: Row(children: [
-                              Column(
-                                children: [
-                                  Text(title),
-                                  Text("$length sản phẩm"),
-                                ],
-                              ),
-                              const Spacer(),
-                              Checkbox(
-                                  activeColor: HAppColor.hBluePrimaryColor,
-                                  value: chooseList[index].value,
-                                  onChanged: (bool? value) {
-                                    if (mounted) {
-                                      setState(() {
-                                        chooseList[index].value = value;
-
-                                        if (chooseList[index].value == false) {
-                                          productController
-                                              .allChooseBool.value = false;
-                                        } else {
-                                          final allChose = chooseList.every(
-                                              (element) => element.value!);
-                                          productController
-                                              .allChooseBool.value = allChose;
-                                        }
-                                      });
-                                    }
-                                    productController.sumProductMoney();
-                                  })
-                            ]),
-                            children: [
-                              ListView.separated(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: productController
-                                    .productInCart.values
-                                    .elementAt(index)
-                                    .length,
-                                itemBuilder: (context2, index2) {
-                                  return ProductCartWidget(
-                                    model: productController
-                                        .productInCart.values
-                                        .elementAt(index)
-                                        .elementAt(index2),
-                                    list: productController.productInCart.values
-                                        .elementAt(index),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) => gapH12,
-                              )
-                            ],
-                          );
-                        }),
-              ),
+              Obx(() {
+                if (cartController.cartProducts.isEmpty) {
+                  return Container();
+                }
+                return SingleChildScrollView(
+                  child: ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: cartController.cartProducts.length,
+                      itemBuilder: (context, index) {
+                        return ProductCartWidget(
+                            model: cartController.cartProducts[index]);
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          gapH12),
+                );
+              }),
               gapH24,
             ]),
           ),
         ),
-        bottomNavigationBar: Obx(() => productController.isInCart.isNotEmpty
+        bottomNavigationBar: Obx(() => cartController.cartProducts.isNotEmpty
             ? Container(
                 padding: const EdgeInsets.fromLTRB(
                     hAppDefaultPadding, 20, hAppDefaultPadding, 16),
@@ -263,58 +170,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      onTap: () => Get.toNamed(HAppRoutes.voucher),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.discount_outlined,
-                            color: HAppColor.hBluePrimaryColor,
-                          ),
-                          gapW12,
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text("Áp dụng mã ưu đãi",
-                                    style: HAppStyle.paragraph1Bold),
-                                Obx(
-                                  () => productController
-                                              .voucherAppliedTextAppear!
-                                              .value &&
-                                          productController.applied.value
-                                      ? Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 12),
-                                          child: Text(
-                                            productController
-                                                .voucherAppliedText.value,
-                                            style: HAppStyle.paragraph3Regular
-                                                .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            maxLines: 2,
-                                          ),
-                                        )
-                                      : Text("Bạn đang có 2 mã ưu đãi.",
-                                          style: HAppStyle.paragraph3Regular
-                                              .copyWith(
-                                                  color: HAppColor.hRedColor,
-                                                  decoration:
-                                                      TextDecoration.none)),
-                                )
-                              ],
-                            ),
-                          ),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 12,
-                          )
-                        ],
-                      ),
-                    ),
+                    VoucherWidget(),
                     gapH24,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -325,10 +181,9 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                               text: "Tiền hàng:\n",
                               children: [
                                 TextSpan(
-                                  text: productController.productMoney.value !=
-                                          0
-                                      ? DummyData.vietNamCurrencyFormatting(
-                                          productController.productMoney.value)
+                                  text: cartController.totalCartPrice.value != 0
+                                      ? HAppUtils.vietNamCurrencyFormatting(
+                                          cartController.totalCartPrice.value)
                                       : "0₫",
                                   style: HAppStyle.heading4Style.copyWith(
                                       color: HAppColor.hBluePrimaryColor),
@@ -339,7 +194,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            if (productController.isInCart.isNotEmpty) {
+                            if (cartController.cartProducts.isNotEmpty) {
                               Get.toNamed(HAppRoutes.checkout);
                             }
                           },
@@ -347,9 +202,9 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                             minimumSize: Size(HAppSize.deviceWidth * 0.45, 50),
                             backgroundColor: HAppColor.hBluePrimaryColor,
                           ),
-                          child: productController.isInCart.isNotEmpty
+                          child: cartController.cartProducts.isNotEmpty
                               ? Text(
-                                  "Thanh toán (${productController.isInCart.length})",
+                                  "Thanh toán (${cartController.cartProducts.length})",
                                   style: HAppStyle.label2Bold
                                       .copyWith(color: HAppColor.hWhiteColor))
                               : Text("Thanh toán",

@@ -11,6 +11,7 @@ class CategoryController extends GetxController {
 
   var isLoading = false.obs;
   var listOfCategory = <CategoryModel>[].obs;
+  var tagsCategory = <Tag>[];
 
   @override
   void onInit() {
@@ -18,13 +19,13 @@ class CategoryController extends GetxController {
     super.onInit();
   }
 
-  late List<Tag> tagsCategory;
-
   Future<void> fetchCategories() async {
     try {
       isLoading.value = true;
       final categories = await categoryRepository.getAllCategories();
       listOfCategory.assignAll(categories);
+      tagsCategory =
+          categories.map((e) => Tag(int.parse(e.id), e.name, false)).toList();
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;

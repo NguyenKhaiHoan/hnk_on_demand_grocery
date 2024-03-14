@@ -5,10 +5,14 @@ import 'package:get/get.dart';
 import 'package:image_network/image_network.dart';
 import 'package:lorem_ipsum/lorem_ipsum.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/horizontal_list_product_with_title_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
@@ -24,9 +28,12 @@ class StoreDetailScreen extends StatefulWidget {
 }
 
 class _StoreDetailScreenState extends State<StoreDetailScreen> {
-  late StoreModel model;
-  final storeController = Get.put(StoreController());
-  final productController = Get.put(ProductController());
+  StoreModel model = Get.arguments['model'];
+  String address = Get.arguments['address'];
+
+  final storeController = StoreController.instance;
+  final productController = ProductController.instance;
+  final categoryController = CategoryController.instance;
 
   final double coverHeight = 250;
   final double infoHeight = 200;
@@ -37,10 +44,6 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
   @override
   void initState() {
     super.initState();
-    model = Get.arguments['model'];
-    model.products = productController.listProducts
-        .where((product) => product.storeId == model.storeId)
-        .toList();
   }
 
   @override
@@ -72,7 +75,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
+                                shape: BoxShape.circle,
                                 border: Border.all(
                                   color: HAppColor.hGreyColorShade300,
                                   width: 1.5,
@@ -96,7 +99,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             image: DecorationImage(
-                                image: NetworkImage(model.imgStore),
+                                image: NetworkImage(model.storeImage),
                                 fit: BoxFit.fill)),
                       ),
                     ),
@@ -108,7 +111,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
+                              shape: BoxShape.circle,
                               border: Border.all(
                                 color: HAppColor.hGreyColorShade300,
                                 width: 1.5,
@@ -156,7 +159,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                           Container(
                             padding: const EdgeInsets.only(bottom: 110),
                             child: ImageNetwork(
-                              image: model.imgBackground,
+                              image: model.storeImageBackground,
                               height: coverHeight,
                               width: HAppSize.deviceWidth,
                               duration: 500,
@@ -166,7 +169,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                               fullScreen: false,
                               fitAndroidIos: BoxFit.cover,
                               fitWeb: BoxFitWeb.cover,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(0),
                               onLoading: const CircularProgressIndicator(
                                 color: HAppColor.hBluePrimaryColor,
                               ),
@@ -174,7 +177,6 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                                 Icons.error,
                                 color: Colors.red,
                               ),
-                              onTap: () => null,
                             ),
                           ),
                           Positioned(
@@ -210,7 +212,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                                                     BorderRadius.circular(100),
                                                 image: DecorationImage(
                                                     image: NetworkImage(
-                                                        model.imgStore),
+                                                        model.storeImage),
                                                     fit: BoxFit.fill)),
                                           ),
                                           gapW10,
@@ -225,7 +227,8 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                                               ),
                                               gapH4,
                                               ReadMoreText(
-                                                model.category.join(', '),
+                                                model.listOfCategoryId
+                                                    .join(', '),
                                                 trimLines: 2,
                                                 style: HAppStyle
                                                     .paragraph2Regular
@@ -316,21 +319,23 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                                                     color: HAppColor.hDarkColor,
                                                   ),
                                                   gapW4,
-                                                  Text(
-                                                      '${model.distance.toStringAsFixed(1)} Km',
-                                                      style: HAppStyle
-                                                          .paragraph2Regular
-                                                          .copyWith(
-                                                              color: HAppColor
-                                                                  .hGreyColorShade600)),
+                                                  // Text(
+                                                  //     '${model.distance.toStringAsFixed(1)} Km',
+                                                  //     style: HAppStyle
+                                                  //         .paragraph2Regular
+                                                  //         .copyWith(
+                                                  //             color: HAppColor
+                                                  //                 .hGreyColorShade600)),
                                                 ],
                                               )
                                             ],
                                           ),
                                           const Spacer(),
                                           GestureDetector(
-                                            onTap: () => storeController
-                                                .addStoreInFavorited(model),
+                                            onTap: () => WishlistController
+                                                .instance
+                                                .addOrRemoveStoreInFavoriteList(
+                                                    model.id),
                                             child: Container(
                                               width: 40,
                                               height: 40,
@@ -347,9 +352,12 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                                                       .hBackgroundColor),
                                               child: Center(
                                                   child: Obx(
-                                                () => !storeController
-                                                        .isFavoritedStores
-                                                        .contains(model)
+                                                () => !UserController
+                                                        .instance
+                                                        .user
+                                                        .value
+                                                        .listOfFavoriteStore
+                                                        .contains(model.id)
                                                     ? const Icon(
                                                         EvaIcons.heartOutline,
                                                         color: HAppColor
@@ -385,816 +393,80 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             gapH12,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Bán chạy",
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController
-                                                  .topSellingProducts
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.topSellingProducts
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .topSellingProducts
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list: productController
-                                                .topSellingProducts,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Giảm giá",
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController
-                                                  .topSaleProducts
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.topSaleProducts
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .topSaleProducts
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list: productController
-                                                .topSaleProducts,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            Column(
-                              children: [
-                                gapH16,
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      categories[0],
-                                      style: HAppStyle.heading3Style,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {},
-                                      child: Text("Xem tất cả",
-                                          style: HAppStyle.paragraph3Regular
-                                              .copyWith(
-                                                  color: HAppColor
-                                                      .hBluePrimaryColor)),
-                                    )
-                                  ],
-                                ),
-                                gapH16,
-                                SizedBox(
-                                    width: double.infinity,
-                                    height: 300,
-                                    child: Obx(() => ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: productController
-                                                      .cate1Products
-                                                      .where((product) =>
-                                                          product.nameStore ==
-                                                          model.name)
-                                                      .length >
-                                                  10
-                                              ? 10
-                                              : productController.cate1Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length,
-                                          itemBuilder:
-                                              (BuildContext context, index) {
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 0, 10, 0),
-                                              child: ProductItemWidget(
-                                                storeIcon: false,
-                                                model: productController
-                                                    .cate1Products
-                                                    .where((product) =>
-                                                        product.nameStore ==
-                                                        model.name)
-                                                    .toList()[index],
-                                                list: productController
-                                                    .cate1Products,
-                                                compare: false,
-                                              ),
-                                            );
-                                          },
-                                        ))),
-                              ],
-                            ),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[1],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController.cate2Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate2Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate2Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list:
-                                                productController.cate2Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[2],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController.cate3Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate3Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate3Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list:
-                                                productController.cate3Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[3],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController.cate4Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate4Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate4Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list:
-                                                productController.cate4Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[4],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController.cate5Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate5Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate5Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list:
-                                                productController.cate5Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[5],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController.cate6Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate6Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate6Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list:
-                                                productController.cate6Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[6],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController.cate7Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate7Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate7Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list:
-                                                productController.cate7Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[7],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController.cate8Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate8Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate8Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list:
-                                                productController.cate8Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[8],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController.cate9Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate9Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate9Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list:
-                                                productController.cate9Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[9],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController
-                                                  .cate10Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate10Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate10Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list: productController
-                                                .cate10Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[10],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController
-                                                  .cate11Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate11Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate11Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list: productController
-                                                .cate11Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH16,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  categories[11],
-                                  style: HAppStyle.heading3Style,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: Text("Xem tất cả",
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor)),
-                                )
-                              ],
-                            ),
-                            gapH16,
-                            SizedBox(
-                                width: double.infinity,
-                                height: 300,
-                                child: Obx(() => ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: productController
-                                                  .cate12Products
-                                                  .where((product) =>
-                                                      product.nameStore ==
-                                                      model.name)
-                                                  .length >
-                                              10
-                                          ? 10
-                                          : productController.cate12Products
-                                              .where((product) =>
-                                                  product.nameStore ==
-                                                  model.name)
-                                              .length,
-                                      itemBuilder:
-                                          (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 10, 0),
-                                          child: ProductItemWidget(
-                                            storeIcon: false,
-                                            model: productController
-                                                .cate12Products
-                                                .where((product) =>
-                                                    product.nameStore ==
-                                                    model.name)
-                                                .toList()[index],
-                                            list: productController
-                                                .cate12Products,
-                                            compare: false,
-                                          ),
-                                        );
-                                      },
-                                    ))),
-                            gapH24,
+                            FutureBuilder(
+                                future: productController
+                                    .fetchAllProductsForStore(model.id),
+                                builder: ((context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator(
+                                      color: HAppColor.hBluePrimaryColor,
+                                    );
+                                  }
+
+                                  if (snapshot.hasError) {
+                                    return const Center(
+                                      child: Text(
+                                          'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                                    );
+                                  }
+
+                                  if (!snapshot.hasData ||
+                                      snapshot.data == null ||
+                                      snapshot.data!.isEmpty) {
+                                    return Container();
+                                  } else {
+                                    final products = snapshot.data!;
+                                    model.listOfCategoryId
+                                        .sort((a, b) => a.compareTo(b));
+                                    final topSellingproducts = products
+                                        .where((product) =>
+                                            product.countBuyed > 100)
+                                        .toList();
+                                    final saleProducts = products
+                                        .where((product) =>
+                                            product.salePersent != 0)
+                                        .toList();
+                                    return Column(
+                                      children: [
+                                        for (int i = 0;
+                                            i <
+                                                model.listOfCategoryId.length +
+                                                    2;
+                                            i++)
+                                          Column(
+                                            children: [
+                                              HorizontalListProductWithTitleWidget(
+                                                  list: i == 0
+                                                      ? topSellingproducts
+                                                      : i == 1
+                                                          ? saleProducts
+                                                          : products
+                                                              .where((element) =>
+                                                                  element
+                                                                      .categoryId ==
+                                                                  model.listOfCategoryId[
+                                                                      i - 2])
+                                                              .toList(),
+                                                  compare: false,
+                                                  storeIcon: false,
+                                                  title: i == 0
+                                                      ? 'Bán chạy'
+                                                      : i == 1
+                                                          ? 'Giảm giá'
+                                                          : categoryController
+                                                              .listOfCategory[
+                                                                  int.parse(model
+                                                                          .listOfCategoryId[
+                                                                      i - 2])]
+                                                              .name),
+                                              gapH12,
+                                            ],
+                                          )
+                                      ],
+                                    );
+                                  }
+                                })),
                           ]),
                     ),
                   ),
@@ -1236,7 +508,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                             contentPadding: EdgeInsets.zero,
                             leading: const Icon(EvaIcons.pinOutline),
                             title: const Text("Địa chỉ"),
-                            subtitle: Text("Hà Nội",
+                            subtitle: Text(address,
                                 style: TextStyle(
                                     color: HAppColor.hGreyColorShade600)),
                           ),
@@ -1247,7 +519,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
                             leading: const Icon(EvaIcons.phoneOutline),
                             title: const Text("Số điện thoại"),
                             subtitle: Text(
-                              "+84388586955",
+                              model.phoneNumber,
                               style: TextStyle(
                                   color: HAppColor.hGreyColorShade600),
                             ),

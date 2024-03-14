@@ -30,7 +30,7 @@ class SearchProductController extends GetxController {
 
   var resultProduct = <ProductModel>[].obs;
 
-  var productInSearch = <String, RxList<ProductModel>>{}.obs;
+  var productInSearch = <String, List<ProductModel>>{}.obs;
 
   addListProductInSearch(List<ProductModel> list) {
     resultProduct.value = list
@@ -38,25 +38,24 @@ class SearchProductController extends GetxController {
             product.name.toLowerCase().contains(controller.text.toLowerCase()))
         .toList();
     update();
-    print("Vào");
   }
 
-  addMapProductInCart() {
+  addMapProductInSearch() {
     productInSearch.clear();
     for (var product in resultProduct) {
-      if (!productInSearch.containsKey(product.nameStore)) {
+      if (!productInSearch.containsKey(product.storeId)) {
         productInSearch.addAll({
-          product.nameStore: RxList.from(resultProduct
+          product.storeId: List.from(resultProduct
               .where((productIsInSearch) =>
-                  productIsInSearch.nameStore == product.nameStore)
+                  productIsInSearch.storeId == product.storeId)
               .toList())
         });
       } else {
         productInSearch.update(
-            product.nameStore,
-            (value) => RxList.from(resultProduct
+            product.storeId,
+            (value) => List.from(resultProduct
                 .where((productIsInSearch) =>
-                    productIsInSearch.nameStore == product.nameStore)
+                    productIsInSearch.storeId == product.storeId)
                 .toList()));
       }
       update();

@@ -14,6 +14,7 @@ import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/widgets/message.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -25,15 +26,14 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final ProductModel model = Get.arguments['model'];
   final StoreModel store = Get.arguments['store'];
-  bool check = Get.arguments['check'];
+  final bool check = Get.arguments['check'];
 
   final FocusNode _focusNode = FocusNode();
-  ChatMessage? _selectedMessage;
-
   final chatController = Get.put(ChatController());
 
   @override
   Widget build(BuildContext context) {
+    RxBool hasProduct = check.obs;
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -53,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
+                      shape: BoxShape.circle,
                       border: Border.all(
                         color: HAppColor.hGreyColorShade300,
                         width: 1.5,
@@ -68,7 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               gapW16,
               CircleAvatar(
-                backgroundImage: NetworkImage(store.imgStore),
+                backgroundImage: NetworkImage(store.storeImage),
               ),
               gapW16,
               Column(
@@ -79,7 +79,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     style: HAppStyle.label2Bold,
                   ),
                   Text(
-                    "Hoạt động 3 phút trước",
+                    store.isOnline ? 'Đang trực tuyến' : 'Không trực tuyến',
                     style: HAppStyle.paragraph3Regular
                         .copyWith(color: HAppColor.hGreyColorShade600),
                   )
@@ -106,18 +106,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   const EdgeInsets.symmetric(horizontal: hAppDefaultPadding),
               child: ListView.separated(
                 itemCount: demeChatMessages.length,
-                itemBuilder: (context, index) => SwipeActionWidget(
-                    check: demeChatMessages[index].isSender ? 1 : 0,
-                    function: (_) {
-                      _focusNode.requestFocus();
-                      setState(() {
-                        _selectedMessage = demeChatMessages[index];
-                      });
-                    },
-                    backgroundColorIcon: HAppColor.hGreyColorShade300,
-                    colorIcon: HAppColor.hDarkColor,
-                    icon: Icons.reply_outlined,
-                    child: Message(message: demeChatMessages[index])),
+                itemBuilder: (context, index) =>
+                    Message(message: demeChatMessages[index]),
                 separatorBuilder: (BuildContext context, int index) => gapH12,
               ),
             ),
@@ -131,7 +121,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     horizontal: hAppDefaultPadding / 2),
                 child: Column(
                   children: <Widget>[
-                    check == true
+                    Obx(() => hasProduct.value == true
                         ? Container(
                             padding: const EdgeInsets.symmetric(
                                 vertical: hAppDefaultPadding / 2),
@@ -140,7 +130,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 Stack(
                                   children: [
                                     ImageNetwork(
-                                      image: model.imgPath,
+                                      image: model.image,
                                       height: 80,
                                       width: 80,
                                       duration: 500,
@@ -158,7 +148,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                         Icons.error,
                                         color: Colors.red,
                                       ),
-                                      onTap: () => null,
                                     ),
                                     model.salePersent != 0
                                         ? Positioned(
@@ -278,7 +267,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       gapH4,
                                       model.salePersent == 0
                                           ? Text(
-                                              DummyData
+                                              HAppUtils
                                                   .vietNamCurrencyFormatting(
                                                       model.price),
                                               style: HAppStyle.label2Bold
@@ -296,10 +285,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                                             TextDecoration
                                                                 .none),
                                                 text:
-                                                    '${DummyData.vietNamCurrencyFormatting(model.priceSale)} ',
+                                                    '${HAppUtils.vietNamCurrencyFormatting(model.priceSale)} ',
                                                 children: [
                                                   TextSpan(
-                                                    text: DummyData
+                                                    text: HAppUtils
                                                         .vietNamCurrencyFormatting(
                                                             model.price),
                                                     style: HAppStyle
@@ -320,15 +309,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                 gapW10,
                                 GestureDetector(
                                   onTap: () {
-                                    setState(() {
-                                      check = false;
-                                    });
+                                    hasProduct.value = false;
                                   },
                                   child: Container(
                                     height: 20,
                                     width: 20,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
+                                      shape: BoxShape.circle,
                                       color: HAppColor.hGreyColorShade300,
                                     ),
                                     child: const Icon(
@@ -340,65 +327,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ),
                               ],
                             ))
-                        : _selectedMessage != null
-                            ? Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: hAppDefaultPadding / 2),
-                                child: Row(
-                                  children: <Widget>[
-                                    const Icon(
-                                      Icons.reply_outlined,
-                                      color: Colors.blue,
-                                      size: 25,
-                                    ),
-                                    gapW10,
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            "Đang trả lời",
-                                            style: HAppStyle.paragraph2Regular
-                                                .copyWith(
-                                                    color: HAppColor
-                                                        .hBluePrimaryColor),
-                                          ),
-                                          gapH2,
-                                          Text(_selectedMessage!.text,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: HAppStyle.paragraph3Regular
-                                                  .copyWith(
-                                                      color: HAppColor
-                                                          .hGreyColorShade600)),
-                                        ],
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _selectedMessage = null;
-                                        });
-                                      },
-                                      child: Container(
-                                        height: 20,
-                                        width: 20,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                          color: HAppColor.hGreyColorShade300,
-                                        ),
-                                        child: const Icon(
-                                          Icons.close,
-                                          color: HAppColor.hDarkColor,
-                                          size: 10,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ))
-                            : const SizedBox.shrink(),
+                        : const SizedBox.shrink()),
                     TextField(
                       controller: chatController.controller,
                       focusNode: _focusNode,
@@ -412,8 +341,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           child: Container(
                             height: 30,
                             width: 30,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
                               color: HAppColor.hBluePrimaryColor,
                             ),
                             child: const Icon(

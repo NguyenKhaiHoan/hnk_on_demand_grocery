@@ -13,6 +13,7 @@ import 'package:on_demand_grocery/src/repositories/address_repository.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/repositories/user_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
+import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class UserController extends GetxController {
@@ -43,11 +44,11 @@ class UserController extends GetxController {
       .obs;
   var isSetAddressDeliveryTo = false.obs;
 
-  // @override
-  // void onInit() {
-  //   fetchUserRecord();
-  //   super.onInit();
-  // }
+  @override
+  void onInit() {
+    fetchUserRecord();
+    super.onInit();
+  }
 
   Future<void> fetchCurrentPosition() async {
     try {
@@ -66,10 +67,10 @@ class UserController extends GetxController {
       addresses = await addressController.fetchAllUserAddresses();
 
       if (addresses.isEmpty) {
-        currentPosition.value = await HAppUtils.getGeoLocationPosition();
+        currentPosition.value = await HLocationService.getGeoLocationPosition();
         currentPosition.refresh();
         List<String> listPartOfAddress =
-            await HAppUtils.getAddressFromLatLong(currentPosition.value);
+            await HLocationService.getAddressFromLatLong(currentPosition.value);
 
         streetAddress.value = listPartOfAddress[0];
         districtAddress.value = listPartOfAddress[1];
@@ -86,14 +87,15 @@ class UserController extends GetxController {
               district: districtAddress.value,
               ward: '',
               street: streetAddress.value,
-              selectedAddress: true);
+              selectedAddress: true,
+              latitude: currentPosition.value.latitude,
+              longitude: currentPosition.value.longitude);
           final id = await AddressRepository.instance
               .addAndFindIdForNewAddress(tempAddress);
 
           tempAddress.id = id;
           await addressController.selectAddress(tempAddress);
         } else {
-          print('Không phải Hà Nội');
           isSetAddressDeliveryTo.value = false;
           HAppUtils.stopLoading();
           Get.offAllNamed(HAppRoutes.noDeliver);
@@ -130,7 +132,10 @@ class UserController extends GetxController {
               profileImage: userCredential.user!.photoURL ?? '',
               creationDate:
                   DateFormat('EEEE, d-M-y', 'vi').format(DateTime.now()),
-              authenticationBy: authenticationBy);
+              authenticationBy: authenticationBy,
+              listOfFavoriteProduct: [],
+              listOfRegisterNotificationProduct: [],
+              listOfFavoriteStore: []);
 
           await userRepository.saveUserRecord(user);
         }
@@ -145,11 +150,9 @@ class UserController extends GetxController {
 
   Future<void> fetchUserRecord() async {
     try {
-      print('Vào fetch user record');
       isLoading.value = true;
       final user = await userRepository.getUserInformation();
       this.user(user);
-      print(user.name);
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
@@ -173,8 +176,6 @@ class UserController extends GetxController {
 
       final user = await userRepository.getUserInformation();
       this.user(user);
-
-      print('Đã load xong');
 
       HAppUtils.stopLoading();
     } catch (e) {

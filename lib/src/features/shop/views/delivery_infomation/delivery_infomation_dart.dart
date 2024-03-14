@@ -264,7 +264,7 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
                           height: 60,
                           width: 60,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
+                              shape: BoxShape.circle,
                               color: dateDeliveryController
                                           .currentDateSelectedIndex.value ==
                                       index
@@ -387,9 +387,16 @@ class AddressInformation extends StatelessWidget {
                 ),
               ),
               gapW10,
-              const Icon(
-                EvaIcons.editOutline,
-                size: 20,
+              GestureDetector(
+                onTap: () {
+                  AddressController.instance.initAddressBeforeChange(address);
+                  Get.toNamed(HAppRoutes.changeAddress,
+                      arguments: {'address': address});
+                },
+                child: Icon(
+                  EvaIcons.editOutline,
+                  size: 20,
+                ),
               ),
             ],
           )),

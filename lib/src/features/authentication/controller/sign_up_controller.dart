@@ -53,7 +53,10 @@ class SignUpController extends GetxController {
           phoneNumber: phoneController.text.trim(),
           profileImage: '',
           creationDate: DateFormat('EEEE, d-M-y', 'vi').format(DateTime.now()),
-          authenticationBy: 'Email');
+          authenticationBy: 'Email',
+          listOfFavoriteProduct: [],
+          listOfRegisterNotificationProduct: [],
+          listOfFavoriteStore: []);
 
       final userRepository = Get.put(UserRepository());
       await userRepository.saveUserRecord(newUser);

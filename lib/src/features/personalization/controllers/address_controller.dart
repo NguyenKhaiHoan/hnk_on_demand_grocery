@@ -2,11 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/district_ward_model.dart';
 import 'package:on_demand_grocery/src/repositories/address_repository.dart';
+import 'package:on_demand_grocery/src/repositories/user_repository.dart';
+import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class AddressController extends GetxController {
@@ -26,7 +30,9 @@ class AddressController extends GetxController {
   var city = ''.obs;
   var district = ''.obs;
   var ward = ''.obs;
-  var isDefault = true.obs;
+  var latitude = 0.0.obs;
+  var longitude = 0.0.obs;
+  var isChoseCurrentPosition = false.obs;
 
   List<DistrictModel> hanoiData = <DistrictModel>[].obs;
 
@@ -62,13 +68,13 @@ class AddressController extends GetxController {
   Future<void> selectAddress(AddressModel newSelectedAddress) async {
     try {
       if (selectedAddress.value.id.isNotEmpty) {
-        await addressRepository.updateSelectedField(
-            selectedAddress.value.id, false);
+        await addressRepository.updateAddressField(
+            selectedAddress.value.id, {'SelectedAddress': false});
       }
       newSelectedAddress.selectedAddress = true;
       selectedAddress.value = newSelectedAddress;
-      await addressRepository.updateSelectedField(
-          selectedAddress.value.id, true);
+      await addressRepository.updateAddressField(
+          selectedAddress.value.id, {'SelectedAddress': true});
 
       toggleRefresh.toggle();
     } catch (e) {
@@ -97,6 +103,13 @@ class AddressController extends GetxController {
         return;
       }
 
+      if (latitude.value == 0.0 || longitude.value == 0.0) {
+        HAppUtils.stopLoading();
+        HAppUtils.showSnackBarWarning('Xác nhận vị trí',
+            'Bạn chưa xác nhận vị trí. Hãy xác nhận vị trí sau khi điền đầy đủ vị trí.');
+        return;
+      }
+
       final address = AddressModel(
         id: '',
         name: nameController.text.trim(),
@@ -106,16 +119,87 @@ class AddressController extends GetxController {
         ward: ward.value,
         street: streetController.text.trim(),
         selectedAddress: true,
+        latitude: latitude.value,
+        longitude: longitude.value,
       );
 
       final id =
           await AddressRepository.instance.addAndFindIdForNewAddress(address);
       address.id = id;
-      await selectAddress(address);
 
       HAppUtils.stopLoading();
       HAppUtils.showSnackBarSuccess(
           'Thành công', 'Bạn đã thêm địa chỉ giao hàng mới thành công');
+
+      toggleRefresh.toggle();
+
+      resetFormAddAddress();
+
+      Navigator.of(Get.context!).pop();
+    } catch (e) {
+      HAppUtils.stopLoading();
+      HAppUtils.showSnackBarError('Lỗi', 'Thêm địa chỉ mới không thành công');
+    }
+  }
+
+  void initAddressBeforeChange(AddressModel address) {
+    nameController.text = address.name;
+    phoneController.text = address.phoneNumber;
+    streetController.text = address.street;
+    city.value = '';
+    district.value = '';
+    ward.value = '';
+    latitude.value = address.latitude;
+    longitude.value = address.longitude;
+    isChoseCurrentPosition.value = false;
+  }
+
+  Future<void> changeAddress(AddressModel address) async {
+    try {
+      HAppUtils.loadingOverlays();
+
+      final isConnected = await NetworkController.instance.isConnected();
+      if (!isConnected) {
+        HAppUtils.stopLoading();
+        return;
+      }
+
+      if (!addAddressFormKey.currentState!.validate() ||
+          city.value == '' ||
+          district.value == '' ||
+          ward.value == '') {
+        HAppUtils.stopLoading();
+        HAppUtils.showSnackBarWarning('Chọn địa chỉ',
+            'Bạn chưa điền đầy đủ địa chỉ. Hãy chọn đầy đủ Thành phố, Quận/Huyện, Phường/Xã và Số nhà, đường, ngõ.');
+        return;
+      }
+
+      if (latitude.value == 0.0 || longitude.value == 0.0) {
+        HAppUtils.stopLoading();
+        HAppUtils.showSnackBarWarning('Xác nhận lại vị trí',
+            'Bạn cần xác nhận lại vị trí. Hãy xác nhận vị trí sau khi điền đầy đủ vị trí.');
+        return;
+      }
+
+      final newAddress = AddressModel(
+        id: address.id,
+        name: nameController.text.trim(),
+        phoneNumber: phoneController.text.trim(),
+        city: city.value,
+        district: district.value,
+        ward: ward.value,
+        street: streetController.text.trim(),
+        selectedAddress: address.selectedAddress,
+        latitude: latitude.value,
+        longitude: longitude.value,
+      );
+
+      await AddressRepository.instance
+          .updateAddressField(address.id, newAddress.toJon());
+
+      HAppUtils.stopLoading();
+      HAppUtils.showSnackBarSuccess(
+          'Thành công', 'Bạn đã sửa địa chỉ giao hàng thành công');
 
       toggleRefresh.toggle();
 
@@ -135,6 +219,9 @@ class AddressController extends GetxController {
     city.value = '';
     district.value = '';
     ward.value = '';
+    latitude.value = 0;
+    longitude.value = 0;
     addAddressFormKey.currentState?.reset();
+    isChoseCurrentPosition.value = false;
   }
 }

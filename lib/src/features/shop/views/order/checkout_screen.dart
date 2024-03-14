@@ -11,11 +11,13 @@ import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/date_delivery_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/recent_oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/product_list_stack.dart';
+import 'package:on_demand_grocery/src/features/shop/views/order/widgets/voucher_widget.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
@@ -30,7 +32,7 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String selected = 'Tiền mặt';
-  final productController = Get.put(ProductController());
+  final cartController = CartController.instance;
   final addressController = AddressController.instance;
   final dateDeliveryController = Get.put(DateDeliveryController());
   final orderController = OrderController.instance;
@@ -39,22 +41,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void initState() {
     super.initState();
     SchedulerBinding.instance.scheduleFrameCallback((_) {});
-  }
-
-  Random random = Random();
-
-  String letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  String digits = '0123456789';
-
-  String generateId(int length) {
-    String result = '';
-    for (int i = 0; i < length ~/ 2; i++) {
-      int letterIndex = random.nextInt(letters.length);
-      result += letters[letterIndex];
-      int digitIndex = random.nextInt(digits.length);
-      result += digits[digitIndex];
-    }
-    return result;
   }
 
   @override
@@ -74,7 +60,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
+                    shape: BoxShape.circle,
                     border: Border.all(
                       color: HAppColor.hGreyColorShade300,
                       width: 1.5,
@@ -261,11 +247,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Obx(() => Text(
-                                'Tiền hàng (${productController.isInCart.length} sản phẩm)',
+                                'Tiền hàng (${cartController.cartProducts.length} sản phẩm)',
                                 style: HAppStyle.label2Bold,
                               )),
-                          Text(DummyData.vietNamCurrencyFormatting(
-                              productController.productMoney.value)),
+                          Obx(() => Text(HAppUtils.vietNamCurrencyFormatting(
+                              cartController.groFastvalue!.value
+                                  ? cartController.totalCartPrice.value
+                                  : cartController.totalCartPrice.value +
+                                      100000))),
                         ],
                       ),
                       Divider(
@@ -276,9 +265,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Expanded(
                           child: ProductListStackWidget(
                             maxItems: 8,
-                            items: productController.isInCart
-                                .map((product) => product.imgPath)
-                                .toList(),
+                            items: List<String>.from(cartController.cartProducts
+                                .map((product) => product.image)
+                                .toList()),
                           ),
                         ),
                         Padding(
@@ -290,6 +279,25 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         )
                       ]),
                       gapH16,
+                      Obx(() => cartController.groFastvalue!.value
+                          ? Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Áp dụng khuyến mãi',
+                                        style: HAppStyle.paragraph2Regular
+                                            .copyWith(
+                                                color: HAppColor
+                                                    .hGreyColorShade600)),
+                                    const Text('-100.000₫'),
+                                  ],
+                                ),
+                                gapH10,
+                              ],
+                            )
+                          : Container()),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -298,7 +306,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             style: HAppStyle.paragraph2Regular
                                 .copyWith(color: HAppColor.hGreyColorShade600),
                           ),
-                          const Text('100.000₫'),
+                          const Text('0₫'),
                         ],
                       ),
                       gapH10,
@@ -308,7 +316,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           Text('Giảm giá phí giao hàng',
                               style: HAppStyle.paragraph2Regular.copyWith(
                                   color: HAppColor.hGreyColorShade600)),
-                          const Text('-50.000₫'),
+                          const Text('0₫'),
                         ],
                       ),
                       gapH10,
@@ -321,8 +329,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         children: [
                           const Text('Tổng cộng', style: HAppStyle.label2Bold),
                           Text(
-                              DummyData.vietNamCurrencyFormatting(
-                                  productController.productMoney.value + 50000),
+                              HAppUtils.vietNamCurrencyFormatting(
+                                  cartController.totalCartPrice.value),
                               style: HAppStyle.label2Bold.copyWith(
                                   color: HAppColor.hBluePrimaryColor)),
                         ],
@@ -353,48 +361,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            GestureDetector(
-              onTap: () => Get.toNamed(HAppRoutes.voucher),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.discount_outlined,
-                    color: HAppColor.hBluePrimaryColor,
-                  ),
-                  gapW12,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text("Áp dụng mã ưu đãi",
-                            style: HAppStyle.paragraph1Bold),
-                        productController.voucherAppliedTextAppear!.value &&
-                                productController.applied.value
-                            ? Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: Text(
-                                  productController.voucherAppliedText.value,
-                                  style: HAppStyle.paragraph3Regular.copyWith(
-                                    color: HAppColor.hBluePrimaryColor,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  maxLines: 2,
-                                ),
-                              )
-                            : Text("Bạn đang có 2 mã ưu đãi.",
-                                style: HAppStyle.paragraph3Regular.copyWith(
-                                    color: HAppColor.hRedColor,
-                                    decoration: TextDecoration.none)),
-                      ],
-                    ),
-                  ),
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    size: 12,
-                  )
-                ],
-              ),
-            ),
+            VoucherWidget(),
             gapH24,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -404,9 +371,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     text: "Tổng cộng:\n",
                     children: [
                       TextSpan(
-                        text: productController.productMoney.value != 0
-                            ? DummyData.vietNamCurrencyFormatting(
-                                productController.productMoney.value + 50000)
+                        text: cartController.totalCartPrice.value != 0
+                            ? HAppUtils.vietNamCurrencyFormatting(
+                                cartController.totalCartPrice.value)
                             : "0₫",
                         style: HAppStyle.heading4Style
                             .copyWith(color: HAppColor.hBluePrimaryColor),
@@ -416,23 +383,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (UserController
-                        .instance.user.value.phoneNumber.isEmpty) {
+                    if (addressController.selectedAddress.value.phoneNumber ==
+                        'Số điện thoại còn trống') {
+                      print(
+                          addressController.selectedAddress.value.phoneNumber);
                       HAppUtils.showSnackBarWarning('Hoàn thành đầy đủ địa chỉ',
                           'Có vẻ bạn chưa nhập số điện thoại. Hãy nhập số điện thoại để hoàn tất đặt hàng');
                     } else {
                       Get.toNamed(HAppRoutes.complete);
-                      orderController.listOder.add(OrderModel(
-                          orderId: generateId(6),
-                          active: 'Đang chờ',
-                          date: dateDeliveryController.date.value,
-                          listProduct: productController.isInCart,
-                          price: DummyData.vietNamCurrencyFormatting(
-                              productController.productMoney.value)));
-                      productController.removeAllProductInCart();
-                      productController.refreshAllList();
-                      productController.addMapProductInCart();
-                      productController.productMoney.value = 0;
+                      cartController.clearCart();
+                      // orderController.listOder.add(OrderModel(
+                      //     orderId: generateId(6),
+                      //     active: 'Đang chờ',
+                      //     date: dateDeliveryController.date.value,
+                      //     listProduct: cartController.cartProducts,
+                      //     price: DummyData.vietNamCurrencyFormatting(
+                      //         productController.productMoney.value)));
+                      // productController.removeAllProductInCart();
+                      // productController.refreshAllList();
+                      // productController.addMapProductInCart();
+                      // productController.productMoney.value = 0;
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -487,8 +457,8 @@ class AddressCheckoutWidget extends StatelessWidget {
                 style: HAppStyle.paragraph2Regular.copyWith(
                     overflow: TextOverflow.ellipsis,
                     color: model.phoneNumber == ''
-                        ? HAppColor.hRedColor
-                        : HAppColor.hDarkColor))
+                        ? HAppColor.hDarkColor
+                        : HAppColor.hRedColor))
           ],
         ),
         gapH8,

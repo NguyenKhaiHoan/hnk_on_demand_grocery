@@ -1,11 +1,15 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/data/dummy_data.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
@@ -16,8 +20,6 @@ class ProductItemHorizalWidget extends StatelessWidget {
   ProductItemHorizalWidget({
     super.key,
     required this.model,
-    required this.storeIcon,
-    required this.list,
     required this.compare,
     this.modelCompare,
     this.differentText,
@@ -26,15 +28,14 @@ class ProductItemHorizalWidget extends StatelessWidget {
   });
   final ProductModel model;
   final ProductModel? modelCompare;
-  final bool storeIcon;
-  final RxList<ProductModel> list;
   final bool compare;
   final String? differentText;
   final String? compareOperator;
   final String? comparePrice;
 
-  final productController = Get.put(ProductController());
+  final productController = ProductController.instance;
   final detailController = Get.put(DetailController());
+  final wishlistController = WishlistController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -56,29 +57,9 @@ class ProductItemHorizalWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
-                          image: NetworkImage(model.imgPath),
-                          fit: BoxFit.fill)),
+                          image: NetworkImage(model.image), fit: BoxFit.fill)),
                 ),
               ),
-              storeIcon
-                  ? Positioned(
-                      top: 0,
-                      left: 0,
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: HAppColor.hGreyColorShade300,
-                              image: DecorationImage(
-                                  image: NetworkImage(model.imgStore),
-                                  fit: BoxFit.cover)),
-                        ),
-                      ),
-                    )
-                  : Container(),
               model.salePersent != 0
                   ? Positioned(
                       bottom: 10,
@@ -98,30 +79,32 @@ class ProductItemHorizalWidget extends StatelessWidget {
                 top: 0,
                 right: 10,
                 child: GestureDetector(
-                  onTap: () => productController.addProductInFavorited(model),
+                  onTap: () => wishlistController
+                      .addOrRemoveProductInFavoriteList(model.id),
                   child: Container(
                     width: 32,
                     height: 32,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
                         color: HAppColor.hBackgroundColor),
                     child: Center(
                         child: Obx(
-                      () =>
-                          !productController.isFavoritedProducts.contains(model)
-                              ? const Icon(
-                                  EvaIcons.heartOutline,
-                                  color: HAppColor.hGreyColor,
-                                )
-                              : const Icon(
-                                  EvaIcons.heart,
-                                  color: HAppColor.hRedColor,
-                                ),
+                      () => !UserController
+                              .instance.user.value.listOfFavoriteProduct
+                              .contains(model.id)
+                          ? const Icon(
+                              EvaIcons.heartOutline,
+                              color: HAppColor.hGreyColor,
+                            )
+                          : const Icon(
+                              EvaIcons.heart,
+                              color: HAppColor.hRedColor,
+                            ),
                     )),
                   ),
                 ),
               ),
-              model.status != ""
+              model.status != "Còn hàng"
                   ? Positioned(
                       bottom: 10,
                       right: 0,
@@ -152,7 +135,11 @@ class ProductItemHorizalWidget extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Text(model.category,
+                            Text(
+                                CategoryController
+                                    .instance
+                                    .listOfCategory[int.parse(model.categoryId)]
+                                    .name,
                                 style: HAppStyle.paragraph3Regular.copyWith(
                                     color: HAppColor.hGreyColorShade600)),
                             const Spacer(),
@@ -227,18 +214,18 @@ class ProductItemHorizalWidget extends StatelessWidget {
                             child: Center(
                               child: model.salePersent == 0
                                   ? Text(
-                                      DummyData.vietNamCurrencyFormatting(
+                                      HAppUtils.vietNamCurrencyFormatting(
                                           model.price),
                                       style: HAppStyle.label2Bold.copyWith(
                                           color: HAppColor.hBluePrimaryColor),
                                     )
-                                  : model.status == ""
+                                  : model.status == "Còn hàng"
                                       ? Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                                DummyData
+                                                HAppUtils
                                                     .vietNamCurrencyFormatting(
                                                         model.price),
                                                 style: HAppStyle
@@ -250,7 +237,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                                             TextDecoration
                                                                 .lineThrough)),
                                             Text(
-                                                DummyData
+                                                HAppUtils
                                                     .vietNamCurrencyFormatting(
                                                         model.priceSale),
                                                 style: HAppStyle.label2Bold
@@ -274,10 +261,10 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                                             TextDecoration
                                                                 .none),
                                                 text:
-                                                    '${DummyData.vietNamCurrencyFormatting(model.priceSale)} ',
+                                                    '${HAppUtils.vietNamCurrencyFormatting(model.priceSale)} ',
                                                 children: [
                                                   TextSpan(
-                                                    text: DummyData
+                                                    text: HAppUtils
                                                         .vietNamCurrencyFormatting(
                                                             model.price),
                                                     style: HAppStyle
@@ -296,72 +283,72 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                         ),
                             ),
                           ),
-                          Visibility(
-                              visible: model.status == "" ? true : false,
-                              child: GestureDetector(
-                                child: Container(
-                                  width: 45,
-                                  height: 45,
-                                  decoration: const BoxDecoration(
-                                    color: HAppColor.hBluePrimaryColor,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      bottomRight: Radius.circular(20),
-                                    ),
-                                  ),
-                                  child: Center(
-                                      child: model.quantity != 0
-                                          ? Text(
-                                              "${model.quantity}",
-                                              style: HAppStyle.label2Bold
-                                                  .copyWith(
-                                                      color: HAppColor
-                                                          .hWhiteColor),
-                                            )
-                                          : const Icon(
-                                              EvaIcons.plus,
-                                              color: HAppColor.hWhiteColor,
-                                            )),
-                                ),
-                                onTap: () {
-                                  productController.addProductInCart(model);
-                                  if (model.quantity == 0) {
-                                    model.quantity++;
-                                    productController.refreshList(
-                                        productController.isInCart);
-                                    productController.refreshAllList();
-                                    HAppUtils.showToastSuccess(
-                                        Text(
-                                          'Thêm vào Giỏ hàng!',
-                                          style: HAppStyle.label2Bold.copyWith(
-                                              color:
-                                                  HAppColor.hBluePrimaryColor),
-                                        ),
-                                        RichText(
-                                            text: TextSpan(
-                                                style: HAppStyle
-                                                    .paragraph2Regular
-                                                    .copyWith(
-                                                        color: HAppColor
-                                                            .hGreyColorShade600),
-                                                text: 'Bạn đã thêm thành công',
-                                                children: [
-                                              TextSpan(
-                                                  text: ' ${model.name} ',
-                                                  style: HAppStyle
-                                                      .paragraph2Regular
-                                                      .copyWith(
-                                                          color: HAppColor
-                                                              .hBluePrimaryColor)),
-                                              const TextSpan(
-                                                  text: 'vào Giỏ hàng.')
-                                            ])),
-                                        1,
-                                        context,
-                                        const ToastificationCallbacks());
-                                  }
-                                },
-                              ))
+                          // Visibility(
+                          //     visible: model.status == "" ? true : false,
+                          //     child: GestureDetector(
+                          //       child: Container(
+                          //         width: 45,
+                          //         height: 45,
+                          //         decoration: const BoxDecoration(
+                          //           color: HAppColor.hBluePrimaryColor,
+                          //           borderRadius: BorderRadius.only(
+                          //             topLeft: Radius.circular(20),
+                          //             bottomRight: Radius.circular(20),
+                          //           ),
+                          //         ),
+                          //         child: Center(
+                          //             child: model.quantity != 0
+                          //                 ? Text(
+                          //                     "${model.quantity}",
+                          //                     style: HAppStyle.label2Bold
+                          //                         .copyWith(
+                          //                             color: HAppColor
+                          //                                 .hWhiteColor),
+                          //                   )
+                          //                 : const Icon(
+                          //                     EvaIcons.plus,
+                          //                     color: HAppColor.hWhiteColor,
+                          //                   )),
+                          //       ),
+                          //       onTap: () {
+                          //         productController.addProductInCart(model);
+                          //         if (model.quantity == 0) {
+                          //           model.quantity++;
+                          //           productController.refreshList(
+                          //               productController.isInCart);
+                          //           productController.refreshAllList();
+                          //           HAppUtils.showToastSuccess(
+                          //               Text(
+                          //                 'Thêm vào Giỏ hàng!',
+                          //                 style: HAppStyle.label2Bold.copyWith(
+                          //                     color:
+                          //                         HAppColor.hBluePrimaryColor),
+                          //               ),
+                          //               RichText(
+                          //                   text: TextSpan(
+                          //                       style: HAppStyle
+                          //                           .paragraph2Regular
+                          //                           .copyWith(
+                          //                               color: HAppColor
+                          //                                   .hGreyColorShade600),
+                          //                       text: 'Bạn đã thêm thành công',
+                          //                       children: [
+                          //                     TextSpan(
+                          //                         text: ' ${model.name} ',
+                          //                         style: HAppStyle
+                          //                             .paragraph2Regular
+                          //                             .copyWith(
+                          //                                 color: HAppColor
+                          //                                     .hBluePrimaryColor)),
+                          //                     const TextSpan(
+                          //                         text: 'vào Giỏ hàng.')
+                          //                   ])),
+                          //               1,
+                          //               context,
+                          //               const ToastificationCallbacks());
+                          //         }
+                          //       },
+                          //     ))
                         ],
                       )
                     : Row(
@@ -403,7 +390,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                           ],
                                         ),
                                         Text(
-                                            DummyData.vietNamCurrencyFormatting(
+                                            HAppUtils.vietNamCurrencyFormatting(
                                                 model.price),
                                             style: HAppStyle.label2Bold
                                                 .copyWith(
@@ -445,7 +432,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                           ],
                                         ),
                                         Text(
-                                            DummyData.vietNamCurrencyFormatting(
+                                            HAppUtils.vietNamCurrencyFormatting(
                                                 model.priceSale),
                                             style: HAppStyle.label2Bold
                                                 .copyWith(
@@ -487,11 +474,72 @@ class ProductItemHorizalWidget extends StatelessWidget {
           HAppRoutes.productDetail,
           arguments: {
             'model': model,
-            'list': list,
           },
           preventDuplicates: false,
         );
       },
+    );
+  }
+}
+
+class ShimmerProductItemHorizalWidget extends StatelessWidget {
+  const ShimmerProductItemHorizalWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 110,
+      padding: const EdgeInsets.only(left: 10, top: 10),
+      decoration: BoxDecoration(
+          color: HAppColor.hWhiteColor,
+          borderRadius: BorderRadius.circular(20)),
+      child: Row(
+        children: [
+          CustomShimmerWidget.rectangular(
+            height: 110,
+            width: 110,
+          ),
+          gapW10,
+          Expanded(
+              child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 10, top: 10),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CustomShimmerWidget.rectangular(
+                            height: 10,
+                            width: 50,
+                          ),
+                          const Spacer(),
+                          CustomShimmerWidget.rectangular(
+                            height: 10,
+                            width: 50,
+                          ),
+                        ],
+                      ),
+                      gapH8,
+                      CustomShimmerWidget.rectangular(
+                        height: 16,
+                        width: HAppSize.deviceWidth,
+                      ),
+                      gapH8,
+                      CustomShimmerWidget.rectangular(
+                        height: 16,
+                        width: HAppSize.deviceWidth,
+                      ),
+                    ]),
+              ),
+              const Spacer(),
+            ],
+          ))
+        ],
+      ),
     );
   }
 }

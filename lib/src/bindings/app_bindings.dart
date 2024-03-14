@@ -17,6 +17,11 @@ import 'package:on_demand_grocery/src/features/shop/controllers/home_controller.
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/search_controller.dart';
+import 'package:on_demand_grocery/src/repositories/address_repository.dart';
+import 'package:on_demand_grocery/src/repositories/banner_repository.dart';
+import 'package:on_demand_grocery/src/repositories/category_repository.dart';
+import 'package:on_demand_grocery/src/repositories/store_repository.dart';
+import 'package:on_demand_grocery/src/repositories/user_repository.dart';
 
 class HAppBinding extends Bindings {
   @override
@@ -39,5 +44,11 @@ class HAppBinding extends Bindings {
     Get.lazyPut(() => LoginController(), fenix: true);
     Get.lazyPut(() => ProductController(), fenix: true);
     Get.lazyPut(() => ExploreController(), fenix: true);
+
+    Get.lazyPut(() => UserRepository(), fenix: true);
+    Get.lazyPut(() => StoreRepository(), fenix: true);
+    Get.lazyPut(() => BannerRepository(), fenix: true);
+    Get.lazyPut(() => CategoryRepository(), fenix: true);
+    Get.lazyPut(() => AddressRepository(), fenix: true);
   }
 }

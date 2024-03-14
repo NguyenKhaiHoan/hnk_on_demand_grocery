@@ -13,7 +13,7 @@ class HorizontalListProductWithTitleWidget extends StatelessWidget {
       required this.storeIcon,
       required this.title});
 
-  final RxList<ProductModel> list;
+  final List<ProductModel> list;
   final bool compare;
   final bool storeIcon;
   final String title;
@@ -28,8 +28,7 @@ class HorizontalListProductWithTitleWidget extends StatelessWidget {
           style: HAppStyle.heading4Style,
         ),
         gapH12,
-        HorizontalListProductWidget(
-            list: list, storeIcon: storeIcon, compare: compare)
+        HorizontalListProductWidget(list: list, compare: compare)
       ],
     );
   }

@@ -8,16 +8,21 @@ class UserModel {
   String profileImage;
   String creationDate;
   String authenticationBy;
+  List<String> listOfFavoriteProduct;
+  List<String> listOfFavoriteStore;
+  List<String> listOfRegisterNotificationProduct;
 
-  UserModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.phoneNumber,
-    required this.profileImage,
-    required this.creationDate,
-    required this.authenticationBy,
-  });
+  UserModel(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.phoneNumber,
+      required this.profileImage,
+      required this.creationDate,
+      required this.authenticationBy,
+      required this.listOfFavoriteProduct,
+      required this.listOfFavoriteStore,
+      required this.listOfRegisterNotificationProduct});
 
   static UserModel empty() => UserModel(
       id: '',
@@ -26,16 +31,23 @@ class UserModel {
       phoneNumber: '',
       profileImage: '',
       creationDate: '',
-      authenticationBy: '');
+      authenticationBy: '',
+      listOfFavoriteProduct: [],
+      listOfFavoriteStore: [],
+      listOfRegisterNotificationProduct: []);
 
   Map<String, dynamic> toJon() {
     return {
+      'Id': id,
       'Name': name,
       'Email': email,
       'PhoneNumber': phoneNumber,
       'ProfileImage': profileImage,
       'CreationDate': creationDate,
-      'AuthenticationBy': authenticationBy
+      'AuthenticationBy': authenticationBy,
+      'ListOfFavoriteProduct': listOfFavoriteProduct,
+      'ListOfFavoriteStore': listOfFavoriteStore,
+      'ListOfRegisterNotificationProduct': listOfRegisterNotificationProduct
     };
   }
 
@@ -49,6 +61,16 @@ class UserModel {
         phoneNumber: data['PhoneNumber'] ?? '',
         profileImage: data['ProfileImage'] ?? '',
         creationDate: data['CreationDate'] ?? '',
-        authenticationBy: data['AuthenticationBy'] ?? '');
+        authenticationBy: data['AuthenticationBy'] ?? '',
+        listOfFavoriteProduct: data['ListOfFavoriteProduct'] != null
+            ? List<String>.from(data['ListOfFavoriteProduct'])
+            : [],
+        listOfFavoriteStore: data['ListOfFavoriteStore'] != null
+            ? List<String>.from(data['ListOfFavoriteStore'])
+            : [],
+        listOfRegisterNotificationProduct:
+            data['ListOfRegisterNotificationProduct'] != null
+                ? List<String>.from(data['ListOfRegisterNotificationProduct'])
+                : []);
   }
 }

@@ -4,6 +4,7 @@ import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/district_ward_model.dart';
+import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
@@ -208,6 +209,36 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                 ),
               ),
             ),
+            gapH12,
+            Obx(() => SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text(
+                  'Lấy vị trí hiện tại',
+                  style: HAppStyle.paragraph2Regular,
+                ),
+                trackOutlineColor: MaterialStateProperty.resolveWith(
+                  (final Set<MaterialState> states) {
+                    if (states.contains(MaterialState.selected)) {
+                      return null;
+                    }
+                    return HAppColor.hGreyColorShade300;
+                  },
+                ),
+                activeColor: HAppColor.hBluePrimaryColor,
+                activeTrackColor: HAppColor.hBlueSecondaryColor,
+                inactiveThumbColor: HAppColor.hWhiteColor,
+                inactiveTrackColor: HAppColor.hGreyColorShade300,
+                value: addressController.isChoseCurrentPosition.value,
+                onChanged: (changed) async {
+                  addressController.isChoseCurrentPosition.value = changed;
+                  if (addressController.isChoseCurrentPosition.value) {
+                    final currentPosition =
+                        await HLocationService.getGeoLocationPosition();
+                    addressController.latitude.value = currentPosition.latitude;
+                    addressController.longitude.value =
+                        currentPosition.longitude;
+                  }
+                })),
             gapH6,
             ElevatedButton(
               onPressed: () {

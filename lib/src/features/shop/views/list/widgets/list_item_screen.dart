@@ -7,6 +7,7 @@ import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item_horizal_widget.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
@@ -19,12 +20,11 @@ class WishlistItemScreen extends StatefulWidget {
 }
 
 class _WishlistItemScreenState extends State<WishlistItemScreen> {
-  final productController = Get.put(ProductController());
-  final rootController = Get.put(RootController());
+  final productController = ProductController.instance;
+  final rootController = RootController.instance;
 
-  final String title = Get.arguments['title'];
-  final String subtitle = Get.arguments['subtitle'];
-  final RxList<ProductModel> list = Get.arguments['list'];
+  final WishlistModel model = Get.arguments['model'];
+  final List<ProductModel> list = Get.arguments['list'];
 
   @override
   Widget build(BuildContext context) {
@@ -36,20 +36,20 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
             child: CartCircle(),
           )
         ],
-        title: Obx(() =>
-            list.isNotEmpty ? Text("$title (${list.length})") : Text(title)),
+        title: Text(
+            list.isEmpty ? model.title : "${model.title} (${list.length})"),
         centerTitle: true,
         toolbarHeight: 80,
         leadingWidth: 80,
         leading: Row(children: [
-          gapW24,
+          // gapW12,
           GestureDetector(
             onTap: () => Get.back(),
             child: Container(
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
+                  shape: BoxShape.circle,
                   border: Border.all(
                     color: HAppColor.hGreyColorShade300,
                     width: 1.5,
@@ -72,30 +72,26 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
               text: "Mô tả: ",
               children: [
                 TextSpan(
-                    text: subtitle,
+                    text: model.description,
                     style: HAppStyle.paragraph2Regular
                         .copyWith(color: HAppColor.hGreyColorShade600))
               ])),
           gapH10,
-          Obx(
-            () => GridView.builder(
-              shrinkWrap: true,
-              itemCount: list.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-                mainAxisExtent: 150,
-              ),
-              itemBuilder: (BuildContext context, int index) {
-                return ProductItemHorizalWidget(
-                  model: list[index],
-                  storeIcon: true,
-                  list: list,
-                  compare: false,
-                );
-              },
+          GridView.builder(
+            shrinkWrap: true,
+            itemCount: list.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
+              mainAxisExtent: 150,
             ),
+            itemBuilder: (BuildContext context, int index) {
+              return ProductItemHorizalWidget(
+                model: list[index],
+                compare: false,
+              );
+            },
           )
         ]),
       ),
@@ -106,21 +102,21 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
         color: HAppColor.hTransparentColor,
         child: ElevatedButton(
           onPressed: () {
-            if (list.isNotEmpty) {
-              for (var model in list) {
-                productController.addProductInCart(model);
-                if (model.quantity == 0) {
-                  model.quantity++;
-                  productController.refreshList(productController.isInCart);
-                  productController.refreshAllList();
-                }
-              }
-              list.refresh();
-            } else {
-              Get.offAllNamed(HAppRoutes.root);
-              rootController.animateToScreen(1);
-            }
-            setState(() {});
+            // if (list.isNotEmpty) {
+            //   for (var model in list) {
+            //     productController.addProductInCart(model);
+            //     if (model.quantity == 0) {
+            //       model.quantity++;
+            //       productController.refreshList(productController.isInCart);
+            //       productController.refreshAllList();
+            //     }
+            //   }
+            //   list.refresh();
+            // } else {
+            //   Get.offAllNamed(HAppRoutes.root);
+            //   rootController.animateToScreen(1);
+            // }
+            // setState(() {});
           },
           style: ElevatedButton.styleFrom(
             minimumSize: Size(HAppSize.deviceWidth - 48, 50),

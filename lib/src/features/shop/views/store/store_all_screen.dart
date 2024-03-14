@@ -4,6 +4,7 @@ import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
@@ -25,16 +26,18 @@ class _AllStoreScreenState extends State<AllStoreScreen>
 
   final itemsSort = ['A - Z', 'Z - A', 'Gần - Xa', 'Xa - Gần'];
 
-  final storeController = Get.put(StoreController());
+  final storeController = StoreController.instance;
+  final categoryController = CategoryController.instance;
+
   late bool historySelfCategory;
   late List<Tag> historyTagsCategory;
 
   @override
   void initState() {
     super.initState();
-    storeController.listFilterStore.value = listStore;
+    storeController.listFilterStore.value = storeController.listOfStore;
     storeController.listFilterStore.sort((a, b) => a.name.compareTo(b.name));
-    storeController.tagsCategoryObs.value = tagsCategory;
+    storeController.tagsCategoryObs.value = categoryController.tagsCategory;
     storeController.tagsStoreObs.value = tags;
     historySelfCategory = storeController.selfCategory.value;
     historyTagsCategory = storeController.tagsCategoryObs
@@ -177,7 +180,7 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                       crossAxisCount: 1,
                       crossAxisSpacing: 10.0,
                       mainAxisSpacing: 10.0,
-                      mainAxisExtent: 200,
+                      mainAxisExtent: 150,
                     ),
                     itemBuilder: (BuildContext context, int index) {
                       return StoreItemWidget(
@@ -263,7 +266,7 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                                     padding:
                                         const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
+                                      borderRadius: BorderRadius.circular(10),
                                       color: storeController
                                               .tagsCategoryObs[index].active
                                           ? HAppColor.hBluePrimaryColor
@@ -401,29 +404,31 @@ class _AllStoreScreenState extends State<AllStoreScreen>
 
   void filterStore() {
     if (!storeController.selfCategory.value) {
-      storeController.listFilterStore.value = listStore
+      storeController.listFilterStore.value = storeController.listOfStore
           .where((store) => storeController.tagsCategoryObs.every((category) =>
-              category.active ? store.category.contains(category.title) : true))
+              category.active
+                  ? store.listOfCategoryId.contains(category.id.toString())
+                  : true))
           .where((store) =>
-              (tags[0].active ? store.distance < 5.0 : true) &&
+              (tags[0].active ? true : true) &&
               (tags[1].active ? store.isFamous : true) &&
               (tags[2].active ? store.rating >= 4.0 : true) &&
               (tags[3].active ? store.import : true))
           .toList();
       filterStoreSort();
     } else {
-      storeController.listFilterStore.value = listStore
+      storeController.listFilterStore.value = storeController.listOfStore
           .where((store) =>
               storeController.tagsCategoryObs
                       .where((category) => category.active)
                       .length ==
-                  store.category.length &&
+                  store.listOfCategoryId.length &&
               storeController.tagsCategoryObs.every((category) =>
                   category.active
-                      ? store.category.contains(category.title)
+                      ? store.listOfCategoryId.contains(category.title)
                       : true))
           .where((store) =>
-              (tags[0].active ? store.distance < 5.0 : true) &&
+              (tags[0].active ? true : true) &&
               (tags[1].active ? store.isFamous : true) &&
               (tags[2].active ? store.rating >= 4.0 : true) &&
               (tags[3].active ? store.import : true))
@@ -438,11 +443,11 @@ class _AllStoreScreenState extends State<AllStoreScreen>
     } else if (storeController.selectedValueSort.value == 'Z - A') {
       storeController.listFilterStore.sort((a, b) => -a.name.compareTo(b.name));
     } else if (storeController.selectedValueSort.value == 'Gần - Xa') {
-      storeController.listFilterStore
-          .sort((a, b) => a.distance.compareTo(b.distance));
+      // storeController.listFilterStore
+      //     .sort((a, b) => a.distance.compareTo(b.distance));
     } else if (storeController.selectedValueSort.value == 'Xa - Gần') {
-      storeController.listFilterStore
-          .sort((a, b) => -a.distance.compareTo(b.distance));
+      // storeController.listFilterStore
+      //     .sort((a, b) => -a.distance.compareTo(b.distance));
     }
   }
 }

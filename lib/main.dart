@@ -67,12 +67,15 @@ class _MyAppState extends State<MyApp> {
         theme: HAppTheme().lightTheme,
         getPages: HAppPages.pages,
         builder: (context, child) => child!,
-        home: const Scaffold(
-          backgroundColor: HAppColor.hBackgroundColor,
-          body: Center(
-            child:
-                CircularProgressIndicator(color: HAppColor.hBluePrimaryColor),
-          ),
-        ));
+        home: Scaffold(
+            backgroundColor: HAppColor.hBackgroundColor,
+            body: Center(
+                child: Image.asset(
+              "assets/logos/grofast_splash.gif",
+              gaplessPlayback: true,
+              fit: BoxFit.fill,
+              height: 400,
+              width: 400,
+            ))));
   }
 }

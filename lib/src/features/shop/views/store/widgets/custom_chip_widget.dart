@@ -18,7 +18,7 @@ class CustomChipWidget extends StatelessWidget {
       child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100),
+            shape: BoxShape.circle,
           ),
           child: Text(title, style: HAppStyle.label3Regular)),
     );

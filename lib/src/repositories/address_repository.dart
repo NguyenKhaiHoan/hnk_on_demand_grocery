@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_address_model.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 
 class AddressRepository extends GetxController {
@@ -10,11 +11,9 @@ class AddressRepository extends GetxController {
 
   Future<List<AddressModel>> getAllUserAddress() async {
     try {
-      print('Vào get all user address');
 
       final userId = AuthenticationRepository.instance.authUser!.uid;
       if (userId.isEmpty) throw 'Không có thông tin người dùng';
-      print('Có thông tin người dùng');
 
       final addresses = await _db
           .collection('Users')
@@ -29,7 +28,24 @@ class AddressRepository extends GetxController {
     }
   }
 
-  Future<void> updateSelectedField(String addressId, bool selected) async {
+  Future<List<StoreAddressModel>> getStoreAddress(String storeId) async {
+    try {
+      if (storeId.isEmpty) throw 'Không có thông tin cửa hàng';
+      final addresses = await _db
+          .collection('Stores')
+          .doc(storeId)
+          .collection('Addresses')
+          .get();
+      return addresses.docs
+          .map((snapshot) => StoreAddressModel.fromDocumentSnapshot(snapshot))
+          .toList();
+    } catch (e) {
+      throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
+    }
+  }
+
+  Future<void> updateAddressField(
+      String addressId, Map<String, dynamic> json) async {
     try {
       final userId = AuthenticationRepository.instance.authUser!.uid;
       await _db
@@ -37,7 +53,7 @@ class AddressRepository extends GetxController {
           .doc(userId)
           .collection('Addresses')
           .doc(addressId)
-          .update({'SelectedAddress': selected});
+          .update(json);
     } catch (e) {
       throw 'Đã xảy ra sự cố. Không thể cập nhật lựa chọn địa chỉ của bạn. Vui lòng thử lại sau.';
     }

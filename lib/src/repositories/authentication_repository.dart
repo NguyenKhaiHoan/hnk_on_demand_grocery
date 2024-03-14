@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:geocoding/geocoding.dart';
@@ -19,6 +20,7 @@ class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
   final _auth = FirebaseAuth.instance;
   final deviceStorage = GetStorage();
+  final _db = FirebaseFirestore.instance;
 
   User? get authUser => _auth.currentUser;
 
@@ -31,20 +33,12 @@ class AuthenticationRepository extends GetxController {
     final user = _auth.currentUser;
     FlutterNativeSplash.remove();
     if (user != null) {
-      print('user không null');
-      print(user.displayName);
-      if (user.emailVerified) {
-        final userController = Get.put(UserController());
-        Get.offAllNamed(HAppRoutes.root);
-        await userController.fetchCurrentPosition();
-      } else {
-        Get.offAllNamed(HAppRoutes.verify, arguments: {'email': user.email});
-      }
+      await checkUserRegistration(user);
     } else {
       deviceStorage.writeIfNull('isFirstTime', true);
       deviceStorage.read('isFirstTime') != true
-          ? Get.offAll(const SplashScreen(widget: LoginScreen()))
-          : Get.offAll(SplashScreen(widget: OnboardingScreen()));
+          ? Get.offAllNamed(HAppRoutes.login)
+          : Get.offAllNamed(HAppRoutes.onboarding);
     }
   }
 
@@ -72,7 +66,6 @@ class AuthenticationRepository extends GetxController {
           .then((value) {
         _auth.currentUser!.updatePassword(newPassword);
       }).catchError((e) {
-        print(e.toString());
         throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
       });
     } on FirebaseAuthException catch (e) {
@@ -152,6 +145,40 @@ class AuthenticationRepository extends GetxController {
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
+    }
+  }
+
+  Future<void> checkUserRegistration(User user) async {
+    try {
+      bool userIsRegistered = false;
+      await _db
+          .collection('Users')
+          .where('Id', isEqualTo: user.uid)
+          .get()
+          .then((value) {
+        userIsRegistered = value.size > 0 ? true : false;
+      });
+      if (userIsRegistered) {
+        if (user.emailVerified) {
+          Get.offAllNamed(HAppRoutes.root);
+          final userController = Get.put(UserController());
+          await userController.fetchCurrentPosition();
+        } else {
+          Get.offAllNamed(HAppRoutes.verify, arguments: {'email': user.email});
+        }
+      } else {
+        deviceStorage.writeIfNull('isFirstTime', true);
+        deviceStorage.read('isFirstTime') != true
+            ? Get.offAllNamed(HAppRoutes.login)
+            : Get.offAllNamed(HAppRoutes.onboarding);
+      }
+    } catch (e) {
+      deviceStorage.writeIfNull('isFirstTime', true);
+      deviceStorage.read('isFirstTime') != true
+          ? Get.offAllNamed(HAppRoutes.login)
+          : Get.offAllNamed(HAppRoutes.onboarding);
+      HAppUtils.showSnackBarError(
+          'Lỗi', 'Tài khoản người dùng chưa được đăng ký');
     }
   }
 }

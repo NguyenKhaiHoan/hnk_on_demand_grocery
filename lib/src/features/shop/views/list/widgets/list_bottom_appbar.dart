@@ -26,22 +26,19 @@ class ListBottomAppBar extends StatelessWidget implements PreferredSizeWidget {
             indicatorColor: HAppColor.hBluePrimaryColor,
             labelColor: HAppColor.hBluePrimaryColor,
             unselectedLabelColor: Colors.black,
-            tabs: [
-              Obx(() => Tab(
-                    text:
-                        'Sản phẩm (${productController.isFavoritedProducts.length})',
-                  )),
-              Obx(() => Tab(
-                    text:
-                        'Cửa hàng (${storeController.isFavoritedStores.length})',
-                  )),
-              Obx(() => Tab(
-                    text: 'Mong ước (${productController.wishlistList.length})',
-                  )),
-              Obx(() => Tab(
-                    text:
-                        'Chờ có hàng (${productController.registerNotificationProducts.length})',
-                  )),
+            tabs: const [
+              Tab(
+                text: 'Sản phẩm',
+              ),
+              Tab(
+                text: 'Cửa hàng',
+              ),
+              Tab(
+                text: 'Mong ước',
+              ),
+              Tab(
+                text: 'Chờ có hàng',
+              ),
             ]));
   }
 
