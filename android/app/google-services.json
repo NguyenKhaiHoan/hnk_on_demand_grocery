@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "297352060294",
+    "firebase_url": "https://grofast-ondemandgroceryapp-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "grofast-ondemandgroceryapp",
     "storage_bucket": "grofast-ondemandgroceryapp.appspot.com"
   },
@@ -39,10 +40,82 @@
               "client_type": 3
             },
             {
-              "client_id": "297352060294-lclhedvmn79ek3l15uhk1v4v23vrbh17.apps.googleusercontent.com",
+              "client_id": "297352060294-0mre5iau2chb20v21erc121g2960v4o0.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.onDemandGrocery"
+                "bundle_id": "com.example.grofastOnDemandGrocery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297352060294:android:d147504637c4b88187a007",
+        "android_client_info": {
+          "package_name": "com.example.on_demand_grocery_deliver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "297352060294-6a48f0f5cf7bodgignm6dg1fvg0s9fc1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4_jDWr_FESu1CXv8-R-MWWaQUaWQacnk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "297352060294-6a48f0f5cf7bodgignm6dg1fvg0s9fc1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "297352060294-0mre5iau2chb20v21erc121g2960v4o0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.grofastOnDemandGrocery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297352060294:android:def685d34121b87987a007",
+        "android_client_info": {
+          "package_name": "com.example.on_demand_grocery_store"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "297352060294-6a48f0f5cf7bodgignm6dg1fvg0s9fc1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4_jDWr_FESu1CXv8-R-MWWaQUaWQacnk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "297352060294-6a48f0f5cf7bodgignm6dg1fvg0s9fc1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "297352060294-0mre5iau2chb20v21erc121g2960v4o0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.grofastOnDemandGrocery"
               }
             }
           ]

@@ -1,5 +1,16 @@
+import 'dart:math';
+
+import 'package:flutter/services.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_address_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class HLocationService {
@@ -10,7 +21,7 @@ class HLocationService {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       await Geolocator.openLocationSettings();
-      showSnackBarError('Lỗi', 'Dịch vụ định vị bị vô hiệu hóa.');
+      HAppUtils.showSnackBarError('Lỗi', 'Dịch vụ định vị bị vô hiệu hóa.');
       return Future.error('Dịch vụ định vị bị vô hiệu hóa.');
     }
 
@@ -18,13 +29,13 @@ class HLocationService {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        showSnackBarError('Lỗi', 'Quyền truy cập vị trí bị từ chối.');
+        HAppUtils.showSnackBarError('Lỗi', 'Quyền truy cập vị trí bị từ chối.');
         return Future.error('Quyền truy cập vị trí bị từ chối.');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      showSnackBarError('Lỗi',
+      HAppUtils.showSnackBarError('Lỗi',
           'Quyền vị trí bị từ chối vĩnh viễn, chúng tôi không thể yêu cầu quyền.');
       return Future.error(
           'Quyền vị trí bị từ chối vĩnh viễn, chúng tôi không thể yêu cầu quyền.');
@@ -52,5 +63,33 @@ class HLocationService {
     }
   }
 
-  static void showSnackBarError(String s, String t) {}
+  static Future<void> getNearbyStoresAndProducts() async {
+    final storeController = Get.put(StoreController());
+    final productController = Get.put(ProductController());
+    storeController.allNearbyStores.clear();
+    productController.nearbyProduct.clear();
+    final currentPosition = AddressController.instance.selectedAddress.value;
+    Geofire.initialize('Stores');
+    try {
+      Geofire.queryAtLocation(
+              currentPosition.latitude, currentPosition.longitude, 3)!
+          .listen((map) {
+        print(map);
+        if (map != null) {
+          var callBack = map['callBack'];
+          switch (callBack) {
+            case Geofire.onKeyEntered:
+              storeController.addNearbyStores(map['key']);
+              break;
+            case Geofire.onGeoQueryReady:
+              break;
+          }
+        }
+      }).onError((error) {
+        print(error);
+      });
+    } on PlatformException {
+      print('Failed to get platform version.');
+    }
+  }
 }

@@ -175,23 +175,23 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Obx(
-                          () => Text.rich(
-                            TextSpan(
-                              text: "Tiền hàng:\n",
-                              children: [
-                                TextSpan(
-                                  text: cartController.totalCartPrice.value != 0
-                                      ? HAppUtils.vietNamCurrencyFormatting(
-                                          cartController.totalCartPrice.value)
-                                      : "0₫",
-                                  style: HAppStyle.heading4Style.copyWith(
-                                      color: HAppColor.hBluePrimaryColor),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        Obx(() => Text.rich(
+                              TextSpan(
+                                text: "Tổng cộng:\n",
+                                children: [
+                                  TextSpan(
+                                    text: cartController.totalCartPrice.value !=
+                                            0
+                                        ? HAppUtils.vietNamCurrencyFormatting(
+                                            cartController
+                                                .getTotalPriceWithVoucher())
+                                        : "0₫",
+                                    style: HAppStyle.heading4Style.copyWith(
+                                        color: HAppColor.hBluePrimaryColor),
+                                  ),
+                                ],
+                              ),
+                            )),
                         ElevatedButton(
                           onPressed: () {
                             if (cartController.cartProducts.isNotEmpty) {

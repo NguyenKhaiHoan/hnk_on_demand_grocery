@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
@@ -22,6 +26,13 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
   String? valueWard;
   String? valueCity;
   List<String> list = [];
+
+  CameraPosition initialCameraPosition = const CameraPosition(
+    target: LatLng(20.980724334716797, 105.7970962524414),
+    zoom: 14,
+  );
+  Completer<GoogleMapController> googleMapController = Completer();
+  GoogleMapController? mapController;
 
   @override
   Widget build(BuildContext context) {
@@ -240,6 +251,35 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                   }
                 })),
             gapH6,
+            SizedBox(
+              height: 200,
+              width: HAppSize.deviceWidth,
+              child: GoogleMap(
+                initialCameraPosition: initialCameraPosition,
+                mapType: MapType.normal,
+                myLocationButtonEnabled: true,
+                myLocationEnabled: true,
+                zoomControlsEnabled: true,
+                zoomGesturesEnabled: true,
+                onMapCreated: (GoogleMapController controller) async {
+                  googleMapController.complete(controller);
+                  mapController = controller;
+                  Position currentPositon =
+                      await HLocationService.getGeoLocationPosition();
+                  LatLng currentLatLng = LatLng(
+                    currentPositon.latitude,
+                    currentPositon.longitude,
+                  );
+                  CameraPosition cameraPosition = CameraPosition(
+                    target: currentLatLng,
+                    zoom: 14,
+                  );
+                  mapController!.animateCamera(
+                      CameraUpdate.newCameraPosition(cameraPosition));
+                },
+              ),
+            ),
+            gapH12,
             ElevatedButton(
               onPressed: () {
                 FocusScope.of(context).requestFocus(FocusNode());

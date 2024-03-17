@@ -16,7 +16,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/detail_controlle
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/repositories/address_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';

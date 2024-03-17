@@ -100,136 +100,136 @@ class ListAllOrderScreen extends StatelessWidget {
                 subWidget: Container(),
               ),
             ),
-            SingleChildScrollView(
-              child: CustomLayoutWidget(
-                widget: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: orderController.listOder
-                      .where((order) => order.active == "Đang chờ")
-                      .toList()
-                      .length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    crossAxisSpacing: 10.0,
-                    mainAxisSpacing: 10.0,
-                    mainAxisExtent: 190,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return RecentOrderItemWidget(
-                        onTap: () {},
-                        model: orderController.listOder
-                            .where((order) => order.active == "Đang chờ")
-                            .toList()[index]);
-                  },
-                ),
-                subWidget: Container(),
-              ),
-            ),
-            SingleChildScrollView(
-              child: CustomLayoutWidget(
-                widget: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: orderController.listOder
-                      .where((order) => order.active == "Chưa giao")
-                      .toList()
-                      .length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    crossAxisSpacing: 10.0,
-                    mainAxisSpacing: 10.0,
-                    mainAxisExtent: 190,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return RecentOrderItemWidget(
-                        onTap: () {},
-                        model: orderController.listOder
-                            .where((order) => order.active == "Chưa giao")
-                            .toList()[index]);
-                  },
-                ),
-                subWidget: Container(),
-              ),
-            ),
-            SingleChildScrollView(
-              child: CustomLayoutWidget(
-                widget: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: orderController.listOder
-                      .where((order) => order.active == "Đang giao")
-                      .toList()
-                      .length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    crossAxisSpacing: 10.0,
-                    mainAxisSpacing: 10.0,
-                    mainAxisExtent: 190,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return RecentOrderItemWidget(
-                        onTap: () {},
-                        model: orderController.listOder
-                            .where((order) => order.active == "Đang giao")
-                            .toList()[index]);
-                  },
-                ),
-                subWidget: Container(),
-              ),
-            ),
-            SingleChildScrollView(
-              child: CustomLayoutWidget(
-                widget: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: orderController.listOder
-                      .where((order) => order.active == "Đã giao")
-                      .toList()
-                      .length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    crossAxisSpacing: 10.0,
-                    mainAxisSpacing: 10.0,
-                    mainAxisExtent: 190,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return RecentOrderItemWidget(
-                        onTap: () {},
-                        model: orderController.listOder
-                            .where((order) => order.active == "Đã giao")
-                            .toList()[index]);
-                  },
-                ),
-                subWidget: Container(),
-              ),
-            ),
-            SingleChildScrollView(
-              child: CustomLayoutWidget(
-                widget: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: orderController.listOder
-                      .where((order) => order.active == "Đã hủy")
-                      .toList()
-                      .length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    crossAxisSpacing: 10.0,
-                    mainAxisSpacing: 10.0,
-                    mainAxisExtent: 190,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return RecentOrderItemWidget(
-                        onTap: () {},
-                        model: orderController.listOder
-                            .where((order) => order.active == "Đã hủy")
-                            .toList()[index]);
-                  },
-                ),
-                subWidget: Container(),
-              ),
-            ),
+            // SingleChildScrollView(
+            //   child: CustomLayoutWidget(
+            //     widget: GridView.builder(
+            //       shrinkWrap: true,
+            //       physics: const NeverScrollableScrollPhysics(),
+            //       itemCount: orderController.listOder
+            //           .where((order) => order.active == "Đang chờ")
+            //           .toList()
+            //           .length,
+            //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            //         crossAxisCount: 1,
+            //         crossAxisSpacing: 10.0,
+            //         mainAxisSpacing: 10.0,
+            //         mainAxisExtent: 190,
+            //       ),
+            //       itemBuilder: (BuildContext context, int index) {
+            //         return RecentOrderItemWidget(
+            //             onTap: () {},
+            //             model: orderController.listOder
+            //                 .where((order) => order.active == "Đang chờ")
+            //                 .toList()[index]);
+            //       },
+            //     ),
+            //     subWidget: Container(),
+            //   ),
+            // ),
+            // SingleChildScrollView(
+            //   child: CustomLayoutWidget(
+            //     widget: GridView.builder(
+            //       shrinkWrap: true,
+            //       physics: const NeverScrollableScrollPhysics(),
+            //       itemCount: orderController.listOder
+            //           .where((order) => order.active == "Chưa giao")
+            //           .toList()
+            //           .length,
+            //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            //         crossAxisCount: 1,
+            //         crossAxisSpacing: 10.0,
+            //         mainAxisSpacing: 10.0,
+            //         mainAxisExtent: 190,
+            //       ),
+            //       itemBuilder: (BuildContext context, int index) {
+            //         return RecentOrderItemWidget(
+            //             onTap: () {},
+            //             model: orderController.listOder
+            //                 .where((order) => order.active == "Chưa giao")
+            //                 .toList()[index]);
+            //       },
+            //     ),
+            //     subWidget: Container(),
+            //   ),
+            // ),
+            // SingleChildScrollView(
+            //   child: CustomLayoutWidget(
+            //     widget: GridView.builder(
+            //       shrinkWrap: true,
+            //       physics: const NeverScrollableScrollPhysics(),
+            //       itemCount: orderController.listOder
+            //           .where((order) => order.active == "Đang giao")
+            //           .toList()
+            //           .length,
+            //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            //         crossAxisCount: 1,
+            //         crossAxisSpacing: 10.0,
+            //         mainAxisSpacing: 10.0,
+            //         mainAxisExtent: 190,
+            //       ),
+            //       itemBuilder: (BuildContext context, int index) {
+            //         return RecentOrderItemWidget(
+            //             onTap: () {},
+            //             model: orderController.listOder
+            //                 .where((order) => order.active == "Đang giao")
+            //                 .toList()[index]);
+            //       },
+            //     ),
+            //     subWidget: Container(),
+            //   ),
+            // ),
+            // SingleChildScrollView(
+            //   child: CustomLayoutWidget(
+            //     widget: GridView.builder(
+            //       shrinkWrap: true,
+            //       physics: const NeverScrollableScrollPhysics(),
+            //       itemCount: orderController.listOder
+            //           .where((order) => order.active == "Đã giao")
+            //           .toList()
+            //           .length,
+            //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            //         crossAxisCount: 1,
+            //         crossAxisSpacing: 10.0,
+            //         mainAxisSpacing: 10.0,
+            //         mainAxisExtent: 190,
+            //       ),
+            //       itemBuilder: (BuildContext context, int index) {
+            //         return RecentOrderItemWidget(
+            //             onTap: () {},
+            //             model: orderController.listOder
+            //                 .where((order) => order.active == "Đã giao")
+            //                 .toList()[index]);
+            //       },
+            //     ),
+            //     subWidget: Container(),
+            //   ),
+            // ),
+            // SingleChildScrollView(
+            //   child: CustomLayoutWidget(
+            //     widget: GridView.builder(
+            //       shrinkWrap: true,
+            //       physics: const NeverScrollableScrollPhysics(),
+            //       itemCount: orderController.listOder
+            //           .where((order) => order.active == "Đã hủy")
+            //           .toList()
+            //           .length,
+            //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            //         crossAxisCount: 1,
+            //         crossAxisSpacing: 10.0,
+            //         mainAxisSpacing: 10.0,
+            //         mainAxisExtent: 190,
+            //       ),
+            //       itemBuilder: (BuildContext context, int index) {
+            //         return RecentOrderItemWidget(
+            //             onTap: () {},
+            //             model: orderController.listOder
+            //                 .where((order) => order.active == "Đã hủy")
+            //                 .toList()[index]);
+            //       },
+            //     ),
+            //     subWidget: Container(),
+            //   ),
+            // ),
           ]),
         ));
   }

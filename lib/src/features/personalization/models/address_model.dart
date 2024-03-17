@@ -74,4 +74,19 @@ class AddressModel {
   String toString() {
     return [street, ward, district, city].join(', ');
   }
+
+  factory AddressModel.fromJson(Map<String, dynamic> json) {
+    return AddressModel(
+      id: json['Id'] ?? '',
+      name: json['Name'] ?? '',
+      phoneNumber: json['PhoneNumber'] ?? '',
+      city: json['City'] ?? '',
+      district: json['District'] ?? '',
+      ward: json['Ward'] ?? '',
+      street: json['Street'] ?? '',
+      selectedAddress: json['SelectedAddress'] ?? false,
+      latitude: json['Latitude']?.toDouble() ?? 0.0,
+      longitude: json['Longitude']?.toDouble() ?? 0.0,
+    );
+  }
 }

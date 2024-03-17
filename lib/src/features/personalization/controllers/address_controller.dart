@@ -75,8 +75,9 @@ class AddressController extends GetxController {
       selectedAddress.value = newSelectedAddress;
       await addressRepository.updateAddressField(
           selectedAddress.value.id, {'SelectedAddress': true});
-
       toggleRefresh.toggle();
+
+      HLocationService.getNearbyStoresAndProducts();
     } catch (e) {
       HAppUtils.showSnackBarError(
           'Lỗi không thể lựa chọn địa chỉ', e.toString());

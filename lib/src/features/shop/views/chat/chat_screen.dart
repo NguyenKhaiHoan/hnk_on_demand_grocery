@@ -10,7 +10,7 @@ import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/chat_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/chat_message_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/widgets/message.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
@@ -78,11 +78,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     store.name,
                     style: HAppStyle.label2Bold,
                   ),
-                  Text(
-                    store.isOnline ? 'Đang trực tuyến' : 'Không trực tuyến',
-                    style: HAppStyle.paragraph3Regular
-                        .copyWith(color: HAppColor.hGreyColorShade600),
-                  )
                 ],
               )
             ],

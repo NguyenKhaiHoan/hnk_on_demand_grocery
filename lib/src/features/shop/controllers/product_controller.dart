@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/check_box_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
@@ -18,6 +18,20 @@ class ProductController extends GetxController {
   final productRepository = Get.put(ProductRepository());
 
   var listOfProduct = <ProductModel>[].obs;
+  var nearbyProduct = <ProductModel>[].obs;
+
+  var isLoadingNearby = false.obs;
+
+  Future<void> addNearbyProducts(String storeId) async {
+    isLoadingNearby.value = true;
+
+    final products =
+        await ProductRepository.instance.getProductsForStore(storeId);
+    nearbyProduct.addAll(products);
+    nearbyProduct.sort((a, b) => -a.uploadTime.compareTo(b.uploadTime));
+    isLoadingNearby.value = false;
+  }
+
   var isLoading = false.obs;
 
   @override

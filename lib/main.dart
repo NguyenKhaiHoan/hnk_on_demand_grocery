@@ -68,7 +68,7 @@ class _MyAppState extends State<MyApp> {
         getPages: HAppPages.pages,
         builder: (context, child) => child!,
         home: Scaffold(
-            backgroundColor: HAppColor.hBackgroundColor,
+            backgroundColor: HAppColor.hWhiteColor,
             body: Center(
                 child: Image.asset(
               "assets/logos/grofast_splash.gif",

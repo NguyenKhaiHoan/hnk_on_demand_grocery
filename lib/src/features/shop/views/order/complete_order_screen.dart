@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_layout_infomation_screen_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
@@ -37,6 +38,7 @@ class _CompleteCheckoutScreenState extends State<CompleteCheckoutScreen> {
             onPressed: () {
               Get.offAllNamed(HAppRoutes.root);
               rootController.animateToScreen(0);
+              ExploreController.instance.onClose();
             },
             style: ElevatedButton.styleFrom(
                 minimumSize: Size(HAppSize.deviceWidth * 0.5, 50),

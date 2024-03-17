@@ -6,7 +6,7 @@ import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart'
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/models/chat_message_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/widgets/image_message.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/widgets/text_message.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';

@@ -65,4 +65,24 @@ class StoreController extends GetxController
     tabController.animateTo(index,
         duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
   }
+
+  var isLoadingNearby = false.obs;
+
+  var allNearbyStores = <StoreModel>[].obs;
+  var allNearbyStoreIds = <String>[].obs;
+
+  void addNearbyStores(String storeId) async {
+    isLoadingNearby.value = true;
+
+    var storeIdsSet = Set<String>.from(allNearbyStoreIds);
+
+    if (!storeIdsSet.contains(storeId)) {
+      final store = await StoreRepository.instance.getStoreInformation(storeId);
+      print(storeId);
+      allNearbyStores.addIf(!allNearbyStores.contains(store), store);
+      allNearbyStoreIds.value = List<String>.from(storeIdsSet);
+    }
+
+    isLoadingNearby.value = false;
+  }
 }

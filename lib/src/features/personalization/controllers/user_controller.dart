@@ -81,9 +81,8 @@ class UserController extends GetxController {
           AddressModel tempAddress = AddressModel(
               id: '',
               name: user.value.name,
-              phoneNumber: user.value.phoneNumber == ''
-                  ? 'Số điện thoại còn trống'
-                  : user.value.phoneNumber,
+              phoneNumber:
+                  user.value.phoneNumber == '' ? '' : user.value.phoneNumber,
               district: districtAddress.value,
               ward: '',
               street: streetAddress.value,
@@ -105,6 +104,8 @@ class UserController extends GetxController {
         AddressModel selectedAddress = addresses.firstWhere(
             (address) => address.selectedAddress,
             orElse: () => addresses.first);
+        AddressController.instance.selectedAddress.value = selectedAddress;
+        AddressController.instance.selectedAddress.refresh();
         deliveryAddress.value =
             '${selectedAddress.street}, ${selectedAddress.ward}, ${selectedAddress.district}, Hà Nội';
       }

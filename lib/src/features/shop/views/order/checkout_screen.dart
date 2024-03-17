@@ -15,9 +15,11 @@ import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.
 import 'package:on_demand_grocery/src/features/shop/controllers/date_delivery_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/recent_oder_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/payment_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/product_list_stack.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/widgets/voucher_widget.dart';
+import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
@@ -31,17 +33,11 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  String selected = 'Tiền mặt';
   final cartController = CartController.instance;
   final addressController = AddressController.instance;
   final dateDeliveryController = Get.put(DateDeliveryController());
   final orderController = OrderController.instance;
-
-  @override
-  void initState() {
-    super.initState();
-    SchedulerBinding.instance.scheduleFrameCallback((_) {});
-  }
+  RxString _selectedValue = 'Tiền mặt'.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -175,44 +171,42 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       left: 10, right: 10, top: 10, bottom: 10),
                   child: Column(
                     children: [
-                      RadioListTile<String>(
-                        contentPadding: EdgeInsets.zero,
-                        visualDensity: const VisualDensity(
-                            horizontal: VisualDensity.minimumDensity,
-                            vertical: VisualDensity.minimumDensity),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        value: 'Cash',
-                        groupValue: selected,
-                        activeColor: HAppColor.hBluePrimaryColor,
-                        onChanged: (value) {
-                          setState(() {
-                            selected = value!;
-                          });
-                        },
-                        title: const Text(
-                          "Trả tiền khi nhận hàng",
-                          style: HAppStyle.paragraph2Regular,
-                        ),
-                      ),
-                      RadioListTile<String>(
-                        activeColor: HAppColor.hBluePrimaryColor,
-                        contentPadding: EdgeInsets.zero,
-                        visualDensity: const VisualDensity(
-                            horizontal: VisualDensity.minimumDensity,
-                            vertical: VisualDensity.minimumDensity),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        value: 'Momo',
-                        groupValue: selected,
-                        onChanged: (value) {
-                          setState(() {
-                            selected = value!;
-                          });
-                        },
-                        title: const Text(
-                          "Ví điện tử Momo",
-                          style: HAppStyle.paragraph2Regular,
-                        ),
-                      ),
+                      Obx(() => RadioListTile(
+                            contentPadding: EdgeInsets.zero,
+                            visualDensity: const VisualDensity(
+                                horizontal: VisualDensity.minimumDensity,
+                                vertical: VisualDensity.minimumDensity),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            value: 'Tiền mặt',
+                            groupValue: _selectedValue.value,
+                            activeColor: HAppColor.hBluePrimaryColor,
+                            onChanged: (value) {
+                              _selectedValue.value = value!;
+                            },
+                            title: const Text(
+                              "Trả tiền khi nhận hàng",
+                              style: HAppStyle.paragraph2Regular,
+                            ),
+                          )),
+                      Obx(() => RadioListTile(
+                            activeColor: HAppColor.hBluePrimaryColor,
+                            contentPadding: EdgeInsets.zero,
+                            visualDensity: const VisualDensity(
+                                horizontal: VisualDensity.minimumDensity,
+                                vertical: VisualDensity.minimumDensity),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            value: 'MoMo',
+                            groupValue: _selectedValue.value,
+                            onChanged: (value) {
+                              _selectedValue.value = value!;
+                            },
+                            title: const Text(
+                              "Ví điện tử Momo",
+                              style: HAppStyle.paragraph2Regular,
+                            ),
+                          )),
                     ],
                   ),
                 )
@@ -251,10 +245,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 style: HAppStyle.label2Bold,
                               )),
                           Obx(() => Text(HAppUtils.vietNamCurrencyFormatting(
-                              cartController.groFastvalue!.value
-                                  ? cartController.totalCartPrice.value
-                                  : cartController.totalCartPrice.value +
-                                      100000))),
+                              cartController.totalCartPrice.value))),
                         ],
                       ),
                       Divider(
@@ -366,43 +357,31 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text.rich(
-                  TextSpan(
-                    text: "Tổng cộng:\n",
-                    children: [
+                Obx(() => Text.rich(
                       TextSpan(
-                        text: cartController.totalCartPrice.value != 0
-                            ? HAppUtils.vietNamCurrencyFormatting(
-                                cartController.totalCartPrice.value)
-                            : "0₫",
-                        style: HAppStyle.heading4Style
-                            .copyWith(color: HAppColor.hBluePrimaryColor),
+                        text: "Tổng cộng:\n",
+                        children: [
+                          TextSpan(
+                            text: cartController.totalCartPrice.value != 0
+                                ? HAppUtils.vietNamCurrencyFormatting(
+                                    cartController.getTotalPriceWithVoucher())
+                                : "0₫",
+                            style: HAppStyle.heading4Style
+                                .copyWith(color: HAppColor.hBluePrimaryColor),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    )),
                 ElevatedButton(
                   onPressed: () {
                     if (addressController.selectedAddress.value.phoneNumber ==
-                        'Số điện thoại còn trống') {
+                        '') {
                       print(
                           addressController.selectedAddress.value.phoneNumber);
                       HAppUtils.showSnackBarWarning('Hoàn thành đầy đủ địa chỉ',
                           'Có vẻ bạn chưa nhập số điện thoại. Hãy nhập số điện thoại để hoàn tất đặt hàng');
                     } else {
-                      Get.toNamed(HAppRoutes.complete);
-                      cartController.clearCart();
-                      // orderController.listOder.add(OrderModel(
-                      //     orderId: generateId(6),
-                      //     active: 'Đang chờ',
-                      //     date: dateDeliveryController.date.value,
-                      //     listProduct: cartController.cartProducts,
-                      //     price: DummyData.vietNamCurrencyFormatting(
-                      //         productController.productMoney.value)));
-                      // productController.removeAllProductInCart();
-                      // productController.refreshAllList();
-                      // productController.addMapProductInCart();
-                      // productController.productMoney.value = 0;
+                      cartController.processOrder(_selectedValue.value);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -457,8 +436,8 @@ class AddressCheckoutWidget extends StatelessWidget {
                 style: HAppStyle.paragraph2Regular.copyWith(
                     overflow: TextOverflow.ellipsis,
                     color: model.phoneNumber == ''
-                        ? HAppColor.hDarkColor
-                        : HAppColor.hRedColor))
+                        ? HAppColor.hRedColor
+                        : HAppColor.hDarkColor))
           ],
         ),
         gapH8,

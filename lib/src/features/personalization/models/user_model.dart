@@ -11,6 +11,7 @@ class UserModel {
   List<String> listOfFavoriteProduct;
   List<String> listOfFavoriteStore;
   List<String> listOfRegisterNotificationProduct;
+  String? cloudMessagingToken;
 
   UserModel(
       {required this.id,
@@ -22,7 +23,8 @@ class UserModel {
       required this.authenticationBy,
       required this.listOfFavoriteProduct,
       required this.listOfFavoriteStore,
-      required this.listOfRegisterNotificationProduct});
+      required this.listOfRegisterNotificationProduct,
+      this.cloudMessagingToken});
 
   static UserModel empty() => UserModel(
       id: '',
@@ -47,7 +49,8 @@ class UserModel {
       'AuthenticationBy': authenticationBy,
       'ListOfFavoriteProduct': listOfFavoriteProduct,
       'ListOfFavoriteStore': listOfFavoriteStore,
-      'ListOfRegisterNotificationProduct': listOfRegisterNotificationProduct
+      'ListOfRegisterNotificationProduct': listOfRegisterNotificationProduct,
+      'CloudMessagingToken': cloudMessagingToken
     };
   }
 
@@ -71,6 +74,24 @@ class UserModel {
         listOfRegisterNotificationProduct:
             data['ListOfRegisterNotificationProduct'] != null
                 ? List<String>.from(data['ListOfRegisterNotificationProduct'])
-                : []);
+                : [],
+        cloudMessagingToken: data['CloudMessagingToken'] ?? '');
+  }
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['Id'] ?? '',
+      name: json['Name'] ?? '',
+      email: json['Email'] ?? '',
+      phoneNumber: json['PhoneNumber'] ?? '',
+      profileImage: json['ProfileImage'] ?? '',
+      creationDate: json['CreationDate'] ?? '',
+      authenticationBy: json['AuthenticationBy'] ?? '',
+      listOfFavoriteProduct: List<String>.from(json['ListOfFavoriteProduct']),
+      listOfFavoriteStore: List<String>.from(json['ListOfFavoriteStore']),
+      listOfRegisterNotificationProduct:
+          List<String>.from(json['ListOfRegisterNotificationProduct']),
+      cloudMessagingToken: json['CloudMessagingToken'],
+    );
   }
 }

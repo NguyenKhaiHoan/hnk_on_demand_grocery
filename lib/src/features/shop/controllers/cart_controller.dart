@@ -1,7 +1,19 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/payment_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
+import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
+import 'package:on_demand_grocery/src/repositories/order_repository.dart';
+import 'package:on_demand_grocery/src/routes/app_pages.dart';
+import 'package:on_demand_grocery/src/services/firebase_notification_service.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
+import 'package:uuid/uuid.dart';
 
 class CartController extends GetxController {
   var toggleAnimation = false.obs;
@@ -14,6 +26,9 @@ class CartController extends GetxController {
   var totalCartPrice = 0.obs;
   var productQuantityInCart = 0.obs;
   var cartProducts = <ProductInCartModel>[].obs;
+  var cartStoreIds = <String>[].obs;
+
+  final orderRepository = Get.put(OrderRepository());
 
   void addToCart(ProductModel product) {
     if (product.status == 'Tạm hết hàng') {
@@ -21,6 +36,9 @@ class CartController extends GetxController {
           'Cảnh báo', 'Sản phẩm ${product.name} này tạm hết hàng');
       return;
     }
+
+    cartStoreIds.addIf(
+        !cartStoreIds.contains(product.storeId), product.storeId);
 
     if (productQuantityInCart.value < 1) {
       productQuantityInCart.value += 1;
@@ -51,17 +69,24 @@ class CartController extends GetxController {
     for (var cartProduct in cartProducts) {
       totalPrice += cartProduct.price! * cartProduct.quantity;
     }
-    if (groFastvalue!.value) {
-      totalPrice -= 100000;
-    }
     totalCartPrice.value = totalPrice;
 
     cartProducts.refresh();
   }
 
+  int getTotalPriceWithVoucher() {
+    final totalPrice = totalCartPrice.value;
+    if (groFastvalue!.value) {
+      totalCartPrice -= 100000;
+    }
+    return totalPrice;
+  }
+
   void addSingleProductInCart(ProductInCartModel productInCart) {
     int productIndex = findIndexProductInCart(productInCart);
 
+    cartStoreIds.addIf(
+        !cartStoreIds.contains(productInCart.storeId), productInCart.storeId);
     if (productIndex < 0) {
       cartProducts.add(productInCart);
     } else {
@@ -77,8 +102,7 @@ class CartController extends GetxController {
   }
 
   void removeSingleProductInCart(ProductInCartModel productInCart) {
-    int productIndex = cartProducts
-        .indexWhere((product) => product.productId == productInCart.productId);
+    int productIndex = findIndexProductInCart(productInCart);
 
     if (productIndex >= 0) {
       if (cartProducts[productIndex].quantity > 1) {
@@ -86,6 +110,7 @@ class CartController extends GetxController {
         productQuantityInCart.value = cartProducts[productIndex].quantity;
       } else {
         cartProducts.removeAt(productIndex);
+        cartStoreIds.remove(productInCart.storeId);
         toggleAnimation.value = false;
       }
       updateCart();
@@ -109,7 +134,7 @@ class CartController extends GetxController {
         quantity: quantity,
         storeId: product.storeId,
         storeName: '',
-        categoryId: product.categoryId);
+        unit: product.unit);
   }
 
   int getProductQuantity(String productId) {
@@ -173,4 +198,60 @@ class CartController extends GetxController {
   }
 
   var applied = false.obs;
+
+  Rx<PaymentModel> selectPayment = PaymentModel(id: '1', name: 'Cash').obs;
+
+  void processOrder(String payment) async {
+    try {
+      HAppUtils.loadingOverlays();
+
+      final isConnected = await NetworkController.instance.isConnected();
+      if (!isConnected) {
+        HAppUtils.stopLoading();
+        return;
+      }
+
+      if (totalCartPrice.value < 0) {
+        HAppUtils.stopLoading();
+        return;
+      }
+
+      final order = OrderModel(
+        oderId: '',
+        orderUserId: AuthenticationRepository.instance.authUser!.uid,
+        orderStoreIds: cartStoreIds,
+        orderProducts: cartProducts,
+        orderUser: UserController.instance.user.value,
+        orderUserAddress: AddressController.instance.selectedAddress.value,
+        paymentMethod: payment,
+        paymentStatus: 'Chưa thanh toán',
+        orderDate: DateTime.now(),
+        orderStatus: 'Đang chờ',
+      );
+
+      final id = await orderRepository.addAndFindIdOfOrder(order);
+
+      order.oderId = id;
+      await orderRepository.updateOrderField(id, {'OrderId': id});
+
+      final database = FirebaseDatabase.instance.ref();
+      database
+          .child('Orders/${order.oderId}')
+          .set(order.toJson())
+          .then((value) {
+        HNotificationService.sendNotificationToStore(cartProducts);
+        HAppUtils.showSnackBarSuccess(
+            'Thành công', 'Bạn đã đặt hàng thành công');
+        clearCart();
+        HAppUtils.stopLoading();
+        Get.toNamed(HAppRoutes.complete);
+      }).onError((error, stackTrace) {
+        HAppUtils.showSnackBarSuccess('Thất bại',
+            'Đã xảy ra sữ cố trong quá trình tảii đơn hàng lên hệ thống');
+      });
+    } catch (e) {
+      HAppUtils.stopLoading();
+      HAppUtils.showSnackBarError('Thất bại', 'Đặt hàng không thành công');
+    }
+  }
 }

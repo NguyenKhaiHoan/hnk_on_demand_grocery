@@ -12,7 +12,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.
 import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/explore/widgets/explore_bottom_appbar.dart';
 import 'package:on_demand_grocery/src/features/shop/views/explore/widgets/list_product_explore_builder.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';

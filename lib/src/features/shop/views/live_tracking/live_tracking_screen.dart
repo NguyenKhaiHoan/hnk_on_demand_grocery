@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:timelines/timelines.dart';
 
 const kTileHeight = 50.0;
@@ -19,13 +20,12 @@ class LiveTrackingScreen extends StatefulWidget {
 }
 
 class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
-  Completer<GoogleMapController> googleMapController = Completer();
-  GoogleMapController? mapController;
-
-  static const CameraPosition initialCameraPosition = CameraPosition(
-    target: LatLng(25, 155),
+  CameraPosition initialCameraPosition = const CameraPosition(
+    target: LatLng(20.980724334716797, 105.7970962524414),
     zoom: 14,
   );
+  Completer<GoogleMapController> googleMapController = Completer();
+  GoogleMapController? mapController;
 
   // final List<Marker> _marker = [];
 
@@ -39,12 +39,12 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
           myLocationButtonEnabled: true,
           myLocationEnabled: true,
           zoomControlsEnabled: true,
-          // markers: Set<Marker>.of(_marker),
           zoomGesturesEnabled: true,
           onMapCreated: (GoogleMapController controller) async {
             googleMapController.complete(controller);
             mapController = controller;
-            Position crrPositon = await getCurretnLocation();
+            Position crrPositon =
+                await HLocationService.getGeoLocationPosition();
             LatLng crrLatLng = LatLng(
               crrPositon.latitude,
               crrPositon.longitude,
@@ -58,27 +58,6 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
           },
         ),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: FloatingActionButton.extended(
-      //   onPressed: getCurrentPosition,
-      //   label: const Text('Vị trí hiện tại'),
-      //   icon: const Icon(Icons.my_location),
-      // ),
     );
-  }
-
-  getCurretnLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        getCurretnLocation();
-      }
-    }
-
-    Position currentPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
-    log(currentPosition.toString() as num);
-    return currentPosition;
   }
 }

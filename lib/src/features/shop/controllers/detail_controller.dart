@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_network/image_network.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class DetailController extends GetxController {

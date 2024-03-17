@@ -14,6 +14,7 @@ import 'package:on_demand_grocery/src/features/authentication/views/login/login_
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
+import 'package:on_demand_grocery/src/services/firebase_notification_service.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class AuthenticationRepository extends GetxController {
@@ -160,9 +161,10 @@ class AuthenticationRepository extends GetxController {
       });
       if (userIsRegistered) {
         if (user.emailVerified) {
-          Get.offAllNamed(HAppRoutes.root);
+          HNotificationService.initializeFirebaseCloudMessaging();
           final userController = Get.put(UserController());
           await userController.fetchCurrentPosition();
+          Get.offAllNamed(HAppRoutes.root);
         } else {
           Get.offAllNamed(HAppRoutes.verify, arguments: {'email': user.email});
         }

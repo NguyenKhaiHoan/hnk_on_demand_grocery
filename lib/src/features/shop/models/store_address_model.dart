@@ -33,7 +33,7 @@ class StoreAddressModel {
     return [street, ward, district, city].join(', ');
   }
 
-  Map<String, dynamic> toJon() {
+  Map<String, dynamic> toJson() {
     return {
       'City': city,
       'District': district,

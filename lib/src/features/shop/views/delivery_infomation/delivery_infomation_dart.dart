@@ -372,12 +372,14 @@ class AddressInformation extends StatelessWidget {
                       style: HAppStyle.label2Bold,
                     ),
                     gapH4,
-                    Text(address.phoneNumber,
+                    Text(
+                        address.phoneNumber == ''
+                            ? 'Số điện thoại còn trống'
+                            : address.phoneNumber,
                         style: HAppStyle.paragraph3Regular.copyWith(
-                            color:
-                                address.phoneNumber == 'Số điện thoại còn trống'
-                                    ? HAppColor.hRedColor
-                                    : HAppColor.hDarkColor)),
+                            color: address.phoneNumber == ''
+                                ? HAppColor.hRedColor
+                                : HAppColor.hDarkColor)),
                     gapH4,
                     Text(
                       address.toString(),

@@ -12,7 +12,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/category_control
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
@@ -70,7 +70,7 @@ class ProductCartWidget extends StatelessWidget {
                     children: [
                       Text(
                         CategoryController.instance
-                            .listOfCategory[int.parse(model.categoryId!)].name,
+                            .listOfCategory[int.parse(model.unit!)].name,
                         style: HAppStyle.paragraph3Regular
                             .copyWith(color: HAppColor.hGreyColor),
                       ),

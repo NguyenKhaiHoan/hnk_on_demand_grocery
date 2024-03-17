@@ -32,6 +32,7 @@ import 'package:on_demand_grocery/src/features/shop/views/home/widgets/store_men
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
+import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
@@ -113,18 +114,18 @@ class _HomeScreenState extends State<HomeScreen>
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                        // Obx(() => Padding(
-                        //       padding: hAppDefaultPaddingLR,
-                        //       child: (homeController.reminder.isTrue &&
-                        //               productController.isInCart.isNotEmpty)
-                        //           ? Column(
-                        //               children: [
-                        //                 ShoppingReminderWidget(),
-                        //                 gapH16
-                        //               ],
-                        //             )
-                        //           : Container(),
-                        //     )),
+                        Obx(() => Padding(
+                              padding: hAppDefaultPaddingLR,
+                              child: (homeController.reminder.isTrue &&
+                                      cartController.cartProducts.isNotEmpty)
+                                  ? Column(
+                                      children: [
+                                        ShoppingReminderWidget(),
+                                        gapH16
+                                      ],
+                                    )
+                                  : Container(),
+                            )),
                         Padding(
                           padding: hAppDefaultPaddingLR,
                           child: Column(children: [
@@ -235,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const Text(
-                                      "Cửa hàng",
+                                      "Cửa hàng gần đây",
                                       style: HAppStyle.heading3Style,
                                     ),
                                     GestureDetector(
@@ -254,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 SizedBox(
                                   height: 110,
                                   child: Obx(() => storeController
-                                          .isLoading.value
+                                          .isLoadingNearby.value
                                       ? ListView.separated(
                                           shrinkWrap: true,
                                           scrollDirection: Axis.horizontal,
@@ -279,12 +280,12 @@ class _HomeScreenState extends State<HomeScreen>
                                           itemBuilder: (context, index) {
                                             return StoreMenu(
                                               model: storeController
-                                                  .listOfFamousStore[index],
+                                                  .allNearbyStores[index],
                                             );
                                           },
                                           separatorBuilder: (_, __) => gapW20,
                                           itemCount: storeController
-                                              .listOfFamousStore.length)),
+                                              .allNearbyStores.length)),
                                 ),
                                 gapH16,
                                 Row(

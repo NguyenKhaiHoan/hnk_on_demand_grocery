@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/views/profile/profile_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/views/explore/explore_screen.dart';
@@ -8,6 +9,7 @@ import 'package:on_demand_grocery/src/features/shop/views/home/home_screen.dart'
 import 'package:on_demand_grocery/src/features/shop/views/root/widgets/bottom_nav_bar.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/list_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/store/store_all_screen.dart';
+import 'package:on_demand_grocery/src/services/location_service.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -24,6 +26,14 @@ class _RootScreenState extends State<RootScreen> {
     const AllStoreScreen(),
     const ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      HLocationService.getNearbyStoresAndProducts();
+    });
+  }
 
   final rootController = Get.put(RootController());
 

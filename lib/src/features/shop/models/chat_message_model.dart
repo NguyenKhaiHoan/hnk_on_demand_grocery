@@ -1,4 +1,4 @@
-import 'package:on_demand_grocery/src/features/shop/models/product_models.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 
 enum ChatMessageType { text, image, video }
 
