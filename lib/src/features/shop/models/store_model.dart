@@ -47,7 +47,7 @@ class StoreModel {
         productCount: 0,
       );
 
-  Map<String, dynamic> toJon() {
+  Map<String, dynamic> toJson() {
     return {
       'Id': id,
       'Name': name,

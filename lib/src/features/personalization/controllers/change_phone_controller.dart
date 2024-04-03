@@ -11,7 +11,7 @@ class ChangePhoneController extends GetxController {
   final TextEditingController phoneController = TextEditingController();
   GlobalKey<FormState> changePhoneFormKey = GlobalKey<FormState>();
   final userController = UserController.instance;
-  final userRepository = Get.put(UserRepository());
+  final userRepository = UserRepository.instance;
   var isLoading = false.obs;
 
   @override

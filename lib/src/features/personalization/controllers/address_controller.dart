@@ -196,7 +196,7 @@ class AddressController extends GetxController {
       );
 
       await AddressRepository.instance
-          .updateAddressField(address.id, newAddress.toJon());
+          .updateAddressField(address.id, newAddress.toJson());
 
       HAppUtils.stopLoading();
       HAppUtils.showSnackBarSuccess(

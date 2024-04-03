@@ -21,7 +21,7 @@ class WishlistModel {
       listIds: [],
       uploadTime: DateTime.fromMillisecondsSinceEpoch(0));
 
-  Map<String, dynamic> toJon() {
+  Map<String, dynamic> toJson() {
     return {
       'Id': id,
       'Title': title,

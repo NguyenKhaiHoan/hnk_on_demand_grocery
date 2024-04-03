@@ -13,7 +13,7 @@ class CategoryModel {
 
   static CategoryModel empty() => CategoryModel(id: '', image: '', name: '');
 
-  Map<String, dynamic> toJon() {
+  Map<String, dynamic> toJson() {
     return {
       'Name': name,
       'Image': image,

@@ -15,7 +15,7 @@ class UserRepository extends GetxController {
 
   Future<void> saveUserRecord(UserModel user) async {
     try {
-      await _db.collection('Users').doc(user.id).set(user.toJon());
+      await _db.collection('Users').doc(user.id).set(user.toJson());
     } on FirebaseException catch (e) {
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
@@ -43,7 +43,7 @@ class UserRepository extends GetxController {
 
   Future<void> updateUser(UserModel user) async {
     try {
-      await _db.collection('Users').doc(user.id).update(user.toJon());
+      await _db.collection('Users').doc(user.id).update(user.toJson());
     } on FirebaseException catch (e) {
       throw HFirebaseException(code: e.code).message;
     } catch (e) {

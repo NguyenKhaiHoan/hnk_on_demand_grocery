@@ -36,7 +36,7 @@ class AddressModel {
         longitude: 0,
       );
 
-  Map<String, dynamic> toJon() {
+  Map<String, dynamic> toJson() {
     return {
       'Name': name,
       'PhoneNumber': phoneNumber,
@@ -44,9 +44,9 @@ class AddressModel {
       'District': district,
       'Ward': ward,
       'Street': street,
-      'SelectedAddress': selectedAddress,
       'Latitude': latitude,
       'Longitude': longitude,
+      'SelectedAddress': selectedAddress
     };
   }
 

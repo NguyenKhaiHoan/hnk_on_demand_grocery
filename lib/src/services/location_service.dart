@@ -10,7 +10,9 @@ import 'package:on_demand_grocery/src/features/personalization/controllers/user_
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_address_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_location_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
+import 'package:on_demand_grocery/src/repositories/address_repository.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class HLocationService {
@@ -64,9 +66,9 @@ class HLocationService {
   }
 
   static Future<void> getNearbyStoresAndProducts() async {
-    final storeController = Get.put(StoreController());
-    final productController = Get.put(ProductController());
-    storeController.allNearbyStores.clear();
+    final storeController = StoreController.instance;
+    final productController = ProductController.instance;
+    storeController.allNearbyStoreId.clear();
     productController.nearbyProduct.clear();
     final currentPosition = AddressController.instance.selectedAddress.value;
     Geofire.initialize('Stores');
@@ -79,7 +81,8 @@ class HLocationService {
           var callBack = map['callBack'];
           switch (callBack) {
             case Geofire.onKeyEntered:
-              storeController.addNearbyStores(map['key']);
+              storeController.addNearbyStore(map['key']);
+              productController.addNearbyProducts(map['key']);
               break;
             case Geofire.onGeoQueryReady:
               break;
@@ -90,6 +93,27 @@ class HLocationService {
       });
     } on PlatformException {
       print('Failed to get platform version.');
+    }
+  }
+
+  static Future<StoreLocationModel> getLocationOneStore(String storeId) async {
+    try {
+      final userAddress = AddressController.instance.selectedAddress.value;
+      var address = await AddressRepository.instance.getStoreAddress(storeId);
+      final double distance = Geolocator.distanceBetween(
+          userAddress.latitude,
+          userAddress.longitude,
+          address.first.latitude,
+          address.first.longitude);
+      return StoreLocationModel(
+          storeId: storeId,
+          latitude: address.first.latitude,
+          longitude: address.first.longitude,
+          distance: distance);
+    } catch (e) {
+      HAppUtils.showSnackBarError("Lỗi",
+          "Không thể tính toán khoảng cách cửa hàng từ vị trí hiện tại của bạn");
+      throw 'Lỗi: $e';
     }
   }
 }

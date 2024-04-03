@@ -41,111 +41,102 @@ class _ExploreScreenState extends State<ExploreScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final lengthExploreTab = categoryController.listOfCategory.length + 2;
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTapDown: (tapdown) {
-        cartController.toggleAnimation.value = false;
-        cartController.listIdToggleAnimation.clear();
-      },
-      child: DefaultTabController(
-          length: lengthExploreTab,
-          child: Scaffold(
-            appBar: AppBar(
-              toolbarHeight: 80,
-              leadingWidth: 80,
-              leading: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: hAppDefaultPadding),
-                  child: UserImageLogoWidget(
-                    size: 40,
-                    hasFunction: true,
-                  ),
+    return DefaultTabController(
+        length: lengthExploreTab,
+        child: Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 80,
+            leadingWidth: 80,
+            leading: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: hAppDefaultPadding),
+                child: UserImageLogoWidget(
+                  size: 40,
+                  hasFunction: true,
                 ),
               ),
-              title: const Text("Khám phá"),
-              centerTitle: true,
-              actions: [
-                Padding(
-                  padding: hAppDefaultPaddingR,
-                  child: CartCircle(),
+            ),
+            title: const Text("Khám phá"),
+            centerTitle: true,
+            actions: [
+              Padding(
+                padding: hAppDefaultPaddingR,
+                child: CartCircle(),
+              )
+            ],
+          ),
+          body: NestedScrollView(
+            controller: exploreController.scrollController,
+            headerSliverBuilder: (_, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  pinned: true,
+                  floating: true,
+                  expandedHeight: 164,
+                  flexibleSpace: Padding(
+                    padding: hAppDefaultPaddingLR,
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                                child: Container(
+                                  padding: const EdgeInsets.all(9),
+                                  decoration: BoxDecoration(
+                                      color: HAppColor.hWhiteColor,
+                                      borderRadius: BorderRadius.circular(30),
+                                      border: Border.all(
+                                          width: 1,
+                                          color: HAppColor.hGreyColorShade300)),
+                                  child: Row(children: [
+                                    const Icon(
+                                      EvaIcons.search,
+                                      size: 25,
+                                    ),
+                                    Expanded(
+                                        child: Center(
+                                      child: Text("Bạn muốn tìm gì?",
+                                          style: HAppStyle.paragraph2Bold
+                                              .copyWith(
+                                                  color: HAppColor.hGreyColor)),
+                                    ))
+                                  ]),
+                                ),
+                                onTap: () => Get.toNamed(HAppRoutes.search)),
+                            gapH12,
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  bottom: const ExploreBottomAppBar(),
                 )
-              ],
-            ),
-            body: NestedScrollView(
-              controller: exploreController.scrollController,
-              headerSliverBuilder: (_, innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    automaticallyImplyLeading: false,
-                    pinned: true,
-                    floating: true,
-                    expandedHeight: 164,
-                    flexibleSpace: Padding(
-                      padding: hAppDefaultPaddingLR,
-                      child: ListView(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                  child: Container(
-                                    padding: const EdgeInsets.all(9),
-                                    decoration: BoxDecoration(
-                                        color: HAppColor.hWhiteColor,
-                                        borderRadius: BorderRadius.circular(30),
-                                        border: Border.all(
-                                            width: 1,
-                                            color:
-                                                HAppColor.hGreyColorShade300)),
-                                    child: Row(children: [
-                                      const Icon(
-                                        EvaIcons.search,
-                                        size: 25,
-                                      ),
-                                      Expanded(
-                                          child: Center(
-                                        child: Text("Bạn muốn tìm gì?",
-                                            style: HAppStyle.paragraph2Bold
-                                                .copyWith(
-                                                    color:
-                                                        HAppColor.hGreyColor)),
-                                      ))
-                                    ]),
-                                  ),
-                                  onTap: () => Get.toNamed(HAppRoutes.search)),
-                              gapH12,
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    bottom: const ExploreBottomAppBar(),
-                  )
-                ];
-              },
-              body: TabBody(tabNumber: exploreController.tabController.index),
-            ),
-            floatingActionButton: Obx(() => exploreController.showFab.isTrue
-                ? FloatingActionButton(
-                    shape: const CircleBorder(),
-                    backgroundColor: HAppColor.hBluePrimaryColor,
-                    child: const Icon(
-                      EvaIcons.arrowIosUpward,
-                      color: HAppColor.hWhiteColor,
-                    ),
-                    onPressed: () => exploreController.scrollToTop())
-                : Container()),
-          )),
-    );
+              ];
+            },
+            body: TabBody(tabNumber: exploreController.tabController.index),
+          ),
+          floatingActionButton: Obx(() => exploreController.showFab.isTrue
+              ? FloatingActionButton(
+                  shape: const CircleBorder(),
+                  backgroundColor: HAppColor.hBluePrimaryColor,
+                  child: const Icon(
+                    EvaIcons.arrowIosUpward,
+                    color: HAppColor.hWhiteColor,
+                  ),
+                  onPressed: () => exploreController.scrollToTop())
+              : Container()),
+        ));
   }
 }
 
 class TabBody extends StatefulWidget {
   final int tabNumber;
-  const TabBody({required this.tabNumber, Key? key}) : super(key: key);
+  const TabBody({required this.tabNumber, super.key});
 
   @override
   State<TabBody> createState() => _TabBodyState();
@@ -156,20 +147,17 @@ class _TabBodyState extends State<TabBody> {
   final productController = ProductController.instance;
   final categoryController = CategoryController.instance;
 
-  getDataForTab() {
-    //getting data for widget.tabNumber
-  }
-
   @override
   Widget build(BuildContext context) {
     return Obx(() => FutureBuilder(
         key: Key(exploreController.refreshData.value.toString()),
         future: productController.fetchProductsByQuery(
-            getFutureQuery(exploreController.tabController.index)),
+            productController
+                .getFutureQuery(exploreController.tabController.index),
+            null),
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CustomLayoutWidget(
-              check: true,
               widget: const ShimmerListProductExploreBuilder(),
               subWidget: Container(),
             );
@@ -192,9 +180,7 @@ class _TabBodyState extends State<TabBody> {
             );
           } else {
             final data = snapshot.data!;
-            final list =
-                productController.filterProduct(data) as List<ProductModel>;
-            if (list.isEmpty) {
+            if (data.isEmpty) {
               return NotFoundScreenWidget(
                 title: 'Không có kết quả nào',
                 subtitle:
@@ -204,59 +190,14 @@ class _TabBodyState extends State<TabBody> {
               );
             }
             return CustomLayoutWidget(
-              check: true,
               widget: ListProductExploreBuilder(
-                list: list,
+                list: data,
                 compare: false,
               ),
-              subWidget: Container(),
+              subWidget: const SizedBox(height: 100 - 16),
             );
           }
         })));
-  }
-
-  getFutureQuery(int index) {
-    final Query query;
-    switch (index) {
-      case 0:
-        query = FirebaseFirestore.instance
-            .collection('Products')
-            .where('CountBuyed', isGreaterThanOrEqualTo: 100);
-        break;
-      case 1:
-        query = FirebaseFirestore.instance
-            .collection('Products')
-            .where('SalePersent', isNotEqualTo: 0);
-        break;
-      case 2:
-      case 3:
-      case 4:
-      case 5:
-      case 6:
-      case 7:
-      case 8:
-      case 9:
-      case 10:
-      case 11:
-      case 12:
-      case 13:
-      case 14:
-      case 15:
-      case 16:
-      case 17:
-      case 18:
-      case 19:
-        query = FirebaseFirestore.instance
-            .collection('Products')
-            .where('CategoryId', isEqualTo: (index - 2).toString());
-
-        break;
-      default:
-        query = FirebaseFirestore.instance
-            .collection('Products')
-            .orderBy('UploadTime');
-    }
-    return query;
   }
 
   // @override

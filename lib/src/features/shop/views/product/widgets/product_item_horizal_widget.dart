@@ -10,6 +10,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/category_control
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
@@ -90,7 +91,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
                     child: Center(
                         child: Obx(
                       () => !UserController
-                              .instance.user.value.listOfFavoriteProduct
+                              .instance.user.value.listOfFavoriteProduct!
                               .contains(model.id)
                           ? const Icon(
                               EvaIcons.heartOutline,
@@ -539,6 +540,84 @@ class ShimmerProductItemHorizalWidget extends StatelessWidget {
             ],
           ))
         ],
+      ),
+    );
+  }
+}
+
+class ProductItemHorizalOrderWidget extends StatelessWidget {
+  const ProductItemHorizalOrderWidget({
+    super.key,
+    required this.model,
+  });
+  final ProductInCartModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: Container(
+        height: 100,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            color: HAppColor.hWhiteColor,
+            borderRadius: BorderRadius.circular(20)),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Stack(children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      image: DecorationImage(
+                          image: NetworkImage(model.image!),
+                          fit: BoxFit.fitHeight)),
+                ),
+              ),
+            ]),
+            gapW10,
+            Expanded(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(model.unit!,
+                            style: HAppStyle.paragraph3Regular
+                                .copyWith(color: HAppColor.hGreyColorShade600)),
+                        gapH6,
+                        Text(
+                          model.productName!,
+                          style: HAppStyle.label2Bold.copyWith(
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          maxLines: 1,
+                        ),
+                      ]),
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      HAppUtils.vietNamCurrencyFormatting(model.price!),
+                      style: HAppStyle.label2Bold
+                          .copyWith(color: HAppColor.hBluePrimaryColor),
+                    ),
+                    Text('x${model.quantity}')
+                  ],
+                )
+              ],
+            ))
+          ],
+        ),
       ),
     );
   }

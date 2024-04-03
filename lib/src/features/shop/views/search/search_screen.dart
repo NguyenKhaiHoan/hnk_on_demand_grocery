@@ -26,8 +26,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final searchController = Get.put(SearchProductController());
-  final productController = Get.put(ProductController());
+  final searchController = SearchProductController.instance;
+  final productController = ProductController.instance;
 
   List<String> popularKeywords = [
     "Sữa chua",
@@ -98,6 +98,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 searchController
                     .addListProductInSearch(productController.listOfProduct);
                 searchController.addMapProductInSearch();
+                print(productController.listOfProduct.first.name);
               },
               controller: searchController.controller,
               autofocus: true,

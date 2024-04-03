@@ -8,6 +8,7 @@ class ProductInCartModel {
   int quantity;
   String storeId;
   String? storeName;
+  String? storeAddress;
   String? unit;
   ProductInCartModel(
       {required this.productId,
@@ -17,6 +18,7 @@ class ProductInCartModel {
       required this.quantity,
       required this.storeId,
       this.storeName,
+      this.storeAddress,
       this.unit});
 
   static ProductInCartModel empty() =>

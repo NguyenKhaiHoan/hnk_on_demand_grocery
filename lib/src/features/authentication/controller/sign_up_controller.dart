@@ -58,7 +58,7 @@ class SignUpController extends GetxController {
           listOfRegisterNotificationProduct: [],
           listOfFavoriteStore: []);
 
-      final userRepository = Get.put(UserRepository());
+      final userRepository = UserRepository.instance;
       await userRepository.saveUserRecord(newUser);
 
       HAppUtils.stopLoading();

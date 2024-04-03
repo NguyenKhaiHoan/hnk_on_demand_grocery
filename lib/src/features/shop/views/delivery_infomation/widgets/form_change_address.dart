@@ -299,6 +299,7 @@ class _FormChangeAddressWidgetState extends State<FormChangeAddressWidget> {
                   style: HAppStyle.label2Bold
                       .copyWith(color: HAppColor.hWhiteColor)),
             ),
+            gapH24,
           ],
         ),
       ),

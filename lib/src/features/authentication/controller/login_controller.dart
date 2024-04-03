@@ -17,7 +17,7 @@ class LoginController extends GetxController {
   var isHide = true.obs;
   var isLoading = false.obs;
   final userController = UserController.instance;
-  final networkController = Get.put(NetworkController());
+  final networkController = NetworkController.instance;
 
   void login() async {
     try {

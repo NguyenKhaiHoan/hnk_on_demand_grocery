@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -13,8 +15,12 @@ import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/banner_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/services/firebase_notification_service.dart';
+import 'package:on_demand_grocery/src/services/local_service.dart';
+import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class AuthenticationRepository extends GetxController {
@@ -151,6 +157,7 @@ class AuthenticationRepository extends GetxController {
 
   Future<void> checkUserRegistration(User user) async {
     try {
+      log('user không null: ${user.uid}');
       bool userIsRegistered = false;
       await _db
           .collection('Users')
@@ -159,13 +166,20 @@ class AuthenticationRepository extends GetxController {
           .then((value) {
         userIsRegistered = value.size > 0 ? true : false;
       });
+      log('user trạng thái đã đăng ký: $userIsRegistered');
+
       if (userIsRegistered) {
+        log('user đã đăng ký');
         if (user.emailVerified) {
-          HNotificationService.initializeFirebaseCloudMessaging();
+          log('user đã xác thức');
+          await HLocalService.initializeStorage(user.uid);
+          Get.put(CategoryController());
+          Get.put(BannerController());
           final userController = Get.put(UserController());
           await userController.fetchCurrentPosition();
           Get.offAllNamed(HAppRoutes.root);
         } else {
+          log('user chưa xác thức');
           Get.offAllNamed(HAppRoutes.verify, arguments: {'email': user.email});
         }
       } else {

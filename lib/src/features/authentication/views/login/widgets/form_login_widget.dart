@@ -14,7 +14,7 @@ class FormLoginWidget extends StatelessWidget {
     super.key,
   });
 
-  final loginController = Get.put(LoginController());
+  final loginController = LoginController.instance;
 
   @override
   Widget build(BuildContext context) {

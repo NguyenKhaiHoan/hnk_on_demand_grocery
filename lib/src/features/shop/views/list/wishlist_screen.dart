@@ -23,7 +23,7 @@ class WishlistScreen extends StatefulWidget {
 }
 
 class _WishlistScreenState extends State<WishlistScreen> {
-  final wishlistController = Get.put(WishlistController());
+  final wishlistController = WishlistController.instance;
   final productController = ProductController.instance;
 
   final ProductModel model = Get.arguments['model'];
@@ -144,10 +144,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                                 gapH10,
                                                 ProductListStackWidget(
                                                   maxItems: 8,
-                                                  items: data
-                                                      .map((product) =>
-                                                          product.image)
-                                                      .toList(),
+                                                  items: data,
                                                 ),
                                               ],
                                             );

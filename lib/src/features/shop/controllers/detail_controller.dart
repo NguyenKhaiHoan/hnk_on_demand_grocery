@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:image_network/image_network.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
@@ -41,22 +43,14 @@ class DetailController extends GetxController {
     showNameInAppBar.value = value;
   }
 
-  // var countText = "1".obs;
+  var tempProductInCart = ProductInCartModel.empty();
+  final cartController = CartController.instance;
 
-  // void setCount(ProductModel model) {
-  //   countText.value = model.quantity != 0 ? "${model.quantity}" : '1';
-  // }
-
-  // changeCount(String operator) {
-  //   int count;
-  //   if (operator == "+") {
-  //     count = int.parse(countText.value) + 1;
-  //     countText.value = count.toString();
-  //   } else {
-  //     if (int.parse(countText.value) > 1) {
-  //       count = int.parse(countText.value) - 1;
-  //       countText.value = count.toString();
-  //     }
+  // Future<void> fetchTempProductInCart(ProductModel product) async {
+  //   try {
+  //     tempProductInCart = await cartController.convertToCartProduct(product, 1);
+  //   } catch (e) {
+  //     print(e.toString());
   //   }
   // }
 

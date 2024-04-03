@@ -13,7 +13,7 @@ class ForgetPasswordScreen extends StatefulWidget {
 }
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
-  final forgetPasswordController = Get.put(ForgetPasswordController());
+  final forgetPasswordController = ForgetPasswordController.instance;
 
   @override
   Widget build(BuildContext context) {

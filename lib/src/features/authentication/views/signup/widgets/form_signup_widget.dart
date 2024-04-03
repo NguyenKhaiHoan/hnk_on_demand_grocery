@@ -11,7 +11,7 @@ class FormSignUpWidget extends StatelessWidget {
   FormSignUpWidget({
     super.key,
   });
-  final signupController = Get.put(SignUpController());
+  final signupController = SignUpController.instance;
 
   @override
   Widget build(BuildContext context) {

@@ -49,7 +49,7 @@ class WishlistRepository extends GetxController {
           .collection('Users')
           .doc(userId)
           .collection('Wishlists')
-          .add(wishlist.toJon());
+          .add(wishlist.toJson());
       return currentWishlist.id;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';

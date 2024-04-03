@@ -11,7 +11,7 @@ class BannerModel {
 
   static BannerModel empty() => BannerModel(isActive: false, image: '');
 
-  Map<String, dynamic> toJon() {
+  Map<String, dynamic> toJson() {
     return {
       'IsActive': isActive,
       'Image': image,

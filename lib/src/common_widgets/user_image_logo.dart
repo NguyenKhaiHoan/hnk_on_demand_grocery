@@ -15,7 +15,7 @@ class UserImageLogoWidget extends StatelessWidget {
 
   final bool hasFunction;
   final userController = UserController.instance;
-  final rootController = Get.put(RootController());
+  final rootController = RootController.instance;
 
   final double size;
 

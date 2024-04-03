@@ -13,8 +13,8 @@ import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 class ShoppingReminderWidget extends StatelessWidget {
   ShoppingReminderWidget({super.key});
 
-  final homeController = Get.put(HomeController());
-  final productController = Get.put(ProductController());
+  final homeController = HomeController.instance;
+  final productController = ProductController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -72,11 +72,9 @@ class ShoppingReminderWidget extends StatelessWidget {
             ],
           ),
           gapH6,
-          ProductListStackWidget(
+          ProductInCartListStackWidget(
             maxItems: 8,
-            items: List.from(CartController.instance.cartProducts
-                .map((product) => product.image)
-                .toList()),
+            items: CartController.instance.cartProducts,
           ),
         ]),
       ),

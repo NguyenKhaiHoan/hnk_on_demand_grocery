@@ -69,8 +69,7 @@ class ProductCartWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        CategoryController.instance
-                            .listOfCategory[int.parse(model.unit!)].name,
+                        model.unit!,
                         style: HAppStyle.paragraph3Regular
                             .copyWith(color: HAppColor.hGreyColor),
                       ),

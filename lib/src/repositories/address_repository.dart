@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_address_model.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class AddressRepository extends GetxController {
   static AddressRepository get instance => Get.find();
@@ -11,7 +12,6 @@ class AddressRepository extends GetxController {
 
   Future<List<AddressModel>> getAllUserAddress() async {
     try {
-
       final userId = AuthenticationRepository.instance.authUser!.uid;
       if (userId.isEmpty) throw 'Không có thông tin người dùng';
 
@@ -24,13 +24,13 @@ class AddressRepository extends GetxController {
           .map((snapshot) => AddressModel.fromDocumentSnapshot(snapshot))
           .toList();
     } catch (e) {
+      HAppUtils.showSnackBarError("Lỗi", e.toString());
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
   }
 
   Future<List<StoreAddressModel>> getStoreAddress(String storeId) async {
     try {
-      if (storeId.isEmpty) throw 'Không có thông tin cửa hàng';
       final addresses = await _db
           .collection('Stores')
           .doc(storeId)
@@ -66,7 +66,7 @@ class AddressRepository extends GetxController {
           .collection('Users')
           .doc(userId)
           .collection('Addresses')
-          .add(address.toJon());
+          .add(address.toJson());
       return currentAddress.id;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';

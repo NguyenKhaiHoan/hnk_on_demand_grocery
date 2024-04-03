@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
-import 'package:on_demand_grocery/src/features/authentication/controller/change_password_controller.dart';
+import 'package:on_demand_grocery/src/features/authentication/controller/forget_password_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/change_password_controller.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/login_controller.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/on_boarding_controller.dart';
@@ -7,21 +8,31 @@ import 'package:on_demand_grocery/src/features/authentication/controller/sign_up
 import 'package:on_demand_grocery/src/features/authentication/controller/verify_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/change_name_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/change_phone_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/all_store_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/banner_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/chat_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/date_delivery_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/filter_store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/home_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/search_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/repositories/address_repository.dart';
 import 'package:on_demand_grocery/src/repositories/banner_repository.dart';
 import 'package:on_demand_grocery/src/repositories/category_repository.dart';
+import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/repositories/user_repository.dart';
+import 'package:on_demand_grocery/src/repositories/wishlist_repository.dart';
 
 class HAppBinding extends Bindings {
   @override
@@ -37,18 +48,33 @@ class HAppBinding extends Bindings {
     Get.lazyPut(() => FilterStoreController(), fenix: true);
     Get.lazyPut(() => SignUpController(), fenix: true);
     Get.lazyPut(() => OnboardingController(), fenix: true);
+    Get.put<RootController>(RootController(), permanent: true);
     Get.lazyPut(() => RootController(), fenix: true);
     Get.lazyPut(() => HomeController(), fenix: true);
     Get.lazyPut(() => DetailController(), fenix: true);
     Get.lazyPut(() => SearchProductController(), fenix: true);
     Get.lazyPut(() => LoginController(), fenix: true);
     Get.lazyPut(() => ProductController(), fenix: true);
-    Get.lazyPut(() => ExploreController(), fenix: true);
+    // Get.lazyPut(() => ExploreController(), fenix: true);
+    Get.lazyPut(() => BannerController(), fenix: true);
+    Get.lazyPut(() => StoreController(), fenix: true);
+    Get.lazyPut(() => OrderController(), fenix: true);
+    Get.lazyPut(() => CartController(), fenix: true);
+    Get.lazyPut(() => ChangePhoneController(), fenix: true);
+    Get.lazyPut(() => DateDeliveryController(), fenix: true);
+    Get.lazyPut(() => WishlistController(), fenix: true);
+    Get.lazyPut(() => AllStoreController(), fenix: true);
+    Get.put<ExploreController>(ExploreController(), permanent: true);
+    // Get.put<WishlistController>(WishlistController(), permanent: true);
+    // Get.put<AllStoreController>(AllStoreController(), permanent: true);
+    Get.lazyPut(() => ForgetPasswordController(), fenix: true);
 
     Get.lazyPut(() => UserRepository(), fenix: true);
     Get.lazyPut(() => StoreRepository(), fenix: true);
     Get.lazyPut(() => BannerRepository(), fenix: true);
     Get.lazyPut(() => CategoryRepository(), fenix: true);
     Get.lazyPut(() => AddressRepository(), fenix: true);
+    Get.lazyPut(() => ProductRepository(), fenix: true);
+    Get.lazyPut(() => WishlistRepository(), fenix: true);
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/forget_password_controller.dart';
-import 'package:on_demand_grocery/src/features/authentication/views/change_password/widgets/form_change_password_widget.dart';
+import 'package:on_demand_grocery/src/features/personalization/views/change_password/widgets/form_change_password_widget.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -12,7 +12,7 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  final forgetPasswordController = Get.put(ForgetPasswordController());
+  final forgetPasswordController = ForgetPasswordController.instance;
 
   @override
   Widget build(BuildContext context) {

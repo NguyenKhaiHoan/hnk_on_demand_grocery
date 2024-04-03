@@ -14,8 +14,37 @@ import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:toastification/toastification.dart';
 
 class HAppUtils {
+  static String maskName(String name) {
+    if (name.length <= 1) {
+      return name;
+    }
+    String firstChar = name[0];
+    String maskedChars = '*' * (name.length - 1);
+    return '$firstChar$maskedChars';
+  }
+
+  static orderStatus(int status) {
+    switch (status) {
+      case 0:
+        return 'Đơn đặt hàng thành công';
+      case 1:
+        return 'Cửa hàng xác nhận';
+      case 2:
+        return 'Người giao hàng xác nhận';
+      case 3:
+        return 'Người giao hàng đã lấy hàng';
+      case 4:
+        return 'Đơn giao tới nơi';
+    }
+  }
+
   static String vietNamCurrencyFormatting(int amount) {
     return '${amount.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (match) => '${match[1]}.')}₫';
+  }
+
+  static String metersToKilometers(double distanceInMeters) {
+    double distanceInKilometers = distanceInMeters / 1000;
+    return distanceInKilometers.toStringAsFixed(2);
   }
 
   static void showLostMobileDataConnection(String title, String message) {

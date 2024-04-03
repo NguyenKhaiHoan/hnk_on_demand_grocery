@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/check_box_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
@@ -10,7 +11,6 @@ import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
-import 'package:tuple/tuple.dart';
 
 class ProductController extends GetxController {
   static ProductController get instance => Get.find();
@@ -24,12 +24,16 @@ class ProductController extends GetxController {
 
   Future<void> addNearbyProducts(String storeId) async {
     isLoadingNearby.value = true;
-
-    final products =
-        await ProductRepository.instance.getProductsForStore(storeId);
-    nearbyProduct.addAll(products);
-    nearbyProduct.sort((a, b) => -a.uploadTime.compareTo(b.uploadTime));
+    if (StoreController.instance.allNearbyStoreId.contains(storeId)) {
+      final products = await productRepository.getProductsForStore(storeId);
+      nearbyProduct.addAll(products);
+    }
     isLoadingNearby.value = false;
+  }
+
+  List<ProductModel> sortProductByUploadTime() {
+    nearbyProduct.sort((a, b) => -a.uploadTime.compareTo(b.uploadTime));
+    return nearbyProduct;
   }
 
   var isLoading = false.obs;
@@ -65,13 +69,15 @@ class ProductController extends GetxController {
     }
   }
 
-  Future<List<ProductModel>> fetchProductsByQuery(Query? query) async {
+  Future<List<ProductModel>> fetchProductsByQuery(
+      Query? query, String? storeId) async {
     try {
       if (query == null) {
         return [];
       }
 
-      final products = await productRepository.getProductsByQuery(query);
+      final products =
+          await productRepository.getProductsByQuery(query, storeId);
 
       return products;
     } catch (e) {
@@ -93,42 +99,84 @@ class ProductController extends GetxController {
 
   var selectedValueSort = 'Mới nhất'.obs;
 
-  var tagsProductObs = <Tag>[].obs;
+  var tagsProductObs = tagsProduct.obs;
 
-  filterProduct(List<ProductModel> list) {
-    list = list
-        .where((product) =>
-            (tagsProductObs[0].active ? true : true) &&
-            (tagsProductObs[1].active ? product.rating >= 4.0 : true) &&
-            (tagsProductObs[2].active ? product.origin != 'Việt Nam' : true))
-        .toList();
-    return filterProductSort(list);
+  getFutureQuery(int index) {
+    Query baseQuery = FirebaseFirestore.instance.collection('Products');
+    return filterProductSort(baseQuery);
   }
 
-  filterProductSort(List<ProductModel> list) {
-    if (selectedValueSort.value == 'Mới nhất') {
-      list.sort((a, b) => a.uploadTime.compareTo(b.uploadTime));
-    } else if (selectedValueSort.value == 'A - Z') {
-      list.sort((a, b) => a.name.compareTo(b.name));
-    } else if (selectedValueSort.value == 'Z - A') {
-      list.sort((a, b) => -a.name.compareTo(b.name));
-    } else if (selectedValueSort.value == 'Thấp - Cao') {
-      list.sort((a, b) => a.priceSale == 0
-          ? (b.priceSale == 0
-              ? a.price.compareTo(b.price)
-              : a.price.compareTo(b.priceSale))
-          : (b.priceSale == 0
-              ? a.priceSale.compareTo(b.price)
-              : a.priceSale.compareTo(b.priceSale)));
-    } else if (selectedValueSort.value == 'Cao - Thấp') {
-      list.sort((a, b) => a.priceSale == 0
-          ? (b.priceSale == 0
-              ? -a.price.compareTo(b.price)
-              : -a.price.compareTo(b.priceSale))
-          : (b.priceSale == 0
-              ? -a.priceSale.compareTo(b.price)
-              : -a.priceSale.compareTo(b.priceSale)));
+  getProductCategory(int index, Query query) {
+    switch (index) {
+      case 0:
+        query = query
+            .where('CountBuyed', isGreaterThanOrEqualTo: 100)
+            .orderBy('CountBuyed', descending: true);
+        break;
+      case 1:
+        query = query
+            .where('SalePersent', isNotEqualTo: 0)
+            .orderBy('SalePersent', descending: true);
+        break;
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
+      case 8:
+      case 9:
+      case 10:
+      case 11:
+      case 12:
+      case 13:
+      case 14:
+      case 15:
+      case 16:
+      case 17:
+      case 18:
+      case 19:
+        query = query
+            .where('CategoryId', isEqualTo: (index - 2).toString())
+            .orderBy('CategoryId');
+        break;
+      default:
+        query = query;
+        break;
     }
-    return list;
+    return filterProductSort(query);
+  }
+
+  filterProduct(Query query, int index) {
+    if (tagsProductObs[0].active) {
+      final listIds =
+          nearbyProduct.map((product) => product.id).take(10).toList();
+      query = query.where(FieldPath.documentId, whereIn: listIds);
+    }
+    if (tagsProductObs[1].active) {
+      query = query
+          .where('Rating', isGreaterThanOrEqualTo: 4.0)
+          .orderBy('Rating', descending: true);
+    }
+    if (tagsProductObs[2].active) {
+      query = query.where('Origin', isNotEqualTo: 'Việt Nam').orderBy('Origin');
+    }
+    return getProductCategory(index, query);
+  }
+
+  filterProductSort(Query query) {
+    if (selectedValueSort.value == 'Mới nhất') {
+      query = query.orderBy('UploadTime', descending: true);
+    } else if (selectedValueSort.value == 'A - Z') {
+      query = query.orderBy('Name');
+    } else if (selectedValueSort.value == 'Z - A') {
+      query = query.orderBy('Name', descending: true);
+    } else if (selectedValueSort.value == 'Thấp - Cao') {
+      query = query.orderBy('PriceSale');
+    } else if (selectedValueSort.value == 'Cao - Thấp') {
+      query = query.orderBy('PriceSale', descending: true);
+    }
+    print(query.parameters.toString());
+    return query.limit(10);
   }
 }

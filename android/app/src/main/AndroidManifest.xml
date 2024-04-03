@@ -3,10 +3,24 @@
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 <uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />  
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.BLUETOOTH"
+                    android:maxSdkVersion="30" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+                    android:maxSdkVersion="30" />
+<uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application
         android:label="on_demand_grocery"
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="true"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -36,9 +50,14 @@
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDz5dGyWXo23AyNlJCzUYGid6aD7YeOgSY"/>
+            android:value="${MAPS_API_KEY}"/>
     </application>
 </manifest>

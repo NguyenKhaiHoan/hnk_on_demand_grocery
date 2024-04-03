@@ -150,7 +150,7 @@ class ProductDetailScreen extends StatelessWidget {
                                   color: HAppColor.hBackgroundColor),
                               child: Center(
                                   child: Obx(() => UserController.instance.user
-                                          .value.listOfFavoriteProduct
+                                          .value.listOfFavoriteProduct!
                                           .contains(product.id)
                                       ? const Icon(
                                           EvaIcons.heart,
@@ -287,7 +287,7 @@ class ProductDetailScreen extends StatelessWidget {
                                                   .instance
                                                   .user
                                                   .value
-                                                  .listOfFavoriteProduct
+                                                  .listOfFavoriteProduct!
                                                   .contains(product.id)
                                               ? const Icon(
                                                   EvaIcons.heart,
@@ -1007,7 +1007,7 @@ class ProductDetailScreen extends StatelessWidget {
                         color: HAppColor.hBackgroundColor),
                     child: Center(
                         child: Obx(() => !UserController.instance.user.value
-                                .listOfRegisterNotificationProduct
+                                .listOfRegisterNotificationProduct!
                                 .contains(product.id)
                             ? const Icon(EneftyIcons.notification_bing_outline)
                             : const Icon(
@@ -1025,7 +1025,7 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                   child: Obx(
                     () => UserController
-                            .instance.user.value.listOfFavoriteProduct
+                            .instance.user.value.listOfFavoriteProduct!
                             .contains(product.id)
                         ? Text(
                             "Xóa khỏi Yêu thích",
@@ -1047,7 +1047,7 @@ class ProductDetailScreen extends StatelessWidget {
   }
 
   void showSnackbarFavorite(BuildContext context, ProductModel model) {
-    if (UserController.instance.user.value.listOfFavoriteProduct
+    if (UserController.instance.user.value.listOfFavoriteProduct!
         .contains(model.id)) {
       HAppUtils.showToastSuccess(
           Text(
@@ -1097,7 +1097,7 @@ class ProductDetailScreen extends StatelessWidget {
 
   void showSnackbarRegisterNotification(
       BuildContext context, ProductModel model) {
-    if (UserController.instance.user.value.listOfRegisterNotificationProduct
+    if (UserController.instance.user.value.listOfRegisterNotificationProduct!
         .contains(model.id)) {
       HAppUtils.showToastSuccess(
           Text(

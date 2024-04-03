@@ -7,15 +7,12 @@ import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/check_box_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/widgets/product_cart.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/widgets/voucher_widget.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
-import 'package:toastification/toastification.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -25,7 +22,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
-  final productController = Get.put(ProductController());
+  final productController = ProductController.instance;
   final cartController = CartController.instance;
   bool? check1 = false;
 
@@ -55,7 +52,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
             )
           ],
           title: Obx(() => cartController.cartProducts.isNotEmpty
-              ? Text("Giỏ hàng (${cartController.cartProducts.length})")
+              ? Text("Giỏ hàng (${cartController.numberOfCart})")
               : const Text("Giỏ hàng")),
           centerTitle: true,
           toolbarHeight: 80,
@@ -135,17 +132,138 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                   return Container();
                 }
                 return SingleChildScrollView(
-                  child: ListView.separated(
+                  child: ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: cartController.cartProducts.length,
+                      itemCount: cartController.productInCartMap.keys.length,
                       itemBuilder: (context, index) {
-                        return ProductCartWidget(
-                            model: cartController.cartProducts[index]);
-                      },
-                      separatorBuilder: (BuildContext context, int index) =>
-                          gapH12),
+                        return FutureBuilder(
+                            future: StoreRepository.instance
+                                .getStoreInformation(cartController
+                                    .productInCartMap.keys
+                                    .elementAt(index)),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Container();
+                              }
+
+                              if (snapshot.hasError) {
+                                return const Center(
+                                  child: Text(
+                                      'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                                );
+                              }
+
+                              if (!snapshot.hasData || snapshot.data == null) {
+                                return Container();
+                              } else {
+                                final store = snapshot.data!;
+                                return ExpansionTile(
+                                  childrenPadding: EdgeInsets.zero,
+                                  initiallyExpanded: true,
+                                  tilePadding: EdgeInsets.zero,
+                                  shape: const Border(),
+                                  leading: ImageNetwork(
+                                    height: 40,
+                                    width: 40,
+                                    image: store.storeImage,
+                                    onLoading:
+                                        const CustomShimmerWidget.circular(
+                                            width: 40, height: 40),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  title: Row(children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(store.name),
+                                        GestureDetector(
+                                          onTap: () => cartController
+                                              .showModalBottomSheetStoreOrder(
+                                                  context,
+                                                  cartController.storeOrderMap[
+                                                      store.id]!),
+                                          child: Row(children: [
+                                            Icon(
+                                              EvaIcons.edit2Outline,
+                                              size: 10,
+                                              color:
+                                                  HAppColor.hGreyColorShade600,
+                                            ),
+                                            gapW4,
+                                            Text(
+                                              'Thêm ghi chú',
+                                              style: HAppStyle.paragraph2Regular
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hGreyColorShade600),
+                                            ),
+                                          ]),
+                                        )
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    Obx(() {
+                                      RxBool check = cartController
+                                          .storeOrderMap[store.id]!
+                                          .checkChooseInCart
+                                          .obs;
+                                      return Checkbox(
+                                          activeColor:
+                                              HAppColor.hBluePrimaryColor,
+                                          value: check.value,
+                                          onChanged: (value) {
+                                            check.value = value!;
+                                            cartController
+                                                .storeOrderMap[store.id]!
+                                                .checkChooseInCart = value;
+                                            cartController.updateCart();
+                                          });
+                                    })
+                                  ]),
+                                  children: [
+                                    ListView.separated(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: cartController
+                                            .productInCartMap.values
+                                            .elementAt(index)
+                                            .length,
+                                        itemBuilder: (context, index2) {
+                                          return ProductCartWidget(
+                                              model: cartController
+                                                  .productInCartMap.values
+                                                  .elementAt(index)
+                                                  .elementAt(index2));
+                                        },
+                                        separatorBuilder:
+                                            (BuildContext context, int index) =>
+                                                gapH12),
+                                    // Text(cartController.productInCartMap.values
+                                    //     .elementAt(index)
+                                    //     .toString()),
+                                    gapH12,
+                                  ],
+                                );
+                              }
+                            });
+                      }),
                 );
+                // return SingleChildScrollView(
+                //   child: ListView.separated(
+                //       physics: const NeverScrollableScrollPhysics(),
+                //       shrinkWrap: true,
+                //       itemCount: cartController.cartProducts.length,
+                //       itemBuilder: (context, index) {
+                //         return ProductCartWidget(
+                //             model: cartController.cartProducts[index]);
+                //       },
+                //       separatorBuilder: (BuildContext context, int index) =>
+                //           gapH12),
+                // );
               }),
               gapH24,
             ]),
@@ -184,7 +302,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                             0
                                         ? HAppUtils.vietNamCurrencyFormatting(
                                             cartController
-                                                .getTotalPriceWithVoucher())
+                                                .getPriceWithDiscount())
                                         : "0₫",
                                     style: HAppStyle.heading4Style.copyWith(
                                         color: HAppColor.hBluePrimaryColor),
@@ -194,7 +312,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                             )),
                         ElevatedButton(
                           onPressed: () {
-                            if (cartController.cartProducts.isNotEmpty) {
+                            if (cartController.cartProducts.isNotEmpty &&
+                                cartController.numberOfCart.value != 0) {
                               Get.toNamed(HAppRoutes.checkout);
                             }
                           },
@@ -204,7 +323,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                           ),
                           child: cartController.cartProducts.isNotEmpty
                               ? Text(
-                                  "Thanh toán (${cartController.cartProducts.length})",
+                                  "Thanh toán (${cartController.numberOfCart.value})",
                                   style: HAppStyle.label2Bold
                                       .copyWith(color: HAppColor.hWhiteColor))
                               : Text("Thanh toán",

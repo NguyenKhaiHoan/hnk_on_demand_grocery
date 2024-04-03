@@ -32,7 +32,8 @@ class SectionProfileWidget extends StatelessWidget {
           flex: 3,
           child: Text(
             title,
-            style: HAppStyle.paragraph2Bold,
+            style: HAppStyle.paragraph2Bold
+                .copyWith(color: HAppColor.hGreyColorShade600),
           ),
         ),
         Expanded(
@@ -43,8 +44,7 @@ class SectionProfileWidget extends StatelessWidget {
                 ? CustomShimmerWidget.rectangular(height: 8)
                 : Text(
                     title2,
-                    style: HAppStyle.paragraph2Regular
-                        .copyWith(color: HAppColor.hGreyColorShade600),
+                    style: HAppStyle.paragraph2Regular,
                     textAlign: TextAlign.right,
                   )),
           ),

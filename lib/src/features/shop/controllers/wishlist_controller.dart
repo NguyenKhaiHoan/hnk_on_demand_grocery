@@ -36,7 +36,7 @@ class WishlistController extends GetxController
   var refreshWishlistData = false.obs;
 
   final userController = UserController.instance;
-  final productRepository = ProductRepository.instance;
+  final productRepository = Get.put(ProductRepository());
 
   var isLoading = false.obs;
 
@@ -67,7 +67,7 @@ class WishlistController extends GetxController
   Future<List<ProductModel>> fetchAllFavoriteProductList() async {
     try {
       final listIds = userController.user.value.listOfFavoriteProduct;
-      final products = await productRepository.getProductsFromListIds(listIds);
+      final products = await productRepository.getProductsFromListIds(listIds!);
       return products;
     } catch (e) {
       HAppUtils.showSnackBarError('Lỗi', e.toString());
@@ -143,10 +143,10 @@ class WishlistController extends GetxController
   void addOrRemoveProductInFavoriteList(String productId) async {
     try {
       final listIds = userController.user.value.listOfFavoriteProduct;
-      if (!listIds.contains(productId)) {
-        userController.user.value.listOfFavoriteProduct.add(productId);
+      if (!listIds!.contains(productId)) {
+        userController.user.value.listOfFavoriteProduct!.add(productId);
       } else {
-        userController.user.value.listOfFavoriteProduct.remove(productId);
+        userController.user.value.listOfFavoriteProduct!.remove(productId);
       }
       final isConnected = await NetworkController.instance.isConnected();
       if (!isConnected) {
@@ -165,7 +165,7 @@ class WishlistController extends GetxController
   Future<List<StoreModel>> fetchAllFavoriteStoreList() async {
     try {
       final listIds = userController.user.value.listOfFavoriteStore;
-      final stores = await productRepository.getStoresFromListIds(listIds);
+      final stores = await productRepository.getStoresFromListIds(listIds!);
       return stores;
     } catch (e) {
       HAppUtils.showSnackBarError('Lỗi', e.toString());
@@ -176,10 +176,10 @@ class WishlistController extends GetxController
   void addOrRemoveStoreInFavoriteList(String storeId) async {
     try {
       final listIds = userController.user.value.listOfFavoriteStore;
-      if (!listIds.contains(storeId)) {
-        userController.user.value.listOfFavoriteStore.add(storeId);
+      if (!listIds!.contains(storeId)) {
+        userController.user.value.listOfFavoriteStore!.add(storeId);
       } else {
-        userController.user.value.listOfFavoriteStore.remove(storeId);
+        userController.user.value.listOfFavoriteStore!.remove(storeId);
       }
       final isConnected = await NetworkController.instance.isConnected();
       if (!isConnected) {
@@ -199,7 +199,7 @@ class WishlistController extends GetxController
     try {
       final listIds =
           userController.user.value.listOfRegisterNotificationProduct;
-      final products = await productRepository.getProductsFromListIds(listIds);
+      final products = await productRepository.getProductsFromListIds(listIds!);
       return products;
     } catch (e) {
       HAppUtils.showSnackBarError('Lỗi', e.toString());
@@ -211,11 +211,11 @@ class WishlistController extends GetxController
     try {
       final listIds =
           userController.user.value.listOfRegisterNotificationProduct;
-      if (!listIds.contains(productId)) {
-        userController.user.value.listOfRegisterNotificationProduct
+      if (!listIds!.contains(productId)) {
+        userController.user.value.listOfRegisterNotificationProduct!
             .add(productId);
       } else {
-        userController.user.value.listOfRegisterNotificationProduct
+        userController.user.value.listOfRegisterNotificationProduct!
             .remove(productId);
       }
       final isConnected = await NetworkController.instance.isConnected();

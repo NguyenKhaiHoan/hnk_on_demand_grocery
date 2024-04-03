@@ -9,9 +9,9 @@ import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 class ListBottomAppBar extends StatelessWidget implements PreferredSizeWidget {
   ListBottomAppBar({super.key});
 
-  final productController = Get.put(ProductController());
-  final storeController = Get.put(StoreController());
-  final wishlistController = Get.put(WishlistController());
+  final productController = ProductController.instance;
+  final storeController = StoreController.instance;
+  final wishlistController = WishlistController.instance;
 
   @override
   Widget build(BuildContext context) {

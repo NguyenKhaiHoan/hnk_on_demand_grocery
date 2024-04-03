@@ -29,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA4_jDWr_FESu1CXv8-R-MWWaQUaWQacnk"
+          "current_key": "AIzaSyCtJ48obT8h0qdDIUxT3vO41E1y3zmnaLA"
         }
       ],
       "services": {
@@ -59,13 +59,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "297352060294-the5ntdha38hfql82ir5q9htvu3qln9v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.on_demand_grocery_deliver",
+            "certificate_hash": "4dd5f838789eefa6b547bd8e673f9d24c5dc01e9"
+          }
+        },
+        {
           "client_id": "297352060294-6a48f0f5cf7bodgignm6dg1fvg0s9fc1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA4_jDWr_FESu1CXv8-R-MWWaQUaWQacnk"
+          "current_key": "AIzaSyCtJ48obT8h0qdDIUxT3vO41E1y3zmnaLA"
         }
       ],
       "services": {
@@ -95,13 +103,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "297352060294-uj11queqtk21cutcg0j7p3rt197rbtk2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.on_demand_grocery_store",
+            "certificate_hash": "4dd5f838789eefa6b547bd8e673f9d24c5dc01e9"
+          }
+        },
+        {
           "client_id": "297352060294-6a48f0f5cf7bodgignm6dg1fvg0s9fc1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA4_jDWr_FESu1CXv8-R-MWWaQUaWQacnk"
+          "current_key": "AIzaSyCtJ48obT8h0qdDIUxT3vO41E1y3zmnaLA"
         }
       ],
       "services": {

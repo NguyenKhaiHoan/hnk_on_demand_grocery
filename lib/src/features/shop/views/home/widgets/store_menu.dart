@@ -59,10 +59,31 @@ class StoreMenu extends StatelessWidget {
         gapH4,
         Text(
           model.name,
-          style: HAppStyle.paragraph3Regular,
+          maxLines: 1,
+          style: HAppStyle.paragraph3Regular
+              .copyWith(overflow: TextOverflow.ellipsis),
           textAlign: TextAlign.center,
         )
       ]),
     );
+  }
+}
+
+class ShimmerStoreMenu extends StatelessWidget {
+  const ShimmerStoreMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      CustomShimmerWidget.rectangular(
+        height: 90,
+        width: 80,
+      ),
+      gapH4,
+      CustomShimmerWidget.rectangular(
+        height: 8,
+        width: 10,
+      )
+    ]);
   }
 }

@@ -18,7 +18,7 @@ class _SearchOneStoreScreenState extends State<SearchOneStoreScreen> {
   List<ProductModel> list = Get.arguments['list'];
   String nameStore = Get.arguments['nameStore'];
 
-  final searchController = Get.put(SearchProductController());
+  final searchController = SearchProductController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class _SearchOneStoreScreenState extends State<SearchOneStoreScreen> {
         leading: Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.only(left: hAppDefaultPadding),
+            padding: hAppDefaultPaddingL,
             child: GestureDetector(
                 onTap: () {
                   Get.back();
@@ -39,7 +39,11 @@ class _SearchOneStoreScreenState extends State<SearchOneStoreScreen> {
                 )),
           ),
         ),
-        title: Text(nameStore),
+        title: Expanded(
+            child: Text(
+          nameStore,
+          overflow: TextOverflow.ellipsis,
+        )),
         centerTitle: true,
         actions: [
           Padding(

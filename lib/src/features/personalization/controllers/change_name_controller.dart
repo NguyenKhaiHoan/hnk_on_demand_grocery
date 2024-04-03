@@ -12,7 +12,7 @@ class ChangeNameController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   GlobalKey<FormState> changeNameFormKey = GlobalKey<FormState>();
   final userController = UserController.instance;
-  final userRepository = Get.put(UserRepository());
+  final userRepository = UserRepository.instance;
   final rootController = RootController.instance;
   var isLoading = false.obs;
 

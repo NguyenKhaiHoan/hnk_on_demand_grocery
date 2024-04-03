@@ -18,26 +18,7 @@ class DeliveryInfomationScreen extends StatefulWidget {
 }
 
 class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
-  List<String> days = ["Th 2", "Th 3", "Th 4", "Th 5", "Th 6", "Th 7", "CN"];
-
-  List<String> days2 = [
-    "Thứ 2",
-    "Thứ 3",
-    "Thứ 4",
-    "Thứ 5",
-    "Thứ 6",
-    "Thứ 7",
-    "Chủ nhật"
-  ];
-
-  DateTime selectedDate = DateTime.now();
-
-  int currentDateSelectedIndex = 0;
-  ScrollController scrollController = ScrollController();
-
-  final addressController = Get.put(AddressController());
-  final dateDeliveryController = Get.put(DateDeliveryController());
-
+  final addressController = AddressController.instance;
   bool isExtend = false;
 
   @override
@@ -229,83 +210,6 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
                   }
                 }))),
             gapH24,
-            Row(children: [
-              const Text(
-                'Ngày giao hàng',
-                style: HAppStyle.heading4Style,
-              ),
-              const Spacer(),
-              Obx(() => Text(dateDeliveryController.date.value,
-                  style: HAppStyle.paragraph3Regular
-                      .copyWith(color: HAppColor.hBluePrimaryColor))),
-            ]),
-            gapH12,
-            SizedBox(
-                height: 60,
-                child: ListView.separated(
-                  separatorBuilder: (BuildContext context, int index) {
-                    return gapW10;
-                  },
-                  itemCount: 7,
-                  controller: scrollController,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        dateDeliveryController.currentDateSelectedIndex.value =
-                            index;
-                        dateDeliveryController.selectedDate.value =
-                            DateTime.now().add(Duration(days: index));
-                        dateDeliveryController.date.value =
-                            '${days2[dateDeliveryController.selectedDate.value.weekday - 1]}, ${dateDeliveryController.selectedDate.value.day}-${dateDeliveryController.selectedDate.value.month}-${dateDeliveryController.selectedDate.value.year}';
-                      },
-                      child: Obx(
-                        () => Container(
-                          height: 60,
-                          width: 60,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: dateDeliveryController
-                                          .currentDateSelectedIndex.value ==
-                                      index
-                                  ? HAppColor.hBluePrimaryColor
-                                  : HAppColor.hWhiteColor),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                  days[DateTime.now()
-                                              .add(Duration(days: index))
-                                              .weekday -
-                                          1]
-                                      .toString(),
-                                  style: HAppStyle.paragraph2Bold.copyWith(
-                                      color: dateDeliveryController
-                                                  .currentDateSelectedIndex
-                                                  .value ==
-                                              index
-                                          ? HAppColor.hWhiteColor
-                                          : HAppColor.hGreyColorShade600)),
-                              Text(
-                                  DateTime.now()
-                                      .add(Duration(days: index))
-                                      .day
-                                      .toString(),
-                                  style: HAppStyle.heading4Style.copyWith(
-                                      color: dateDeliveryController
-                                                  .currentDateSelectedIndex
-                                                  .value ==
-                                              index
-                                          ? HAppColor.hWhiteColor
-                                          : HAppColor.hGreyColorShade600)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ))
           ]),
         ),
       ),
@@ -395,7 +299,7 @@ class AddressInformation extends StatelessWidget {
                   Get.toNamed(HAppRoutes.changeAddress,
                       arguments: {'address': address});
                 },
-                child: Icon(
+                child: const Icon(
                   EvaIcons.editOutline,
                   size: 20,
                 ),

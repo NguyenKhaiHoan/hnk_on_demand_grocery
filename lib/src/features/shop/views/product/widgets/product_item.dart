@@ -38,8 +38,8 @@ class ProductItemWidget extends StatelessWidget {
   final String? comparePrice;
 
   final productController = ProductController.instance;
-  final wishlistController = Get.put(WishlistController());
-  final cartController = Get.put(CartController());
+  final wishlistController = WishlistController.instance;
+  final cartController = CartController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,7 @@ class ProductItemWidget extends StatelessWidget {
                       child: Center(
                           child: Obx(
                         () => !UserController
-                                .instance.user.value.listOfFavoriteProduct
+                                .instance.user.value.listOfFavoriteProduct!
                                 .contains(model.id)
                             ? const Icon(
                                 EvaIcons.heartOutline,
@@ -389,13 +389,12 @@ class ProductItemWidget extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         child: GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               cartController.animationButtonAdd(model);
                               final cartProduct =
                                   cartController.convertToCartProduct(model, 1);
                               cartController
                                   .addSingleProductInCart(cartProduct);
-                              print(cartController.cartProducts.length);
                             },
                             child: productQuantityInCart > 0
                                 ? Center(
@@ -424,7 +423,6 @@ class ProductItemWidget extends StatelessWidget {
                                       .convertToCartProduct(model, 1);
                                   cartController
                                       .removeSingleProductInCart(cartProduct);
-                                  print(cartController.cartProducts.length);
                                 },
                                 icon: const Icon(
                                   EvaIcons.minus,
@@ -444,7 +442,6 @@ class ProductItemWidget extends StatelessWidget {
                                       .convertToCartProduct(model, 1);
                                   cartController
                                       .addSingleProductInCart(cartProduct);
-                                  print(cartController.cartProducts.length);
                                 },
                                 icon: const Icon(
                                   EvaIcons.plus,

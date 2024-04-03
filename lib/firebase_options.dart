@@ -50,7 +50,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA4_jDWr_FESu1CXv8-R-MWWaQUaWQacnk',
+    apiKey: 'AIzaSyCtJ48obT8h0qdDIUxT3vO41E1y3zmnaLA',
     appId: '1:297352060294:android:91701f9ce0a9adaa87a007',
     messagingSenderId: '297352060294',
     projectId: 'grofast-ondemandgroceryapp',
@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDz5dGyWXo23AyNlJCzUYGid6aD7YeOgSY',
+    apiKey: 'AIzaSyAyxqZ0vTskJhgOQU3gRutBjPSZBmCt4vE',
     appId: '1:297352060294:ios:b42320670402c4d487a007',
     messagingSenderId: '297352060294',
     projectId: 'grofast-ondemandgroceryapp',

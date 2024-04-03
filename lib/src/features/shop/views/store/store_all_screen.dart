@@ -4,12 +4,17 @@ import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/all_store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/custom_chip_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/store/widgets/store_item_wiget.dart';
+import 'package:on_demand_grocery/src/repositories/address_repository.dart';
+import 'package:on_demand_grocery/src/repositories/store_repository.dart';
+import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class AllStoreScreen extends StatefulWidget {
@@ -27,6 +32,8 @@ class _AllStoreScreenState extends State<AllStoreScreen>
   final itemsSort = ['A - Z', 'Z - A', 'Gần - Xa', 'Xa - Gần'];
 
   final storeController = StoreController.instance;
+  final allStoreController = AllStoreController.instance;
+
   final categoryController = CategoryController.instance;
 
   late bool historySelfCategory;
@@ -35,12 +42,12 @@ class _AllStoreScreenState extends State<AllStoreScreen>
   @override
   void initState() {
     super.initState();
-    storeController.listFilterStore.value = storeController.listOfStore;
-    storeController.listFilterStore.sort((a, b) => a.name.compareTo(b.name));
-    storeController.tagsCategoryObs.value = categoryController.tagsCategory;
-    storeController.tagsStoreObs.value = tags;
-    historySelfCategory = storeController.selfCategory.value;
-    historyTagsCategory = storeController.tagsCategoryObs
+    allStoreController.listFilterStore.value = storeController.listOfStore;
+    allStoreController.listFilterStore.sort((a, b) => a.name.compareTo(b.name));
+    allStoreController.tagsCategoryObs.value = categoryController.tagsCategory;
+    allStoreController.tagsStoreObs.value = tags;
+    historySelfCategory = allStoreController.selfCategory.value;
+    historyTagsCategory = allStoreController.tagsCategoryObs
         .map((tag) => Tag(tag.id, tag.title, tag.active))
         .toList();
   }
@@ -111,9 +118,9 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                       borderRadius: BorderRadius.circular(10)),
                   child: DropdownButton<String>(
                     padding: EdgeInsets.zero,
-                    value: storeController.selectedValueSort.value,
+                    value: allStoreController.selectedValueSort.value,
                     onChanged: (newValue) => setState(() {
-                      storeController.selectedValueSort.value = newValue!;
+                      allStoreController.selectedValueSort.value = newValue!;
                       filterStoreSort();
                     }),
                     items: itemsSort
@@ -134,13 +141,15 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         return Obx(() => CustomChipWidget(
-                            title: storeController.tagsStoreObs[index].title,
-                            active: storeController.tagsStoreObs[index].active,
+                            title: allStoreController.tagsStoreObs[index].title,
+                            active:
+                                allStoreController.tagsStoreObs[index].active,
                             onTap: () {
-                              storeController.tagsStoreObs[index].active =
-                                  !storeController.tagsStoreObs[index].active;
+                              allStoreController.tagsStoreObs[index].active =
+                                  !allStoreController
+                                      .tagsStoreObs[index].active;
                               filterStore();
-                              storeController.tagsStoreObs.refresh();
+                              allStoreController.tagsStoreObs.refresh();
                             }));
                       },
                       separatorBuilder: (_, __) => gapW10,
@@ -160,7 +169,7 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                   style: HAppStyle.heading4Style,
                 ),
                 Obx(() => Text(
-                      "${storeController.listFilterStore.length} Kết quả",
+                      "${allStoreController.listFilterStore.length} Kết quả",
                       style: HAppStyle.paragraph3Regular
                           .copyWith(color: HAppColor.hGreyColorShade600),
                     )),
@@ -174,7 +183,7 @@ class _AllStoreScreenState extends State<AllStoreScreen>
               Obx(() => GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: storeController.listFilterStore.length,
+                    itemCount: allStoreController.listFilterStore.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 1,
@@ -184,7 +193,7 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                     ),
                     itemBuilder: (BuildContext context, int index) {
                       return StoreItemWidget(
-                          model: storeController.listFilterStore[index]);
+                          model: allStoreController.listFilterStore[index]);
                     },
                   )),
               gapH24,
@@ -223,18 +232,18 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                         ),
                         GestureDetector(
                             onTap: () {
-                              storeController.selfCategory.value = false;
+                              allStoreController.selfCategory.value = false;
                               for (int index = 0;
                                   index <
-                                      storeController.tagsCategoryObs.length;
+                                      allStoreController.tagsCategoryObs.length;
                                   index++) {
-                                storeController.tagsCategoryObs[index].active =
-                                    false;
+                                allStoreController
+                                    .tagsCategoryObs[index].active = false;
                               }
-                              storeController.tagsCategoryObs.refresh();
+                              allStoreController.tagsCategoryObs.refresh();
                               historySelfCategory =
-                                  storeController.selfCategory.value;
-                              historyTagsCategory = storeController
+                                  allStoreController.selfCategory.value;
+                              historyTagsCategory = allStoreController
                                   .tagsCategoryObs
                                   .map((tag) =>
                                       Tag(tag.id, tag.title, tag.active))
@@ -257,7 +266,7 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                     Wrap(
                       children: [
                         for (int index = 0;
-                            index < storeController.tagsCategoryObs.length;
+                            index < allStoreController.tagsCategoryObs.length;
                             index++)
                           Obx(() => GestureDetector(
                                 child: Container(
@@ -267,12 +276,12 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                                         const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: storeController
+                                      color: allStoreController
                                               .tagsCategoryObs[index].active
                                           ? HAppColor.hBluePrimaryColor
                                           : HAppColor.hBackgroundColor,
                                       border: Border.all(
-                                        color: storeController
+                                        color: allStoreController
                                                 .tagsCategoryObs[index].active
                                             ? HAppColor.hBluePrimaryColor
                                             : HAppColor.hGreyColorShade300,
@@ -280,22 +289,22 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                                       ),
                                     ),
                                     child: Text(
-                                      storeController
+                                      allStoreController
                                           .tagsCategoryObs[index].title,
                                       style: HAppStyle.paragraph2Regular
                                           .copyWith(
-                                              color: storeController
+                                              color: allStoreController
                                                       .tagsCategoryObs[index]
                                                       .active
                                                   ? HAppColor.hWhiteColor
                                                   : HAppColor.hDarkColor),
                                     )),
                                 onTap: () {
-                                  storeController
+                                  allStoreController
                                           .tagsCategoryObs[index].active =
-                                      !storeController
+                                      !allStoreController
                                           .tagsCategoryObs[index].active;
-                                  storeController.tagsCategoryObs.refresh();
+                                  allStoreController.tagsCategoryObs.refresh();
                                   checkApplied();
                                 },
                               ))
@@ -319,12 +328,12 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                         activeTrackColor: HAppColor.hBlueSecondaryColor,
                         inactiveThumbColor: HAppColor.hWhiteColor,
                         inactiveTrackColor: HAppColor.hGreyColorShade300,
-                        value: storeController.selfCategory.value,
+                        value: allStoreController.selfCategory.value,
                         onChanged: (changed) {
-                          storeController.selfCategory.value = changed;
+                          allStoreController.selfCategory.value = changed;
                           checkApplied();
                         })),
-                    Obx(() => storeController.selfCategory.value
+                    Obx(() => allStoreController.selfCategory.value
                         ? Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: Text(
@@ -337,10 +346,10 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                     Obx(() => ElevatedButton(
                           onPressed: () {
                             check = true;
-                            if (storeController.checkApplied.value) {
+                            if (allStoreController.checkApplied.value) {
                               historySelfCategory =
-                                  storeController.selfCategory.value;
-                              historyTagsCategory = storeController
+                                  allStoreController.selfCategory.value;
+                              historyTagsCategory = allStoreController
                                   .tagsCategoryObs
                                   .map((tag) =>
                                       Tag(tag.id, tag.title, tag.active))
@@ -351,7 +360,7 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  storeController.checkApplied.value
+                                  allStoreController.checkApplied.value
                                       ? HAppColor.hBluePrimaryColor
                                       : HAppColor.hGreyColorShade300,
                               fixedSize: Size(
@@ -361,7 +370,7 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                                   borderRadius: BorderRadius.circular(50))),
                           child: Text("Áp dụng",
                               style: HAppStyle.label2Bold.copyWith(
-                                  color: storeController.checkApplied.value
+                                  color: allStoreController.checkApplied.value
                                       ? HAppColor.hWhiteColor
                                       : HAppColor.hDarkColor)),
                         )),
@@ -372,11 +381,11 @@ class _AllStoreScreenState extends State<AllStoreScreen>
       },
     ).then((value) {
       if (!check) {
-        storeController.selfCategory.value = historySelfCategory;
-        storeController.tagsCategoryObs.value = historyTagsCategory
+        allStoreController.selfCategory.value = historySelfCategory;
+        allStoreController.tagsCategoryObs.value = historyTagsCategory
             .map((tag) => Tag(tag.id, tag.title, tag.active))
             .toList();
-        storeController.tagsCategoryObs.refresh();
+        allStoreController.tagsCategoryObs.refresh();
       }
     });
   }
@@ -385,28 +394,28 @@ class _AllStoreScreenState extends State<AllStoreScreen>
     bool sameList = true;
 
     for (int index = 0;
-        index < storeController.tagsCategoryObs.length;
+        index < allStoreController.tagsCategoryObs.length;
         index++) {
-      if (storeController.tagsCategoryObs[index].active !=
+      if (allStoreController.tagsCategoryObs[index].active !=
           historyTagsCategory[index].active) {
         sameList = false;
         break;
       }
     }
 
-    if (storeController.selfCategory.value != historySelfCategory ||
+    if (allStoreController.selfCategory.value != historySelfCategory ||
         sameList == false) {
-      storeController.checkApplied.value = true;
+      allStoreController.checkApplied.value = true;
     } else {
-      storeController.checkApplied.value = false;
+      allStoreController.checkApplied.value = false;
     }
   }
 
   void filterStore() {
-    if (!storeController.selfCategory.value) {
-      storeController.listFilterStore.value = storeController.listOfStore
-          .where((store) => storeController.tagsCategoryObs.every((category) =>
-              category.active
+    if (!allStoreController.selfCategory.value) {
+      allStoreController.listFilterStore.value = storeController.listOfStore
+          .where((store) => allStoreController.tagsCategoryObs.every(
+              (category) => category.active
                   ? store.listOfCategoryId.contains(category.id.toString())
                   : true))
           .where((store) =>
@@ -417,13 +426,13 @@ class _AllStoreScreenState extends State<AllStoreScreen>
           .toList();
       filterStoreSort();
     } else {
-      storeController.listFilterStore.value = storeController.listOfStore
+      allStoreController.listFilterStore.value = storeController.listOfStore
           .where((store) =>
-              storeController.tagsCategoryObs
+              allStoreController.tagsCategoryObs
                       .where((category) => category.active)
                       .length ==
                   store.listOfCategoryId.length &&
-              storeController.tagsCategoryObs.every((category) =>
+              allStoreController.tagsCategoryObs.every((category) =>
                   category.active
                       ? store.listOfCategoryId.contains(category.title)
                       : true))
@@ -438,16 +447,26 @@ class _AllStoreScreenState extends State<AllStoreScreen>
   }
 
   void filterStoreSort() {
-    if (storeController.selectedValueSort.value == 'A - Z') {
-      storeController.listFilterStore.sort((a, b) => a.name.compareTo(b.name));
-    } else if (storeController.selectedValueSort.value == 'Z - A') {
-      storeController.listFilterStore.sort((a, b) => -a.name.compareTo(b.name));
-    } else if (storeController.selectedValueSort.value == 'Gần - Xa') {
-      // storeController.listFilterStore
-      //     .sort((a, b) => a.distance.compareTo(b.distance));
-    } else if (storeController.selectedValueSort.value == 'Xa - Gần') {
-      // storeController.listFilterStore
-      //     .sort((a, b) => -a.distance.compareTo(b.distance));
+    if (allStoreController.selectedValueSort.value == 'A - Z') {
+      allStoreController.listFilterStore
+          .sort((a, b) => a.name.compareTo(b.name));
+    } else if (allStoreController.selectedValueSort.value == 'Z - A') {
+      allStoreController.listFilterStore
+          .sort((a, b) => -a.name.compareTo(b.name));
+    } else if (allStoreController.selectedValueSort.value == 'Gần - Xa') {
+      allStoreController.listFilterStore.sort((a, b) => storeController
+          .convertStoreModelToStoreLocationModel(a.id)
+          .distance
+          .compareTo(storeController
+              .convertStoreModelToStoreLocationModel(b.id)
+              .distance));
+    } else if (allStoreController.selectedValueSort.value == 'Xa - Gần') {
+      allStoreController.listFilterStore.sort((a, b) => -storeController
+          .convertStoreModelToStoreLocationModel(a.id)
+          .distance
+          .compareTo(storeController
+              .convertStoreModelToStoreLocationModel(b.id)
+              .distance));
     }
   }
 }

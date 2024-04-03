@@ -8,8 +8,8 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
 import 'package:on_demand_grocery/src/features/shop/models/category_model.dart';
 
-class FirebaseStorageService extends GetxController {
-  static FirebaseStorageService get instance => Get.find();
+class HFirebaseStorageService extends GetxController {
+  static HFirebaseStorageService get instance => Get.find();
 
   final _firebaseStorage = FirebaseStorage.instance;
 

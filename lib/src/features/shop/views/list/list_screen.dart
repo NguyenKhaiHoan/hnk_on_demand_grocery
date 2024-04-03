@@ -45,7 +45,7 @@ class _ListScreenState extends State<ListScreen>
   final rootController = RootController.instance;
   final exploreController = ExploreController.instance;
   final storeController = StoreController.instance;
-  final wishlistController = Get.put(WishlistController());
+  final wishlistController = WishlistController.instance;
 
   late final ValueNotifier<bool> _showFab;
 
@@ -201,14 +201,19 @@ class _ListScreenState extends State<ListScreen>
                                   style: HAppStyle.label2Bold
                                       .copyWith(color: HAppColor.hWhiteColor),
                                 )),
-                            subWidget: HorizontalListProductWithTitleWidget(
-                              list: productController.listOfProduct
-                                  .where((p0) => p0.countBuyed > 100)
-                                  .toList(),
-                              compare: false,
-                              storeIcon: true,
-                              title: 'Có thể bạn sẽ thích',
-                            ),
+                            subWidget: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  HorizontalListProductWithTitleWidget(
+                                    list: productController.listOfProduct
+                                        .where((p0) => p0.countBuyed > 100)
+                                        .toList(),
+                                    compare: false,
+                                    storeIcon: true,
+                                    title: 'Có thể bạn sẽ thích',
+                                  ),
+                                  gapH100,
+                                ]),
                           );
                         } else {
                           final data = snapshot.data!;
@@ -274,32 +279,38 @@ class _ListScreenState extends State<ListScreen>
                             snapshot.data == null ||
                             snapshot.data!.isEmpty) {
                           return NotFoundScreenWidget(
-                              title: 'Bạn chưa chọn thích\ncửa hàng nào',
-                              subtitle:
-                                  'Bạn sẽ có thể nhận được các thông báo như khuyến mãi, giảm giá, ... từ các cửa hàng yêu thích đó! 😊',
-                              widget: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize:
-                                        Size(HAppSize.deviceWidth * 0.45, 50),
-                                    backgroundColor:
-                                        HAppColor.hBluePrimaryColor,
-                                  ),
-                                  onPressed: () =>
-                                      rootController.animateToScreen(3),
-                                  child: Text(
-                                    "Yêu thích ngay!",
-                                    style: HAppStyle.label2Bold
-                                        .copyWith(color: HAppColor.hWhiteColor),
-                                  )),
-                              subWidget: HorizontalListStoreWithTitleWidget(
-                                  list: storeController.listOfStore,
-                                  title: 'Các cửa hàng nổi bật'));
+                            title: 'Bạn chưa chọn thích\ncửa hàng nào',
+                            subtitle:
+                                'Bạn sẽ có thể nhận được các thông báo như khuyến mãi, giảm giá, ... từ các cửa hàng yêu thích đó! 😊',
+                            widget: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize:
+                                      Size(HAppSize.deviceWidth * 0.45, 50),
+                                  backgroundColor: HAppColor.hBluePrimaryColor,
+                                ),
+                                onPressed: () =>
+                                    rootController.animateToScreen(3),
+                                child: Text(
+                                  "Yêu thích ngay!",
+                                  style: HAppStyle.label2Bold
+                                      .copyWith(color: HAppColor.hWhiteColor),
+                                )),
+                            subWidget: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  HorizontalListStoreWithTitleWidget(
+                                      list: storeController.listOfStore,
+                                      title: 'Các cửa hàng nổi bật'),
+                                  gapH100,
+                                ]),
+                          );
                         } else {
                           final data = snapshot.data!;
                           return CustomLayoutWidget(
                             widget: GridView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
+                              padding: const EdgeInsets.only(bottom: 100),
                               itemCount: data.length,
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
@@ -364,7 +375,7 @@ class _ListScreenState extends State<ListScreen>
                                     return WishlistItemWidget(
                                         model: data[index]);
                                   }),
-                              subWidget: Container());
+                              subWidget: gapH100);
                         }
                       }))),
                   Obx(() => FutureBuilder(
@@ -445,15 +456,18 @@ class _ListScreenState extends State<ListScreen>
             valueListenable: _showFab,
             builder: (context, value, child) {
               return value
-                  ? FloatingActionButton(
-                      backgroundColor: Colors.blue,
-                      shape: const CircleBorder(),
-                      onPressed: () {
-                        wishlistController.openCreateFormWishlish();
-                      },
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
+                  ? Container(
+                      margin: const EdgeInsets.only(bottom: 70),
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.blue,
+                        shape: const CircleBorder(),
+                        onPressed: () {
+                          wishlistController.openCreateFormWishlish();
+                        },
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
                       ),
                     )
                   : Container();

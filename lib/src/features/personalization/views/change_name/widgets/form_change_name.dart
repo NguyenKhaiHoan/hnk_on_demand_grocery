@@ -10,7 +10,7 @@ import 'package:on_demand_grocery/src/utils/utils.dart';
 class FormChangeNameWidget extends StatelessWidget {
   FormChangeNameWidget({super.key});
 
-  final changeNameController = Get.put(ChangeNameController());
+  final changeNameController = ChangeNameController.instance;
   final userController = UserController.instance;
 
   @override

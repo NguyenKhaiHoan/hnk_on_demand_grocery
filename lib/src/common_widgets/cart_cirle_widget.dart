@@ -10,7 +10,7 @@ import 'package:on_demand_grocery/src/routes/app_pages.dart';
 class CartCircle extends StatelessWidget {
   CartCircle({super.key});
 
-  final homeController = Get.put(HomeController());
+  final homeController = HomeController.instance;
   final cartController = Get.put(CartController());
 
   @override
@@ -18,26 +18,25 @@ class CartCircle extends StatelessWidget {
     return Stack(
       children: [
         GestureDetector(
-          onTap: () {
-            homeController.openReminder();
-            Get.toNamed(HAppRoutes.cart);
-          },
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: HAppColor.hGreyColorShade300,
-                  width: 1.5,
-                ),
-                color: HAppColor.hBackgroundColor),
-            child: const Icon(
-              EvaIcons.shoppingCart,
-              size: 25,
-            ),
-          ),
-        ),
+            onTap: () {
+              homeController.openReminder();
+              Get.toNamed(HAppRoutes.cart);
+            },
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: HAppColor.hGreyColorShade300,
+                    width: 1.5,
+                  ),
+                  color: HAppColor.hBackgroundColor),
+              child: const Icon(
+                EvaIcons.shoppingCart,
+                size: 25,
+              ),
+            )),
         Positioned(
           top: 0,
           right: 0,
@@ -51,11 +50,13 @@ class CartCircle extends StatelessWidget {
                       color: HAppColor.hRedColor,
                       borderRadius: BorderRadius.circular(100)),
                   child: Center(
-                      child: Text(
-                    "${cartController.cartProducts.length}",
-                    style: const TextStyle(
-                        fontSize: 10, color: HAppColor.hWhiteColor),
-                  )),
+                      child: Obx(() => Text(
+                            cartController.cartProducts.isNotEmpty
+                                ? "${cartController.numberOfCart.value}"
+                                : '',
+                            style: const TextStyle(
+                                fontSize: 10, color: HAppColor.hWhiteColor),
+                          ))),
                 ),
               )),
         )

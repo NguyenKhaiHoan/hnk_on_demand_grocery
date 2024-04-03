@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_location_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
@@ -10,35 +12,18 @@ class StoreController extends GetxController
     with GetSingleTickerProviderStateMixin {
   static StoreController get instance => Get.find();
 
+  @override
+  void onInit() {
+    super.onInit();
+    fetchStores();
+  }
+
   var listOfStore = <StoreModel>[].obs;
   var listOfFamousStore = <StoreModel>[].obs;
 
   final storeRepository = Get.put(StoreRepository());
 
   var isLoading = false.obs;
-
-  var selfCategory = false.obs;
-  var selectedValueSort = 'A - Z'.obs;
-  var checkApplied = false.obs;
-
-  var tagsCategoryObs = <Tag>[].obs;
-
-  var tagsStoreObs = <Tag>[].obs;
-
-  var listFilterStore = <StoreModel>[].obs;
-
-  late TabController tabController;
-  late ScrollController scrollController;
-
-  final showAppBar = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchStores();
-    tabController = TabController(vsync: this, length: 3);
-    scrollController = ScrollController();
-  }
 
   Future<void> fetchStores() async {
     try {
@@ -54,35 +39,74 @@ class StoreController extends GetxController
     }
   }
 
-  @override
-  void onClose() {
-    tabController.dispose();
-    scrollController.dispose();
-    super.onClose();
-  }
-
-  animateToTab(int index) {
-    tabController.animateTo(index,
-        duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
-  }
-
   var isLoadingNearby = false.obs;
 
-  var allNearbyStores = <StoreModel>[].obs;
-  var allNearbyStoreIds = <String>[].obs;
+  var allNearbyStoreId = <String>[].obs;
+  var allNearbyStoreLocation = <StoreLocationModel>[].obs;
 
-  void addNearbyStores(String storeId) async {
-    isLoadingNearby.value = true;
+  addNearbyStore(String id) {
+    allNearbyStoreId.addIf(!allNearbyStoreId.contains(id), id);
+  }
 
-    var storeIdsSet = Set<String>.from(allNearbyStoreIds);
+  removeNearbyStore(String id) {
+    int index = allNearbyStoreId.indexWhere((nearbyId) => nearbyId == id);
+    allNearbyStoreId.removeAt(index);
+  }
 
-    if (!storeIdsSet.contains(storeId)) {
-      final store = await StoreRepository.instance.getStoreInformation(storeId);
-      print(storeId);
-      allNearbyStores.addIf(!allNearbyStores.contains(store), store);
-      allNearbyStoreIds.value = List<String>.from(storeIdsSet);
+  getProductCategoryForStore(int index) {
+    Query baseQuery = FirebaseFirestore.instance.collection('Products');
+    Query query = baseQuery;
+    switch (index) {
+      case 0:
+        query = query
+            .where('CountBuyed', isGreaterThanOrEqualTo: 100)
+            .orderBy('CountBuyed', descending: true);
+        break;
+      case 1:
+        query = query
+            .where('SalePersent', isNotEqualTo: 0)
+            .orderBy('SalePersent', descending: true);
+        break;
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
+      case 8:
+      case 9:
+      case 10:
+      case 11:
+      case 12:
+      case 13:
+      case 14:
+      case 15:
+      case 16:
+      case 17:
+      case 18:
+      case 19:
+        query = query.where('CategoryId', isEqualTo: (index - 2).toString());
+        // .orderBy('CategoryId');
+        break;
+      default:
+        query = query;
+        break;
     }
+    return query.limit(10);
+  }
 
-    isLoadingNearby.value = false;
+  final TextEditingController controller = TextEditingController();
+
+  var showSuffixIcon = false.obs;
+  var showFilter = false.obs;
+
+  StoreLocationModel convertStoreModelToStoreLocationModel(String storeId) {
+    final index = StoreController.instance.allNearbyStoreLocation
+        .indexWhere((element) => element.storeId == storeId);
+    if (index >= 0) {
+      return StoreController.instance.allNearbyStoreLocation[index];
+    }
+    return StoreLocationModel(
+        storeId: '', latitude: 0, longitude: 0, distance: 0);
   }
 }

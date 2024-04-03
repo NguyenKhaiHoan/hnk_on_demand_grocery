@@ -42,7 +42,7 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
         toolbarHeight: 80,
         leadingWidth: 80,
         leading: Row(children: [
-          // gapW12,
+          gapW16,
           GestureDetector(
             onTap: () => Get.back(),
             child: Container(

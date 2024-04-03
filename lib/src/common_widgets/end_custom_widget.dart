@@ -13,6 +13,7 @@ class EndCustomWidget extends StatelessWidget {
         Expanded(child: Divider()),
         Text(" Hết "),
         Expanded(child: Divider()),
+        gapH100
       ]),
     );
   }

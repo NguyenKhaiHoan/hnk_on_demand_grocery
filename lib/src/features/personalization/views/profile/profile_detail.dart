@@ -21,7 +21,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   final userController = UserController.instance;
   final changeNameController = ChangeNameController.instance;
 
-  var changePhoneController = Get.put(ChangePhoneController());
+  var changePhoneController = ChangePhoneController.instance;
 
   @override
   Widget build(BuildContext context) {

@@ -10,7 +10,7 @@ import 'package:on_demand_grocery/src/utils/utils.dart';
 class FormChangePhoneWidget extends StatelessWidget {
   FormChangePhoneWidget({super.key});
 
-  final changePhoneController = Get.put(ChangePhoneController());
+  final changePhoneController = ChangePhoneController.instance;
   final userController = UserController.instance;
 
   @override

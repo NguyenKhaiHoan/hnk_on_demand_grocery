@@ -74,8 +74,7 @@ class WishlistItemWidget extends StatelessWidget {
                             gapH10,
                             ProductListStackWidget(
                               maxItems: 8,
-                              items:
-                                  data.map((product) => product.image).toList(),
+                              items: data,
                             ),
                           ],
                         );

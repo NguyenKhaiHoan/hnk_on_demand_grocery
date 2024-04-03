@@ -10,6 +10,10 @@ import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
+import 'package:on_demand_grocery/src/features/shop/views/live_tracking/live_tracking_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/order/chat_order.dart';
+import 'package:on_demand_grocery/src/services/location_service.dart';
+import 'package:on_demand_grocery/src/services/messaging_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class HomeAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
@@ -29,24 +33,27 @@ class HomeAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Row(
-                children: [
-                  Icon(
-                    EneftyIcons.location_bold,
-                    color: HAppColor.hBluePrimaryColor,
-                  ),
-                  gapW6,
-                  Text(
-                    "Giao tới",
-                    style: HAppStyle.heading4Style,
-                  ),
-                  gapW4,
-                  Icon(
-                    EvaIcons.arrowIosDownwardOutline,
-                    size: 15,
-                    color: HAppColor.hGreyColor,
-                  ),
-                ],
+              GestureDetector(
+                onTap: () => Get.to(ChatOrderRealtimeScreen()),
+                child: const Row(
+                  children: [
+                    Icon(
+                      EneftyIcons.location_bold,
+                      color: HAppColor.hBluePrimaryColor,
+                    ),
+                    gapW6,
+                    Text(
+                      "Giao tới",
+                      style: HAppStyle.heading4Style,
+                    ),
+                    gapW4,
+                    Icon(
+                      EvaIcons.arrowIosDownwardOutline,
+                      size: 15,
+                      color: HAppColor.hGreyColor,
+                    ),
+                  ],
+                ),
               ),
               gapH4,
               Obx(() {

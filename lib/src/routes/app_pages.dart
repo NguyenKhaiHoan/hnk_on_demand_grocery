@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:on_demand_grocery/src/features/authentication/views/change_password/change_password_screen.dart';
+import 'package:on_demand_grocery/src/features/personalization/views/change_password/change_password_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/forget_password/forget_password_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/forget_password/sent_password_screen.dart';
 import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
@@ -32,6 +32,8 @@ import 'package:on_demand_grocery/src/features/shop/views/review/review_screen.d
 import 'package:on_demand_grocery/src/features/shop/views/root/root_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/search/search_one_store_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/search/search_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/store/search_product_in_store.dart';
+import 'package:on_demand_grocery/src/features/shop/views/store/show_more_product_in_store.dart';
 import 'package:on_demand_grocery/src/features/shop/views/store/store_detail_screen.dart';
 
 abstract class HAppPages {
@@ -267,6 +269,20 @@ abstract class HAppPages {
       curve: Curves.easeOut,
       transition: Transition.fadeIn,
     ),
+    GetPage(
+      name: HAppRoutes.showMoreProductInStore,
+      page: () => const ShowMoreProductInStore(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: HAppRoutes.searchProductInStore,
+      page: () => const SearchProductInStore(),
+      transitionDuration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+      transition: Transition.rightToLeftWithFade,
+    ),
   ];
 }
 
@@ -304,4 +320,6 @@ abstract class HAppRoutes {
   static const noDeliver = '/noDeliver';
   static const selectDeliveryAddress = '/selectDeliveryAddress';
   static const changeAddress = '/changeAddress';
+  static const showMoreProductInStore = '/showMoreProductInStore';
+  static const searchProductInStore = '/searchProductInStore';
 }

@@ -5,11 +5,7 @@ class DeliveryPersonModel {
   String? name;
   String? image;
   String? phoneNumber;
-  String? vehicleRegistrationNumber;
-  String? drivingLicenseNumber;
-  String? creationDate;
-  String? activeDeliveryRequestId;
-  String? status;
+  bool? status;
   String? cloudMessagingToken;
 
   DeliveryPersonModel(
@@ -17,10 +13,6 @@ class DeliveryPersonModel {
       this.name,
       this.image,
       this.phoneNumber,
-      this.vehicleRegistrationNumber,
-      this.drivingLicenseNumber,
-      this.creationDate,
-      this.activeDeliveryRequestId,
       this.status,
       this.cloudMessagingToken});
 
@@ -32,10 +24,6 @@ class DeliveryPersonModel {
       'Name': name,
       'Image': image,
       'PhoneNumber': phoneNumber,
-      'VehicleRegistrationNumber': vehicleRegistrationNumber,
-      'DrivingLicenseNumber': drivingLicenseNumber,
-      'CreationDate': creationDate,
-      'ActiveDeliveryRequestId': activeDeliveryRequestId,
       'Status': status,
       'CloudMessagingToken': cloudMessagingToken,
     };
@@ -50,11 +38,7 @@ class DeliveryPersonModel {
           name: data['Name'] ?? '',
           image: data['Image'] ?? '',
           phoneNumber: data['PhoneNumber'] ?? '',
-          vehicleRegistrationNumber: data['VehicleRegistrationNumber'] ?? '',
-          drivingLicenseNumber: data['DrivingLicenseNumber'] ?? '',
-          creationDate: data['CreationDate'] ?? '',
-          activeDeliveryRequestId: data['ActiveDeliveryRequestId'],
-          status: data['Status'] ?? '',
+          status: data['Status'] ?? false,
           cloudMessagingToken: data['CloudMessagingToken'] ?? '');
     }
     return DeliveryPersonModel.empty();
@@ -62,16 +46,12 @@ class DeliveryPersonModel {
 
   factory DeliveryPersonModel.fromJson(Map<String, dynamic> json) {
     return DeliveryPersonModel(
-      id: json['id'],
-      name: json['name'],
-      image: json['image'],
-      phoneNumber: json['phoneNumber'],
-      vehicleRegistrationNumber: json['vehicleRegistrationNumber'],
-      drivingLicenseNumber: json['drivingLicenseNumber'],
-      creationDate: json['creationDate'],
-      activeDeliveryRequestId: json['activeDeliveryRequestId'],
-      status: json['status'],
-      cloudMessagingToken: json['cloudMessagingToken'],
+      id: json['Id'] ?? '',
+      name: json['Name'] ?? '',
+      image: json['Image'] ?? '',
+      phoneNumber: json['PhoneNumber'] ?? '',
+      status: json['Status'] ?? false,
+      cloudMessagingToken: json['CloudMessagingToken'] ?? '',
     );
   }
 }

@@ -22,8 +22,82 @@ class ProductRepository extends GetxController {
           .toList();
       return list;
     } on FirebaseException catch (e) {
+      print(e.toString().toUpperCase());
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
+      print(e.toString().toUpperCase());
+      throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
+    }
+  }
+
+  Future<List<ProductModel>> getTopSellingProducts() async {
+    try {
+      final snapshot = await _db
+          .collection('Products')
+          .where('CountBuyed', isGreaterThanOrEqualTo: 100)
+          .orderBy('CountBuyed', descending: true)
+          .orderBy('UploadTime', descending: true)
+          .limit(10)
+          .get();
+      final list = snapshot.docs
+          .map((document) => ProductModel.fromDocumentSnapshot(document))
+          .toList();
+      return list;
+    } on FirebaseException catch (e) {
+      print(e.toString().toUpperCase());
+      throw HFirebaseException(code: e.code).message;
+    } catch (e) {
+      print(e.toString().toUpperCase());
+      throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
+    }
+  }
+
+  Future<List<ProductModel>> getSearchProducts(
+      String text, String storeId) async {
+    try {
+      final snapshot = await _db
+          .collection("Products")
+          .where(
+            'StoreId',
+            isEqualTo: storeId,
+          )
+          .where("Name", isGreaterThan: text)
+          .where("Name", isLessThanOrEqualTo: "$text\uf8ff")
+          .orderBy('Name')
+          .orderBy("UploadTime", descending: true)
+          .limit(10)
+          .get();
+      final list = snapshot.docs
+          .map((document) => ProductModel.fromDocumentSnapshot(document))
+          .toList();
+      return list;
+    } on FirebaseException catch (e) {
+      print(e.toString().toUpperCase());
+      throw HFirebaseException(code: e.code).message;
+    } catch (e) {
+      print(e.toString().toUpperCase());
+      throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
+    }
+  }
+
+  Future<List<ProductModel>> getTopSaleProducts() async {
+    try {
+      final snapshot = await _db
+          .collection('Products')
+          .where('SalePersent', isGreaterThan: 0)
+          .orderBy('SalePersent', descending: true)
+          .orderBy('UploadTime', descending: true)
+          .limit(10)
+          .get();
+      final list = snapshot.docs
+          .map((document) => ProductModel.fromDocumentSnapshot(document))
+          .toList();
+      return list;
+    } on FirebaseException catch (e) {
+      print(e.toString().toUpperCase());
+      throw HFirebaseException(code: e.code).message;
+    } catch (e) {
+      print(e.toString().toUpperCase());
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
   }
@@ -65,7 +139,7 @@ class ProductRepository extends GetxController {
 
   Future<void> uploadDummyData(List<ProductModel> products) async {
     try {
-      final storage = Get.put(FirebaseStorageService());
+      final storage = Get.put(HFirebaseStorageService());
       for (var product in products) {
         final image = await storage.getImageData(product.image);
         final url = await storage.uploadImageData(
@@ -78,9 +152,21 @@ class ProductRepository extends GetxController {
     }
   }
 
-  Future<List<ProductModel>> getProductsByQuery(Query query) async {
+  Future<List<ProductModel>> getProductsByQuery(
+      Query query, String? storeId) async {
     try {
-      final querySnapshot = await query.limit(10).get();
+      QuerySnapshot querySnapshot;
+      if (storeId != null) {
+        querySnapshot = await query
+            .where(
+              'StoreId',
+              isEqualTo: storeId,
+            )
+            .limit(10)
+            .get();
+      } else {
+        querySnapshot = await query.limit(10).get();
+      }
       final List<ProductModel> products = querySnapshot.docs
           .map((document) => ProductModel.fromQuerySnapshot(document))
           .toList();

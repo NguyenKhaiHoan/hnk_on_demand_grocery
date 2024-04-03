@@ -18,7 +18,7 @@ class SentPasswordScreen extends StatefulWidget {
 class _SentPasswordScreenState extends State<SentPasswordScreen> {
   final String email = Get.arguments['email'];
 
-  final forgetPasswordController = ForgetPasswordController.instance;
+  final forgetPasswordController = Get.put(ForgetPasswordController());
 
   @override
   Widget build(BuildContext context) {

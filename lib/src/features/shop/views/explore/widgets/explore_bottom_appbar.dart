@@ -26,7 +26,6 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar>
   @override
   void initState() {
     super.initState();
-    productController.tagsProductObs.value = tagsProduct;
     exploreController.tabController.addListener(() {
       if (exploreController.tabController.previousIndex !=
               exploreController.tabController.index &&
@@ -100,23 +99,24 @@ class _ExploreBottomAppBarState extends State<ExploreBottomAppBar>
                             width: 1.5,
                           ),
                           borderRadius: BorderRadius.circular(10)),
-                      child: DropdownButton<String>(
-                        padding: EdgeInsets.zero,
-                        value: productController.selectedValueSort.value,
-                        style: HAppStyle.paragraph2Regular,
-                        onChanged: (newValue) => setState(() {
-                          productController.selectedValueSort.value = newValue!;
-                          exploreController.refreshData.toggle();
-                        }),
-                        items: itemsSort
-                            .map<DropdownMenuItem<String>>(
-                                (String value) => DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    ))
-                            .toList(),
-                        underline: const SizedBox(),
-                      ),
+                      child: Obx(() => DropdownButton<String>(
+                            padding: EdgeInsets.zero,
+                            value: productController.selectedValueSort.value,
+                            style: HAppStyle.paragraph2Regular,
+                            onChanged: (newValue) {
+                              productController.selectedValueSort.value =
+                                  newValue!;
+                              exploreController.refreshData.toggle();
+                            },
+                            items: itemsSort
+                                .map<DropdownMenuItem<String>>(
+                                    (String value) => DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        ))
+                                .toList(),
+                            underline: const SizedBox(),
+                          )),
                     ),
                     gapW10,
                     SizedBox(

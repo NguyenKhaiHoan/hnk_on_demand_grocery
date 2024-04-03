@@ -11,9 +11,9 @@ import 'package:shimmer/shimmer.dart';
 class HomeCategory extends StatelessWidget {
   HomeCategory({super.key});
 
-  final categoryController = Get.put(CategoryController());
-  final exploreController = Get.put(ExploreController());
-  final rootController = Get.put(RootController());
+  final categoryController = CategoryController.instance;
+  final exploreController = ExploreController.instance;
+  final rootController = RootController.instance;
 
   @override
   Widget build(BuildContext context) {

@@ -5,18 +5,39 @@ import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart'
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_location_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
+import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 
-class StoreItemWidget extends StatelessWidget {
-  StoreItemWidget({super.key, required this.model});
+class StoreItemWidget extends StatefulWidget {
+  const StoreItemWidget({super.key, required this.model});
+  final StoreModel model;
+
+  @override
+  State<StoreItemWidget> createState() => _StoreItemWidgetState();
+}
+
+class _StoreItemWidgetState extends State<StoreItemWidget> {
+  var storeLocation = StoreLocationModel.empty().obs;
+
   final storeController = StoreController.instance;
+
   final wishlistController = WishlistController.instance;
 
-  final StoreModel model;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      storeLocation.value =
+          await HLocationService.getLocationOneStore(widget.model.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +58,7 @@ class StoreItemWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
-                        image: NetworkImage(model.storeImage),
+                        image: NetworkImage(widget.model.storeImage),
                         fit: BoxFit.fill)),
               ),
               Positioned(
@@ -45,7 +66,7 @@ class StoreItemWidget extends StatelessWidget {
                 left: 5,
                 child: GestureDetector(
                   onTap: () => wishlistController
-                      .addOrRemoveStoreInFavoriteList(model.id),
+                      .addOrRemoveStoreInFavoriteList(widget.model.id),
                   child: Container(
                     width: 32,
                     height: 32,
@@ -55,8 +76,8 @@ class StoreItemWidget extends StatelessWidget {
                     child: Center(
                         child: Obx(
                       () => !UserController
-                              .instance.user.value.listOfFavoriteStore
-                              .contains(model.id)
+                              .instance.user.value.listOfFavoriteStore!
+                              .contains(widget.model.id)
                           ? const Icon(
                               EvaIcons.heartOutline,
                               color: HAppColor.hGreyColor,
@@ -79,12 +100,16 @@ class StoreItemWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  model.name,
+                  widget.model.name,
                   style: HAppStyle.heading4Style,
                 ),
                 gapH10,
                 Text(
-                  model.listOfCategoryId.join(', '),
+                  CategoryController.instance.listOfCategory
+                      .where((category) =>
+                          widget.model.listOfCategoryId.contains(category.id))
+                      .map((e) => e.name)
+                      .join(', '),
                   maxLines: 2,
                   style: HAppStyle.paragraph3Regular.copyWith(
                     overflow: TextOverflow.ellipsis,
@@ -101,7 +126,7 @@ class StoreItemWidget extends StatelessWidget {
                     ),
                     gapW2,
                     Text(
-                      model.rating.toStringAsFixed(1),
+                      widget.model.rating.toStringAsFixed(1),
                       style: HAppStyle.paragraph3Regular,
                     ),
                     Text(
@@ -114,11 +139,21 @@ class StoreItemWidget extends StatelessWidget {
                         style: HAppStyle.paragraph3Regular
                             .copyWith(color: HAppColor.hGreyColorShade600)),
                     gapW2,
-                    Text(model.productCount.toString(),
-                        style: HAppStyle.paragraph3Regular),
-                    Text(" Sản phẩm",
-                        style: HAppStyle.paragraph3Regular
-                            .copyWith(color: HAppColor.hGreyColorShade600))
+                    Obx(() => storeLocation.value == StoreLocationModel.empty()
+                        ? CustomShimmerWidget.rectangular(
+                            height: 12,
+                            width: 30,
+                          )
+                        : Text.rich(TextSpan(
+                            text: HAppUtils.metersToKilometers(
+                                storeLocation.value.distance),
+                            style: HAppStyle.paragraph3Regular,
+                            children: [
+                                TextSpan(
+                                    text: ' Km',
+                                    style: HAppStyle.paragraph3Regular.copyWith(
+                                        color: HAppColor.hGreyColorShade600))
+                              ])))
                   ],
                 ),
               ],

@@ -21,7 +21,8 @@ class UserController extends GetxController {
 
   final userRepository = Get.put(UserRepository());
   final addressController = Get.put(AddressController());
-  final authenticationRepository = Get.put(AuthenticationRepository());
+  final authenticationRepository = AuthenticationRepository.instance;
+  final addressRepository = AddressRepository.instance;
 
   var user = UserModel.empty().obs;
   var isLoading = false.obs;
@@ -89,8 +90,8 @@ class UserController extends GetxController {
               selectedAddress: true,
               latitude: currentPosition.value.latitude,
               longitude: currentPosition.value.longitude);
-          final id = await AddressRepository.instance
-              .addAndFindIdForNewAddress(tempAddress);
+          final id =
+              await addressRepository.addAndFindIdForNewAddress(tempAddress);
 
           tempAddress.id = id;
           await addressController.selectAddress(tempAddress);

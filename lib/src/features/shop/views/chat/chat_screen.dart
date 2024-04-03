@@ -29,7 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final bool check = Get.arguments['check'];
 
   final FocusNode _focusNode = FocusNode();
-  final chatController = Get.put(ChatController());
+  final chatController = ChatController.instance;
 
   @override
   Widget build(BuildContext context) {

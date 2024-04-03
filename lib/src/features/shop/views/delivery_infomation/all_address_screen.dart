@@ -18,7 +18,7 @@ class AllAddressScreen extends StatefulWidget {
 }
 
 class _AllAddressScreenState extends State<AllAddressScreen> {
-  final forgetPasswordController = Get.put(ForgetPasswordController());
+  final forgetPasswordController = ForgetPasswordController.instance;
 
   final addressController = AddressController.instance;
   @override

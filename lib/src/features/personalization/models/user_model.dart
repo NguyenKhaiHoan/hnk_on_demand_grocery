@@ -8,9 +8,9 @@ class UserModel {
   String profileImage;
   String creationDate;
   String authenticationBy;
-  List<String> listOfFavoriteProduct;
-  List<String> listOfFavoriteStore;
-  List<String> listOfRegisterNotificationProduct;
+  List<String>? listOfFavoriteProduct;
+  List<String>? listOfFavoriteStore;
+  List<String>? listOfRegisterNotificationProduct;
   String? cloudMessagingToken;
 
   UserModel(
@@ -21,9 +21,9 @@ class UserModel {
       required this.profileImage,
       required this.creationDate,
       required this.authenticationBy,
-      required this.listOfFavoriteProduct,
-      required this.listOfFavoriteStore,
-      required this.listOfRegisterNotificationProduct,
+      this.listOfFavoriteProduct,
+      this.listOfFavoriteStore,
+      this.listOfRegisterNotificationProduct,
       this.cloudMessagingToken});
 
   static UserModel empty() => UserModel(
@@ -38,7 +38,7 @@ class UserModel {
       listOfFavoriteStore: [],
       listOfRegisterNotificationProduct: []);
 
-  Map<String, dynamic> toJon() {
+  Map<String, dynamic> toJson() {
     return {
       'Id': id,
       'Name': name,
@@ -87,10 +87,6 @@ class UserModel {
       profileImage: json['ProfileImage'] ?? '',
       creationDate: json['CreationDate'] ?? '',
       authenticationBy: json['AuthenticationBy'] ?? '',
-      listOfFavoriteProduct: List<String>.from(json['ListOfFavoriteProduct']),
-      listOfFavoriteStore: List<String>.from(json['ListOfFavoriteStore']),
-      listOfRegisterNotificationProduct:
-          List<String>.from(json['ListOfRegisterNotificationProduct']),
       cloudMessagingToken: json['CloudMessagingToken'],
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class HFirebaseException implements Exception {
   final String code;
 
@@ -89,6 +91,7 @@ class HFirebaseException implements Exception {
       case 'credential-already-in-use':
         return 'Chứng chỉ này đã được liên kết với một tài khoản người dùng khác.';
       default:
+        log(code.toLowerCase());
         return 'Đã xảy ra một lỗi Firebase không mong đợi. Vui lòng thử lại.';
     }
   }

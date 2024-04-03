@@ -6,22 +6,17 @@ class CustomLayoutWidget extends StatelessWidget {
     super.key,
     required this.widget,
     required this.subWidget,
-    this.check = false,
   });
 
   final Widget widget;
   final Widget subWidget;
-  final bool check;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
-      padding: EdgeInsets.fromLTRB(
-          hAppDefaultPadding,
-          check ? 0 : hAppDefaultPadding,
-          hAppDefaultPadding,
-          hAppDefaultPadding),
+      padding: const EdgeInsets.fromLTRB(
+          hAppDefaultPadding, 0, hAppDefaultPadding, hAppDefaultPadding),
       physics: const NeverScrollableScrollPhysics(),
       children: [
         widget,
