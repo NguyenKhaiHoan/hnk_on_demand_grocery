@@ -30,13 +30,11 @@ class ChatController extends GetxController {
   }
 
   Future<void> checkChatExists(String userId, String storeId) async {
-    print('Vào đây');
     String chatId = getChatId(userId, storeId);
 
     final result =
         await FirebaseFirestore.instance.collection('Chats').doc(chatId).get();
     if (!result.exists) {
-      print('Vào đây nếu không tồn tại');
       var chat = ChatModel(
           id: chatId, userId: userId, storeId: storeId, lastMessage: '');
       await FirebaseFirestore.instance

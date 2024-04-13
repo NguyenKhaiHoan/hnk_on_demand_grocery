@@ -77,7 +77,6 @@ class HLocationService {
       Geofire.queryAtLocation(
               currentPosition.latitude, currentPosition.longitude, 3)!
           .listen((map) {
-        print(map);
         if (map != null) {
           var callBack = map['callBack'];
           switch (callBack) {
