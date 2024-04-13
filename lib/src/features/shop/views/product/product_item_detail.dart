@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -33,12 +34,14 @@ class ProductDetailScreen extends StatelessWidget {
 
   final detailController = DetailController.instance;
   final productController = ProductController.instance;
-  final storeController = StoreController.instance;
-  final wishlistController = WishlistController.instance;
-  final cartController = CartController.instance;
+  final storeController = Get.put(StoreController());
+  final wishlistController = Get.put(WishlistController());
+  final cartController = Get.put(CartController());
 
   final ProductModel product = Get.arguments['product'];
   final StoreModel store = Get.arguments['store'];
+
+  int randomNumber = 0;
 
   final List<double> rates = [0.1, 0.3, 0.5, 0.7, 0.9];
   @override
@@ -46,6 +49,8 @@ class ProductDetailScreen extends StatelessWidget {
     Future.delayed(Duration.zero, () async {
       detailController.showAppBar.value = false;
       detailController.showNameInAppBar.value = false;
+      var rng = Random();
+      randomNumber = rng.nextInt(101) + 100;
     });
     return Scaffold(
       body: SafeArea(
@@ -348,10 +353,10 @@ class ProductDetailScreen extends StatelessWidget {
                                 Text.rich(
                                   TextSpan(
                                     style: HAppStyle.paragraph1Bold,
-                                    text: "Chưa có ",
+                                    text: randomNumber.toString(),
                                     children: [
                                       TextSpan(
-                                        text: 'Nhận xét',
+                                        text: ' Đánh giá',
                                         style: HAppStyle.paragraph2Regular
                                             .copyWith(
                                                 color: HAppColor
@@ -694,7 +699,7 @@ class ProductDetailScreen extends StatelessWidget {
 
                                       Get.toNamed(HAppRoutes.chat, arguments: {
                                         'model': product,
-                                        'store': store,
+                                        'storeId': store.id,
                                         'check': true,
                                       });
                                     }),
@@ -721,11 +726,14 @@ class ProductDetailScreen extends StatelessWidget {
                                         .getStoreAddress(product.storeId);
                                     final stringAddress =
                                         address.first.toString();
-                                    Get.toNamed(HAppRoutes.storeDetail,
-                                        arguments: {
-                                          'model': model,
-                                          'address': stringAddress
-                                        });
+                                    Get.toNamed(
+                                      HAppRoutes.storeDetail,
+                                      arguments: {
+                                        'model': model,
+                                        'address': stringAddress
+                                      },
+                                      preventDuplicates: false,
+                                    );
                                   },
                                 ),
                               ],
@@ -759,105 +767,119 @@ class ProductDetailScreen extends StatelessWidget {
                                   ],
                                 )),
                             gapH24,
-                            const Text(
-                              "Nhận xét",
-                              style: HAppStyle.heading4Style,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Đánh giá",
+                                  style: HAppStyle.heading4Style,
+                                ),
+                                GestureDetector(
+                                  onTap: () => Get.toNamed(HAppRoutes.review,
+                                      arguments: {
+                                        'length': randomNumber,
+                                        'product': product,
+                                        'storeName': store.name,
+                                      }),
+                                  child: Text(
+                                    'Xem tất cả',
+                                    style: HAppStyle.paragraph2Regular.copyWith(
+                                        color: HAppColor.hBluePrimaryColor),
+                                  ),
+                                ),
+                              ],
                             ),
                             gapH12,
-                            GestureDetector(
-                              onTap: () => Get.toNamed(HAppRoutes.review),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text.rich(TextSpan(
-                                              style: HAppStyle.heading3Style,
-                                              text: product.rating
-                                                  .toStringAsFixed(1),
-                                              children: [
-                                                TextSpan(
-                                                    text: '/5',
-                                                    style: HAppStyle
-                                                        .paragraph1Regular
-                                                        .copyWith(
-                                                            color: HAppColor
-                                                                .hGreyColorShade600))
-                                              ])),
-                                          Text(
-                                            'Chưa có nhận xét',
-                                            style: HAppStyle.paragraph2Regular
-                                                .copyWith(
-                                                    color: HAppColor
-                                                        .hGreyColorShade600),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text.rich(TextSpan(
+                                            style: HAppStyle.heading3Style,
+                                            text: product.rating
+                                                .toStringAsFixed(1),
+                                            children: [
+                                              TextSpan(
+                                                  text: '/5',
+                                                  style: HAppStyle
+                                                      .paragraph1Regular
+                                                      .copyWith(
+                                                          color: HAppColor
+                                                              .hGreyColorShade600))
+                                            ])),
+                                        Text(
+                                          'Dựa trên $randomNumber đánh giá',
+                                          style: HAppStyle.paragraph2Regular
+                                              .copyWith(
+                                                  color: HAppColor
+                                                      .hGreyColorShade600),
+                                        ),
+                                        gapH10,
+                                        RatingBar.builder(
+                                          itemSize: 20,
+                                          initialRating: 4.3,
+                                          minRating: 1,
+                                          direction: Axis.horizontal,
+                                          allowHalfRating: true,
+                                          itemCount: 5,
+                                          itemPadding:
+                                              const EdgeInsets.only(right: 4.0),
+                                          itemBuilder: (context, _) =>
+                                              const Icon(
+                                            EvaIcons.star,
+                                            color: Colors.amber,
                                           ),
-                                          gapH10,
-                                          RatingBar.builder(
-                                            itemSize: 20,
-                                            initialRating: 4.3,
-                                            minRating: 1,
-                                            direction: Axis.horizontal,
-                                            allowHalfRating: true,
-                                            itemCount: 5,
-                                            itemPadding: const EdgeInsets.only(
-                                                right: 4.0),
-                                            itemBuilder: (context, _) =>
-                                                const Icon(
+                                          onRatingUpdate: (rating) {},
+                                        ),
+                                      ]),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      itemCount: 5,
+                                      reverse: true,
+                                      itemBuilder: (context, index) {
+                                        return Row(
+                                          children: [
+                                            const Spacer(),
+                                            Text(
+                                              "${index + 1}",
+                                              style: HAppStyle.paragraph3Regular
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hGreyColorShade600),
+                                            ),
+                                            gapW4,
+                                            const Icon(
                                               EvaIcons.star,
                                               color: Colors.amber,
+                                              size: 15,
                                             ),
-                                            onRatingUpdate: (rating) {},
-                                          ),
-                                        ]),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: ListView.builder(
-                                        padding: EdgeInsets.zero,
-                                        shrinkWrap: true,
-                                        itemCount: 5,
-                                        reverse: true,
-                                        itemBuilder: (context, index) {
-                                          return Row(
-                                            children: [
-                                              const Spacer(),
-                                              Text(
-                                                "${index + 1}",
-                                                style: HAppStyle
-                                                    .paragraph3Regular
-                                                    .copyWith(
-                                                        color: HAppColor
-                                                            .hGreyColorShade600),
-                                              ),
-                                              gapW4,
-                                              const Icon(
-                                                EvaIcons.star,
-                                                color: Colors.amber,
-                                                size: 15,
-                                              ),
-                                              gapW4,
-                                              LinearPercentIndicator(
-                                                barRadius:
-                                                    const Radius.circular(100),
-                                                backgroundColor: HAppColor
-                                                    .hGreyColorShade300,
-                                                width: (HAppSize.deviceWidth /
-                                                    2.8),
-                                                lineHeight: 5,
-                                                animation: true,
-                                                animationDuration: 2000,
-                                                percent: rates[index],
-                                                progressColor: Colors.amber,
-                                              )
-                                            ],
-                                          );
-                                        }),
-                                  )
-                                ],
-                              ),
+                                            gapW4,
+                                            LinearPercentIndicator(
+                                              barRadius:
+                                                  const Radius.circular(100),
+                                              backgroundColor:
+                                                  HAppColor.hGreyColorShade300,
+                                              width:
+                                                  (HAppSize.deviceWidth / 2.8),
+                                              lineHeight: 5,
+                                              animation: true,
+                                              animationDuration: 2000,
+                                              percent: rates[index],
+                                              progressColor: Colors.amber,
+                                            )
+                                          ],
+                                        );
+                                      }),
+                                )
+                              ],
                             ),
                             gapH24,
                             const Text(

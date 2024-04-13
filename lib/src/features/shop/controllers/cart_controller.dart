@@ -10,15 +10,19 @@ import 'package:on_demand_grocery/src/features/authentication/controller/network
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/type_button_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/voucher_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/payment_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_note_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/voucher_model.dart';
 import 'package:on_demand_grocery/src/repositories/address_repository.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/repositories/order_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
+import 'package:on_demand_grocery/src/repositories/voucher_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/services/firebase_notification_service.dart';
 import 'package:on_demand_grocery/src/services/local_service.dart';
@@ -28,16 +32,18 @@ import 'package:on_demand_grocery/src/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
 class CartController extends GetxController {
-  var toggleAnimation = false.obs;
-  var listIdToggleAnimation = [].obs;
-
-  var refreshButton = false.obs;
-
   static CartController get instance => Get.find();
+
+  var isReorder = false.obs;
 
   CartController() {
     loadCartData();
   }
+
+  var toggleAnimation = false.obs;
+  var listIdToggleAnimation = [].obs;
+
+  var refreshButton = false.obs;
 
   var numberOfCart = 0.obs;
   var totalCartPrice = 0.obs;
@@ -86,7 +92,9 @@ class CartController extends GetxController {
   void updateCart() {
     calculateCart();
 
-    saveCartData();
+    if (!isReorder.value) {
+      saveCartData();
+    } else {}
 
     cartProducts.refresh();
     productInCartMap.refresh();
@@ -109,7 +117,6 @@ class CartController extends GetxController {
     }
     totalCartPrice.value = totalPrice;
     numberOfCart.value = number;
-    print("Số lượng: ${numberOfCart.value}");
   }
 
   void addSingleProductInCart(ProductInCartModel productInCart) {
@@ -194,6 +201,11 @@ class CartController extends GetxController {
   }
 
   void loadCartData() {
+    productQuantityInCart.value = 0;
+    cartProducts.clear();
+    productInCartMap.clear();
+    storeOrderMap.clear();
+
     final cartData =
         HLocalService.instance().getData<List<dynamic>>('CartProducts');
     if (cartData != null) {
@@ -217,6 +229,32 @@ class CartController extends GetxController {
       for (var store in stores) {
         storeOrderMap[store.storeId] = store;
       }
+    }
+
+    calculateCart();
+  }
+
+  void loadCartFromOrder(OrderModel order) {
+    clearCart();
+
+    final cartData = order.orderProducts;
+    cartProducts.assignAll(cartData);
+    for (var product in cartProducts) {
+      if (productInCartMap.containsKey(product.storeId)) {
+        productInCartMap[product.storeId]!.add(product);
+      } else {
+        productInCartMap[product.storeId] = [product];
+      }
+
+      storeOrderMap.addIf(
+          !storeOrderMap.keys.contains(product.storeId),
+          product.storeId,
+          StoreOrderModel(
+            storeId: product.storeId,
+            name: product.storeName ?? '',
+            address: product.storeAddress ?? '',
+            checkChooseInCart: true,
+          ));
     }
 
     calculateCart();
@@ -265,44 +303,8 @@ class CartController extends GetxController {
     update();
   }
 
-  RxBool? groFastvalue = false.obs;
-
-  var voucherAppliedText = "".obs;
-  var voucherAppliedSubText = [].obs;
-  var voucherCount = 0.obs;
-  RxBool? voucherAppliedTextAppear = false.obs;
-
-  noChooseVoucher() {
-    groFastvalue!.value = false;
-    voucherAppliedText.value = "";
-    voucherAppliedSubText.value = [];
-    voucherCount.value = 0;
-    voucherAppliedTextAppear!.value = false;
-    update();
-  }
-
-  displayVoucherAppliedText() {
-    if (!groFastvalue!.value) {
-      voucherAppliedText.value = "";
-      voucherAppliedSubText.value = [];
-      voucherCount.value = 0;
-      voucherAppliedTextAppear!.value = false;
-    } else {
-      voucherAppliedTextAppear!.value = true;
-      voucherAppliedText.value = "";
-      String result = "${voucherAppliedSubText.join(", ")}.";
-      if (groFastvalue!.value) {
-        voucherCount.value = 1;
-      }
-      voucherAppliedText.value =
-          "Bạn đã sử dụng $voucherCount mã ưu đãi: $result";
-    }
-    update();
-  }
-
-  var applied = false.obs;
-
-  void processOrder(String payment) async {
+  void processOrder(String paymentMethod, String paymentStatus,
+      String orderType, String timeOrder) async {
     try {
       HAppUtils.loadingOverlays();
 
@@ -329,7 +331,6 @@ class CartController extends GetxController {
         store.address = storeAddress.first.toString();
         store.latitude = storeAddress.first.latitude;
         store.longitude = storeAddress.first.longitude;
-        print('${storeAddress.first.latitude} ${storeAddress.first.longitude}');
         store.name = storeInfomation.name;
       }
 
@@ -341,21 +342,34 @@ class CartController extends GetxController {
 
       final uid = const Uuid().v1();
 
+      // print(voucherController.useVoucher.value.id != ''
+      //     ? voucherController.useVoucher.value.toJson().toString()
+      //     : VoucherModel.empty().toJson().toString());
+
       final order = OrderModel(
-        // oderId: '',
-        oderId: uid,
-        orderUserId: AuthenticationRepository.instance.authUser!.uid,
-        storeOrders: storeOrders,
-        orderProducts: productInOrder,
-        orderUser: UserController.instance.user.value,
-        orderUserAddress: AddressController.instance.selectedAddress.value,
-        paymentMethod: payment,
-        paymentStatus:
-            payment == 'Tiền mặt' ? 'Chưa thanh toán' : 'Đã thanh toán',
-        orderDate: DateTime.now(),
-        orderStatus: HAppUtils.orderStatus(0), notificationDelivery: [],
-        price: getTotalPrice(),
-      );
+          // oderId: '',
+          oderId: uid,
+          orderUserId: AuthenticationRepository.instance.authUser!.uid,
+          storeOrders: storeOrders,
+          orderProducts: productInOrder,
+          orderUser: UserController.instance.user.value,
+          orderUserAddress: AddressController.instance.selectedAddress.value,
+          paymentMethod: paymentMethod,
+          paymentStatus: paymentStatus,
+          orderDate: DateTime.now(),
+          orderStatus: HAppUtils.orderStatus(0),
+          notificationDelivery: [],
+          price: getTotalPrice(),
+          orderType: orderType,
+          deliveryCost: getDeliveryCost(),
+          discount: getDiscountCost(),
+          voucher: voucherController.useVoucher.value.id != ''
+              ? voucherController.useVoucher.value
+              : VoucherModel.empty());
+
+      if (timeOrder != '') {
+        order.timeOrder = timeOrder;
+      }
 
       // final id = await orderRepository.addAndFindIdOfOrder(order);
 
@@ -366,17 +380,25 @@ class CartController extends GetxController {
       database
           .child('Orders/${order.oderId}')
           .set(order.toJson())
-          .then((value) {
+          .then((value) async {
         HNotificationService.sendNotificationToStore(productInOrder,
             storeOrders, AddressController.instance.selectedAddress.value);
         HAppUtils.showSnackBarSuccess(
             'Thành công', 'Bạn đã đặt hàng thành công');
         clearCartWhenCompleteOrder();
+        if (voucherController.selectedVoucher.value != '' &&
+            voucherController.useVoucher.value.id != '') {
+          await VoucherRepository.instance
+              .updateVoucher(voucherController.useVoucher.value);
+        }
+        voucherController.resetVoucher();
         HAppUtils.stopLoading();
-        Get.offNamed(HAppRoutes.complete, arguments: {'order': order});
+        Get.toNamed(HAppRoutes.complete, arguments: {'order': order});
       }).onError((error, stackTrace) {
+        HAppUtils.stopLoading();
+        print(error.toString());
         HAppUtils.showSnackBarSuccess('Thất bại',
-            'Đã xảy ra sự cố trong quá trình tảii đơn hàng lên hệ thống');
+            'Đã xảy ra sự cố trong quá trình tải đơn hàng lên hệ thống: ${error.toString()}');
       });
       update();
     } catch (e) {
@@ -518,15 +540,45 @@ class CartController extends GetxController {
 
   int getDeliveryCost() {
     int deliveryCost = 0;
+    final typeButtonController = TypeButtonController.instance;
+    if (typeButtonController.orderType == 'dat_lich' &&
+        (typeButtonController.timeType == '16:00 - 17:00' ||
+            typeButtonController.timeType == '17:00 - 18:00')) {
+      deliveryCost += 5000;
+    }
+    if (typeButtonController.orderType == 'uu_tien') {
+      deliveryCost += 10000;
+    }
     return deliveryCost;
   }
 
+  final voucherController = Get.put(VoucherController());
+
   int getDiscountCost() {
-    int discoutCost = 0;
-    if (groFastvalue!.value) {
-      discoutCost = -100000;
+    int discountCost = 0;
+
+    if (voucherController.selectedVoucher.value != '' &&
+        voucherController.useVoucher.value.id != '') {
+      final voucher = voucherController.useVoucher.value;
+      if (voucher.type == 'Flat') {
+        discountCost = voucher.discountValue;
+      } else {
+        if (voucher.storeId!.isEmpty) {
+          discountCost = HAppUtils.roundValue(
+              (totalCartPrice.value * (voucher.discountValue / 100)).floor());
+        } else {
+          int totalPriceInStore = cartProducts
+              .where((element) => element.storeId == voucher.storeId)
+              .fold(
+                  0,
+                  (previousValue, element) =>
+                      previousValue + element.price! * element.quantity);
+          discountCost = HAppUtils.roundValue(
+              (totalPriceInStore * (voucher.discountValue / 100)).floor());
+        }
+      }
     }
-    return discoutCost;
+    return discountCost;
   }
 
   int getPriceWithDiscount() {
@@ -534,6 +586,13 @@ class CartController extends GetxController {
   }
 
   int getTotalPrice() {
-    return totalCartPrice.value + getDiscountCost() + getDeliveryCost();
+    return totalCartPrice.value -
+        getDiscountCost() +
+        getDeliveryCost() +
+        getServiceCost();
+  }
+
+  int getServiceCost() {
+    return 5000;
   }
 }

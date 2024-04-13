@@ -13,29 +13,27 @@ class OrderRepository extends GetxController {
   Future<List<OrderModel>> getAllUserOrder() async {
     try {
       final userId = AuthenticationRepository.instance.authUser!.uid;
-      if (userId.isEmpty) throw 'Không có thông tin người dùng';
-
-      final orders =
-          await _db.collection('Users').doc(userId).collection('Orders').get();
+      if (userId.isEmpty) {
+        throw 'Không có thông tin người dùng';
+      }
+      ;
+      final orders = await _db
+          .collection('Orders')
+          .where('OrderUserId', isEqualTo: userId)
+          .limit(10)
+          .get();
       return orders.docs
           .map((snapshot) => OrderModel.fromDocumentSnapshot(snapshot))
           .toList();
     } catch (e) {
+      print(e.toString());
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
   }
 
-  Future<String> addAndFindIdOfOrder(OrderModel order) async {
-    print('ngoài try');
+  Future<String> addAndFindIdNewOrder(OrderModel order) async {
     try {
-      print('vào đây');
-      final userId = AuthenticationRepository.instance.authUser?.uid;
-      print('Lấy id user');
-      final currentOrder = await _db
-          .collection('Users')
-          .doc(userId)
-          .collection('Orders')
-          .add(order.toJson());
+      final currentOrder = await _db.collection('Orders').add(order.toJson());
       return currentOrder.id;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
@@ -45,13 +43,7 @@ class OrderRepository extends GetxController {
   Future<void> updateOrderField(
       String orderId, Map<String, dynamic> json) async {
     try {
-      final userId = AuthenticationRepository.instance.authUser!.uid;
-      await _db
-          .collection('Users')
-          .doc(userId)
-          .collection('Orders')
-          .doc(orderId)
-          .update(json);
+      await _db.collection('Orders').doc(orderId).update(json);
     } catch (e) {
       throw 'Đã xảy ra sự cố. Không thể cập nhật lựa chọn địa chỉ của bạn. Vui lòng thử lại sau.';
     }

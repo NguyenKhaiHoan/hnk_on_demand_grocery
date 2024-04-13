@@ -22,10 +22,8 @@ class ProductRepository extends GetxController {
           .toList();
       return list;
     } on FirebaseException catch (e) {
-      print(e.toString().toUpperCase());
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
-      print(e.toString().toUpperCase());
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
   }
@@ -44,10 +42,8 @@ class ProductRepository extends GetxController {
           .toList();
       return list;
     } on FirebaseException catch (e) {
-      print(e.toString().toUpperCase());
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
-      print(e.toString().toUpperCase());
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
   }
@@ -72,10 +68,8 @@ class ProductRepository extends GetxController {
           .toList();
       return list;
     } on FirebaseException catch (e) {
-      print(e.toString().toUpperCase());
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
-      print(e.toString().toUpperCase());
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
   }
@@ -94,10 +88,8 @@ class ProductRepository extends GetxController {
           .toList();
       return list;
     } on FirebaseException catch (e) {
-      print(e.toString().toUpperCase());
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
-      print(e.toString().toUpperCase());
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
   }
@@ -216,6 +208,17 @@ class ProductRepository extends GetxController {
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã có sự cố xảy ra. Xin vui lòng thử lại';
+    }
+  }
+
+  Future<void> updateSingleField(
+      String productId, Map<String, dynamic> json) async {
+    try {
+      await _db.collection('Products').doc(productId).update(json);
+    } on FirebaseException catch (e) {
+      throw HFirebaseException(code: e.code).message;
+    } catch (e) {
+      throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
   }
 }

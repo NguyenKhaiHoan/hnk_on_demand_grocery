@@ -10,8 +10,8 @@ class ListBottomAppBar extends StatelessWidget implements PreferredSizeWidget {
   ListBottomAppBar({super.key});
 
   final productController = ProductController.instance;
-  final storeController = StoreController.instance;
-  final wishlistController = WishlistController.instance;
+  final storeController = Get.put(StoreController());
+  final wishlistController = Get.put(WishlistController());
 
   @override
   Widget build(BuildContext context) {

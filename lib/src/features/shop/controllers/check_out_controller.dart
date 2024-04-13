@@ -45,25 +45,15 @@ class CheckoutController extends GetxController {
   ScrollController scrollController = ScrollController();
 
   var currentDateSelectedIndex = 0.obs;
-  var selectedDate = DateTime.now()
-      .subtract(const Duration(days: 4))
-      .add(const Duration(days: 0))
-      .obs;
-  var date = DateFormat('EEEE, d-M-y', 'vi')
-      .format(DateTime.now().subtract(const Duration(days: 4)))
-      .toString()
-      .obs;
+  var selectedDate = DateTime.now().add(const Duration(days: 0)).obs;
+  var date =
+      DateFormat('EEEE, d-M-y', 'vi').format(DateTime.now()).toString().obs;
 
   void resetDate() {
     currentDateSelectedIndex = 0.obs;
-    selectedDate = DateTime.now()
-        .subtract(const Duration(days: 4))
-        .add(const Duration(days: 0))
-        .obs;
-    date = DateFormat('EEEE, d-M-y', 'vi')
-        .format(DateTime.now().subtract(const Duration(days: 4)))
-        .toString()
-        .obs;
+    selectedDate = DateTime.now().add(const Duration(days: 0)).obs;
+    date =
+        DateFormat('EEEE, d-M-y', 'vi').format(DateTime.now()).toString().obs;
   }
 
   void showModalBottomSheetDay(BuildContext context) {
@@ -114,9 +104,8 @@ class CheckoutController extends GetxController {
                             return GestureDetector(
                               onTap: () {
                                 currentDateSelectedIndex.value = index;
-                                selectedDate.value = DateTime.now()
-                                    .subtract(const Duration(days: 4))
-                                    .add(Duration(days: index));
+                                selectedDate.value =
+                                    DateTime.now().add(Duration(days: index));
                                 date.value =
                                     '${days2[selectedDate.value.weekday - 1]}, ${selectedDate.value.day}-${selectedDate.value.year}';
 
@@ -139,8 +128,6 @@ class CheckoutController extends GetxController {
                                     children: [
                                       Text(
                                           days[DateTime.now()
-                                                      .subtract(const Duration(
-                                                          days: 4))
                                                       .add(
                                                           Duration(days: index))
                                                       .weekday -
@@ -156,7 +143,6 @@ class CheckoutController extends GetxController {
                                                           .hGreyColorShade600)),
                                       Text(
                                           DateTime.now()
-                                              .subtract(const Duration(days: 4))
                                               .add(Duration(days: index))
                                               .day
                                               .toString(),
@@ -175,6 +161,7 @@ class CheckoutController extends GetxController {
                             );
                           },
                         )),
+                    gapH12,
                     Obx(() => Column(
                           children: slots
                               .map((element) => TypeTimeButton(
@@ -200,8 +187,10 @@ class CheckoutController extends GetxController {
   }
 
   void getAvailableTimeSlots() {
-    DateTime now = DateTime.now().subtract(const Duration(days: 4));
-    slots.clear();
+    DateTime now = DateTime.now();
+    if (slots.isNotEmpty) {
+      slots.clear();
+    }
 
     int index = now.hour;
     if (index < 13) {
@@ -212,13 +201,11 @@ class CheckoutController extends GetxController {
     if (now.hour < 13 && !isDateAfterToday(selectedDate.value)) {
       for (int i = 14; i <= 19; i++) {
         slots.add('$i:00 - ${i + 1}:00');
-        print('$i:00 - ${i + 1}:00');
       }
     } else {
       if (isDateAfterToday(selectedDate.value)) {
         for (int i = index; i <= 19; i++) {
           slots.add('$i:00 - ${i + 1}:00');
-          print('$i:00 - ${i + 1}:00');
         }
       }
     }
@@ -227,37 +214,8 @@ class CheckoutController extends GetxController {
   var slots = <String>[].obs;
 
   bool isDateAfterToday(DateTime selectedDate) {
-    DateTime now = DateTime.now().subtract(const Duration(days: 4));
+    DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
     return selectedDate.isAfter(today);
   }
-
-  // void calculateDistance() async {
-  //   try {
-  //     String urlString =
-  //         'https://www.google.com/maps/dir/?api=1&origin=20.9807033,105.7970983&destination=20.9827185,105.7904626&travelmode=driving&dir_action=navigate';
-
-  //     final api = Uri.parse(urlString);
-  //     var response = await http
-  //         .get(api, headers: {'Content-Type': 'application/json'}).timeout(
-  //             const Duration(seconds: 60), onTimeout: () {
-  //       throw TimeoutException('Connection Timed Out');
-  //     }).onError((error, stackTrace) {
-  //       log(stackTrace.toString());
-  //       throw Exception(error);
-  //     });
-  //     if (response.statusCode == 200) {
-  //       var decodedResponse = jsonDecode(response.body);
-  //       var distanceInMeter =
-  //           decodedResponse['routes'][0]['legs'][0]['distance']['value'];
-  //       var duration =
-  //           decodedResponse['routes'][0]['legs'][0]['duration']['value'];
-  //       log('khoảng cách: $distanceInMeter');
-  //       log('thời gian: $duration');
-  //     }
-  //   } catch (e) {
-  //     log(e.toString());
-  //     throw Exception(e);
-  //   }
-  // }
 }

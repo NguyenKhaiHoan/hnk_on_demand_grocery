@@ -5,7 +5,9 @@ import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/result_wishlist_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
@@ -284,6 +286,70 @@ class WishlistController extends GetxController
       refreshWishlistItemData.toggle();
     } catch (e) {
       HAppUtils.showSnackBarError('Lỗi', e.toString());
+    }
+  }
+
+  void addToCart(List<ProductModel> list) {
+    final cartController = Get.put(CartController());
+    for (var element in list) {
+      final cartProduct = cartController.convertToCartProduct(element, 1);
+      cartController.addSingleProductInCart(cartProduct);
+    }
+  }
+
+  void checkAddWishList(List<ProductModel> list, bool check) {
+    final cartController = Get.put(CartController());
+    if (!check) {
+      showDialog(
+        context: Get.overlayContext!,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Thêm vào danh sách mong ước'),
+            content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Có vẻ bạn chưa thêm các sản phẩm trong Giỏ hàng vào danh sách mong ước. Bạn có muốn tiếp tục điều đó không?',
+                    style: HAppStyle.paragraph2Regular
+                        .copyWith(color: HAppColor.hGreyColorShade600),
+                  ),
+                ]),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                  cartController.clearCart();
+                  addToCart(list);
+                },
+                child: Text(
+                  'Có',
+                  style: HAppStyle.label4Bold
+                      .copyWith(color: HAppColor.hBluePrimaryColor),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                  Get.back();
+                  cartController.clearCart();
+                  addToCart(list);
+                },
+                child: Text(
+                  'Không',
+                  style:
+                      HAppStyle.label4Bold.copyWith(color: HAppColor.hRedColor),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      Get.back();
+      cartController.clearCart();
+      addToCart(list);
     }
   }
 }

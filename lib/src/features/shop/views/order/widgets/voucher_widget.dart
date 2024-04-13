@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/voucher_controller.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
@@ -11,7 +12,8 @@ class VoucherWidget extends StatelessWidget {
     super.key,
   });
 
-  final cartController = CartController.instance;
+  final cartController = Get.put(CartController());
+  final voucherController = VoucherController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +33,12 @@ class VoucherWidget extends StatelessWidget {
                 const Text("Áp dụng mã ưu đãi",
                     style: HAppStyle.paragraph1Bold),
                 Obx(
-                  () => cartController.voucherAppliedTextAppear!.value &&
-                          cartController.applied.value
+                  () => voucherController.selectedVoucher.value != '' &&
+                          voucherController.useVoucher.value.id != ''
                       ? Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: Text(
-                            cartController.voucherAppliedText.value,
+                            'Bạn đã sử dụng mã ưu đãi: ${voucherController.selectedVoucher.value}',
                             style: HAppStyle.paragraph3Regular.copyWith(
                               color: HAppColor.hBluePrimaryColor,
                               overflow: TextOverflow.ellipsis,
@@ -44,10 +46,9 @@ class VoucherWidget extends StatelessWidget {
                             maxLines: 2,
                           ),
                         )
-                      : Text("Bạn đang có 1 mã ưu đãi.",
-                          style: HAppStyle.paragraph3Regular.copyWith(
-                              color: HAppColor.hRedColor,
-                              decoration: TextDecoration.none)),
+                      : Text("Sử dụng mã ưu đãi",
+                          style: HAppStyle.paragraph3Regular
+                              .copyWith(decoration: TextDecoration.none)),
                 )
               ],
             ),

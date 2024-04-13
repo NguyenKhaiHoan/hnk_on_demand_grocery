@@ -8,6 +8,7 @@ import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/product_list_stack.dart';
@@ -23,10 +24,16 @@ class WishlistScreen extends StatefulWidget {
 }
 
 class _WishlistScreenState extends State<WishlistScreen> {
-  final wishlistController = WishlistController.instance;
+  final wishlistController = Get.put(WishlistController());
   final productController = ProductController.instance;
 
-  final ProductModel model = Get.arguments['model'];
+  final ProductModel? model = Get.arguments['model'];
+  final List<ProductInCartModel>? listProductCart =
+      Get.arguments['listProductCart'];
+  final List<ProductModel>? listProductWishList =
+      Get.arguments['listProductWishList'];
+
+  bool check = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +46,15 @@ class _WishlistScreenState extends State<WishlistScreen> {
         leading: Padding(
           padding: hAppDefaultPaddingL,
           child: GestureDetector(
-            onTap: () => Get.back(),
+            onTap: () {
+              if (listProductWishList != null) {
+                wishlistController.checkAddWishList(
+                    listProductWishList!, check);
+              }
+              if (model != null) {
+                Get.back();
+              }
+            },
             child: const Icon(
               EvaIcons.close,
             ),
@@ -50,7 +65,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
         child: Padding(
           padding: hAppDefaultPaddingLR,
           child: Obx(() => FutureBuilder(
-              key: Key(wishlistController.refreshWishlistData.value.toString()),
+              key: Key(
+                  'Wishlist${wishlistController.refreshWishlistData.value.toString()}'),
               future: wishlistController.fetchAllWishlist(),
               builder: ((context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -85,10 +101,26 @@ class _WishlistScreenState extends State<WishlistScreen> {
                       itemBuilder: (context, index) {
                         final wishlist = data[index];
                         RxBool isAdded = false.obs;
-                        if (wishlist.listIds.contains(model.id)) {
+                        if (model != null) {
+                          if (wishlist.listIds.contains(model!.id)) {
+                            isAdded.value = true;
+                          } else {
+                            isAdded.value = false;
+                          }
+                        }
+                        if (listProductCart != null) {
                           isAdded.value = true;
-                        } else {
-                          isAdded.value = false;
+                          int index = 0;
+                          for (var model in listProductCart!) {
+                            if (!wishlist.listIds.contains(model.productId)) {
+                              isAdded.value = false;
+                              break;
+                            }
+                            if (index == listProductCart!.length) {
+                              check = true;
+                            }
+                            index++;
+                          }
                         }
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,9 +145,8 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                                   HAppColor.hGreyColorShade600),
                                     ),
                                     FutureBuilder(
-                                        key: Key(WishlistController.instance
-                                            .refreshWishlistItemData.value
-                                            .toString()),
+                                        key: Key(
+                                            'WishlistItem${WishlistController.instance.refreshWishlistItemData.value.toString()}'),
                                         future: ProductRepository.instance
                                             .getProductsFromListIds(
                                                 wishlist.listIds),
@@ -157,20 +188,41 @@ class _WishlistScreenState extends State<WishlistScreen> {
                                     value: isAdded.value,
                                     onChanged: (val) {
                                       setState(() {
+                                        wishlistController.refreshWishlistData
+                                            .toggle();
                                         isAdded.value = val!;
-                                        if (wishlist.listIds
-                                            .contains(model.id)) {
-                                          isAdded.value = true;
-                                          wishlist.listIds.remove(model.id);
-                                        } else {
-                                          isAdded.value = false;
-                                          wishlist.listIds.add(model.id);
+                                        if (model != null) {
+                                          if (wishlist.listIds
+                                              .contains(model!.id)) {
+                                            isAdded.value = true;
+                                            wishlist.listIds.remove(model!.id);
+                                          } else {
+                                            isAdded.value = false;
+                                            wishlist.listIds.add(model!.id);
+                                          }
+                                          wishlistController
+                                              .addOrRemoveProductInWishlist(
+                                                  wishlist.id,
+                                                  wishlist.listIds);
                                         }
-                                        wishlistController
-                                            .addOrRemoveProductInWishlist(
-                                                wishlist.id, wishlist.listIds);
+                                        if (listProductCart != null) {
+                                          print('Vào đây');
+                                          if (!isAdded.value) {
+                                            wishlist.listIds.clear();
+                                          } else {
+                                            wishlist.listIds.assignAll(
+                                                listProductCart!
+                                                    .map((e) => e.productId)
+                                                    .toList());
+                                            check = true;
+                                          }
+                                          wishlistController
+                                              .addOrRemoveProductInWishlist(
+                                                  wishlist.id,
+                                                  wishlist.listIds);
+                                        }
                                       });
-                                    }),
+                                    })
                               ],
                             ),
                             gapH4,
@@ -182,103 +234,6 @@ class _WishlistScreenState extends State<WishlistScreen> {
                       });
                 }
               }))),
-          // child: ListView.builder(
-          //     padding: EdgeInsets.zero,
-          //     shrinkWrap: true,
-          //     itemCount: productController.productInWishList.keys.length,
-          //     itemBuilder: (context, index) {
-          //       bool isAdded = false;
-          //       if (model.wishlistName.contains(productController
-          //           .productInWishList.keys
-          //           .elementAt(index))) {
-          //         productController.wishlistList[index].isChecked = true;
-          //       } else {
-          //         productController.wishlistList[index].isChecked = false;
-          //       }
-          //       return Column(
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: [
-          //           Row(
-          //             crossAxisAlignment: CrossAxisAlignment.start,
-          //             children: [
-          //               Expanded(
-          //                   child: Column(
-          //                 crossAxisAlignment: CrossAxisAlignment.start,
-          //                 children: [
-          //                   Text(
-          //                     productController.productInWishList.keys
-          //                         .elementAt(index),
-          //                     style: HAppStyle.heading4Style,
-          //                   ),
-          //                   gapH4,
-          //                   Text(
-          //                     productController.findSubtitleWishList(
-          //                         productController.productInWishList.keys
-          //                             .elementAt(index)),
-          //                     style: HAppStyle.paragraph3Regular.copyWith(
-          //                         color: HAppColor.hGreyColorShade600),
-          //                   ),
-          //                   productController.productInWishList.values
-          //                           .elementAt(index)
-          //                           .isNotEmpty
-          //                       ? Column(
-          //                           children: [
-          //                             gapH10,
-          //                             ProductListStackWidget(
-          //                               maxItems: 8,
-          //                               items: productController
-          //                                   .productInWishList.values
-          //                                   .elementAt(index)
-          //                                   .map((product) => product.imgPath)
-          //                                   .toList(),
-          //                             ),
-          //                           ],
-          //                         )
-          //                       : Container(),
-          //                 ],
-          //               )),
-          //               Checkbox(
-          //                   activeColor: HAppColor.hBluePrimaryColor,
-          //                   value:
-          //                       productController.wishlistList[index].isChecked,
-          //                   onChanged: (val) {
-          //                     setState(() {
-          //                       productController
-          //                           .wishlistList[index].isChecked = val!;
-          //                       if (productController
-          //                           .wishlistList[index].isChecked) {
-          //                         if (!model.wishlistName.contains(
-          //                             productController.productInWishList.keys
-          //                                 .elementAt(index))) {
-          //                           model.wishlistName += productController
-          //                               .productInWishList.keys
-          //                               .elementAt(index);
-          //                         }
-          //                       } else {
-          //                         if (model.wishlistName.contains(
-          //                             productController.productInWishList.keys
-          //                                 .elementAt(index))) {
-          //                           String substr = productController
-          //                               .productInWishList.keys
-          //                               .elementAt(index);
-          //                           String replacement = "";
-          //                           model.wishlistName = model.wishlistName
-          //                               .replaceAll(substr, replacement);
-          //                         }
-          //                       }
-          //                       productController.listProducts.refresh();
-          //                       productController.addMapProductInWishList();
-          //                     });
-          //                   }),
-          //             ],
-          //           ),
-          //           gapH4,
-          //           Divider(
-          //             color: HAppColor.hGreyColorShade300,
-          //           )
-          //         ],
-          //       );
-          //     }),
         ),
       ),
       floatingActionButton: FloatingActionButton(

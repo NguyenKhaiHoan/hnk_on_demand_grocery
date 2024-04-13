@@ -51,7 +51,8 @@ class SignUpController extends GetxController {
           name: nameController.text.trim(),
           email: emailController.text.trim(),
           phoneNumber: phoneController.text.trim(),
-          profileImage: '',
+          profileImage:
+              'https://icons.veryicon.com/png/o/business/menu-icon/user-195.png',
           creationDate: DateFormat('EEEE, d-M-y', 'vi').format(DateTime.now()),
           authenticationBy: 'Email',
           listOfFavoriteProduct: [],

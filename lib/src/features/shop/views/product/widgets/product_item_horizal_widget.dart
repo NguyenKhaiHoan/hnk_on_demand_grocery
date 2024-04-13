@@ -12,6 +12,8 @@ import 'package:on_demand_grocery/src/features/shop/controllers/product_controll
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
+import 'package:on_demand_grocery/src/repositories/product_repository.dart';
+import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
@@ -36,7 +38,7 @@ class ProductItemHorizalWidget extends StatelessWidget {
 
   final productController = ProductController.instance;
   final detailController = Get.put(DetailController());
-  final wishlistController = WishlistController.instance;
+  final wishlistController = Get.put(WishlistController());
 
   @override
   Widget build(BuildContext context) {
@@ -284,72 +286,6 @@ class ProductItemHorizalWidget extends StatelessWidget {
                                         ),
                             ),
                           ),
-                          // Visibility(
-                          //     visible: model.status == "" ? true : false,
-                          //     child: GestureDetector(
-                          //       child: Container(
-                          //         width: 45,
-                          //         height: 45,
-                          //         decoration: const BoxDecoration(
-                          //           color: HAppColor.hBluePrimaryColor,
-                          //           borderRadius: BorderRadius.only(
-                          //             topLeft: Radius.circular(20),
-                          //             bottomRight: Radius.circular(20),
-                          //           ),
-                          //         ),
-                          //         child: Center(
-                          //             child: model.quantity != 0
-                          //                 ? Text(
-                          //                     "${model.quantity}",
-                          //                     style: HAppStyle.label2Bold
-                          //                         .copyWith(
-                          //                             color: HAppColor
-                          //                                 .hWhiteColor),
-                          //                   )
-                          //                 : const Icon(
-                          //                     EvaIcons.plus,
-                          //                     color: HAppColor.hWhiteColor,
-                          //                   )),
-                          //       ),
-                          //       onTap: () {
-                          //         productController.addProductInCart(model);
-                          //         if (model.quantity == 0) {
-                          //           model.quantity++;
-                          //           productController.refreshList(
-                          //               productController.isInCart);
-                          //           productController.refreshAllList();
-                          //           HAppUtils.showToastSuccess(
-                          //               Text(
-                          //                 'Thêm vào Giỏ hàng!',
-                          //                 style: HAppStyle.label2Bold.copyWith(
-                          //                     color:
-                          //                         HAppColor.hBluePrimaryColor),
-                          //               ),
-                          //               RichText(
-                          //                   text: TextSpan(
-                          //                       style: HAppStyle
-                          //                           .paragraph2Regular
-                          //                           .copyWith(
-                          //                               color: HAppColor
-                          //                                   .hGreyColorShade600),
-                          //                       text: 'Bạn đã thêm thành công',
-                          //                       children: [
-                          //                     TextSpan(
-                          //                         text: ' ${model.name} ',
-                          //                         style: HAppStyle
-                          //                             .paragraph2Regular
-                          //                             .copyWith(
-                          //                                 color: HAppColor
-                          //                                     .hBluePrimaryColor)),
-                          //                     const TextSpan(
-                          //                         text: 'vào Giỏ hàng.')
-                          //                   ])),
-                          //               1,
-                          //               context,
-                          //               const ToastificationCallbacks());
-                          //         }
-                          //       },
-                          //     ))
                         ],
                       )
                     : Row(
@@ -470,11 +406,16 @@ class ProductItemHorizalWidget extends StatelessWidget {
           ],
         ),
       ),
-      onTap: () {
+      onTap: () async {
+        final product =
+            await ProductRepository.instance.getProductInformation(model.id);
+        final store =
+            await StoreRepository.instance.getStoreInformation(model.storeId);
         Get.toNamed(
           HAppRoutes.productDetail,
           arguments: {
-            'model': model,
+            'product': product,
+            'store': store,
           },
           preventDuplicates: false,
         );

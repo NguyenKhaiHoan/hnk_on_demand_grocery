@@ -14,6 +14,15 @@ import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:toastification/toastification.dart';
 
 class HAppUtils {
+  static int roundValue(int value) {
+    int lastThreeDigits = value % 1000;
+    if (lastThreeDigits >= 500) {
+      return value + (1000 - lastThreeDigits);
+    } else {
+      return value - lastThreeDigits;
+    }
+  }
+
   static String maskName(String name) {
     if (name.length <= 1) {
       return name;
@@ -21,6 +30,19 @@ class HAppUtils {
     String firstChar = name[0];
     String maskedChars = '*' * (name.length - 1);
     return '$firstChar$maskedChars';
+  }
+
+  static String getTitlePaymentMethod(String value) {
+    switch (value) {
+      case 'tien_mat':
+        return 'Tiền mặt';
+      case 'momo_vn':
+        return 'Ví điện tử MoMo';
+      case 'tin_dung':
+        return 'Thanh toán bằng thẻ';
+      default:
+        return 'Không biết';
+    }
   }
 
   static orderStatus(int status) {

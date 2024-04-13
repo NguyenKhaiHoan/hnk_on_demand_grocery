@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
+import 'package:on_demand_grocery/src/constants/app_keys.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
@@ -17,6 +20,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/date_delivery_co
 import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/type_button_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/voucher_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/payment_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
@@ -25,9 +29,11 @@ import 'package:on_demand_grocery/src/features/shop/views/order/widgets/type_but
 import 'package:on_demand_grocery/src/features/shop/views/order/widgets/voucher_widget.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
+import 'package:on_demand_grocery/src/services/payment_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:http/http.dart' as http;
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -37,12 +43,13 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  final cartController = CartController.instance;
+  final cartController = Get.put(CartController());
   final addressController = AddressController.instance;
-  final dateDeliveryController = DateDeliveryController.instance;
+  final dateDeliveryController = Get.put(DateDeliveryController());
   final orderController = OrderController.instance;
   final checkoutController = Get.put(CheckoutController());
   final typeButtonController = Get.put(TypeButtonController());
+  final voucherController = VoucherController.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +63,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           children: [
             gapW12,
             GestureDetector(
-              onTap: () => Get.back(),
+              onTap: () {
+                Get.back();
+                voucherController.resetVoucher();
+              },
               child: Container(
                 width: 40,
                 height: 40,
@@ -116,7 +126,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       Obx(() => FutureBuilder(
                           key: Key(
-                              addressController.toggleRefresh.value.toString()),
+                              'Addresses${addressController.toggleRefresh.value.toString()}'),
                           future: addressController.fetchAllUserAddresses(),
                           builder: ((context, snapshot) {
                             if (snapshot.connectionState ==
@@ -148,11 +158,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       orElse: () => addresses.first));
                             }
                           }))),
-                      // Divider(
-                      //   color: HAppColor.hGreyColorShade300,
-                      // ),
-                      // gapH4,
-                      // Obx(() => Text(dateDeliveryController.date.value)),
                     ],
                   ),
                 )
@@ -189,18 +194,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           price: 0,
                           isFree: true,
                           isOrder: true),
-                      GestureDetector(
-                        onTap: () {
-                          checkoutController.showModalBottomSheetDay(context);
-                        },
-                        child: Obx(() => TypeButton(
-                            value: 'dat_lich',
-                            title:
-                                'Đặt lịch (${checkoutController.date.toString()})',
-                            price: 0,
-                            isFree: true,
-                            isOrder: true)),
-                      )
+                      Obx(() => TypeButton(
+                          value: 'dat_lich',
+                          title:
+                              'Đặt lịch (${checkoutController.date.toString()})',
+                          price: typeButtonController.timeType ==
+                                      '16:00 - 17:00' ||
+                                  typeButtonController.timeType ==
+                                      '17:00 - 18:00'
+                              ? 5000
+                              : 0,
+                          isFree: true,
+                          isOrder: true)),
                     ],
                   ),
                 )
@@ -234,6 +239,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       TypeButton(
                           value: 'momo_vn',
                           title: 'Ví điện tử MoMo',
+                          price: -1,
+                          isFree: false,
+                          isOrder: false),
+                      TypeButton(
+                          value: 'tin_dung',
+                          title: 'Thanh toán bằng thẻ',
                           price: -1,
                           isFree: false,
                           isOrder: false)
@@ -301,36 +312,38 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: GestureDetector(
-                            onTap: () => Get.back(),
+                            onTap: () {},
                             child: const Icon(Icons.arrow_forward_ios),
                           ),
                         )
                       ]),
                       gapH16,
-                      cartController.groFastvalue!.value
-                          ? Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Áp dụng khuyến mãi',
-                                        style: HAppStyle.paragraph2Regular
-                                            .copyWith(
-                                                color: HAppColor
-                                                    .hGreyColorShade600)),
-                                    Obx(() => Text(cartController
-                                                .totalCartPrice.value !=
-                                            0
-                                        ? HAppUtils.vietNamCurrencyFormatting(
-                                            cartController.getDiscountCost())
-                                        : "0₫")),
-                                  ],
-                                ),
-                                gapH10,
-                              ],
-                            )
-                          : Container(),
+                      Obx(
+                        () => voucherController.selectedVoucher.value != '' &&
+                                voucherController.useVoucher.value.id != ''
+                            ? Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Áp dụng khuyến mãi',
+                                          style: HAppStyle.paragraph2Regular
+                                              .copyWith(
+                                                  color: HAppColor
+                                                      .hGreyColorShade600)),
+                                      Obx(() => Text(cartController
+                                                  .totalCartPrice.value !=
+                                              0
+                                          ? '-${HAppUtils.vietNamCurrencyFormatting(cartController.getDiscountCost())}'
+                                          : "0₫")),
+                                    ],
+                                  ),
+                                  gapH10,
+                                ],
+                              )
+                            : Container(),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -347,6 +360,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ],
                       ),
                       gapH10,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Phí dịch vụ',
+                            style: HAppStyle.paragraph2Regular
+                                .copyWith(color: HAppColor.hGreyColorShade600),
+                          ),
+                          Obx(() => Text(
+                              cartController.totalCartPrice.value != 0
+                                  ? HAppUtils.vietNamCurrencyFormatting(
+                                      cartController.getServiceCost())
+                                  : "0₫")),
+                        ],
+                      ),
+                      gapH10,
                       Divider(
                         color: HAppColor.hGreyColorShade300,
                       ),
@@ -355,11 +384,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('Tổng cộng', style: HAppStyle.label2Bold),
-                          Text(
-                              HAppUtils.vietNamCurrencyFormatting(
-                                  cartController.getTotalPrice()),
+                          Obx(() => Text(
+                              cartController.totalCartPrice.value != 0
+                                  ? HAppUtils.vietNamCurrencyFormatting(
+                                      cartController.getTotalPrice())
+                                  : "0₫",
                               style: HAppStyle.label2Bold.copyWith(
-                                  color: HAppColor.hBluePrimaryColor)),
+                                  color: HAppColor.hBluePrimaryColor))),
                         ],
                       ),
                     ],
@@ -393,41 +424,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text.rich(
-                  TextSpan(
-                    text: "Tổng cộng:\n",
-                    children: [
+                Obx(() => Text.rich(
                       TextSpan(
-                        text: cartController.totalCartPrice.value != 0
-                            ? HAppUtils.vietNamCurrencyFormatting(
-                                cartController.getTotalPrice())
-                            : "0₫",
-                        style: HAppStyle.heading4Style
-                            .copyWith(color: HAppColor.hBluePrimaryColor),
+                        text: "Tổng cộng:\n",
+                        children: [
+                          TextSpan(
+                            text: cartController.totalCartPrice.value != 0
+                                ? HAppUtils.vietNamCurrencyFormatting(
+                                    cartController.getTotalPrice())
+                                : "0₫",
+                            style: HAppStyle.heading4Style
+                                .copyWith(color: HAppColor.hBluePrimaryColor),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    )),
                 ElevatedButton(
-                  onPressed: () {
-                    if (addressController.selectedAddress.value.phoneNumber ==
-                        '') {
-                      print(
-                          addressController.selectedAddress.value.phoneNumber);
-                      HAppUtils.showSnackBarWarning('Hoàn thành đầy đủ địa chỉ',
-                          'Có vẻ bạn chưa nhập số điện thoại. Hãy nhập số điện thoại để hoàn tất đặt hàng');
-                    } else {
-                      if (typeButtonController.orderType != '' &&
-                          typeButtonController.paymentMethodType != '') {
-                        cartController
-                            .processOrder(typeButtonController.orderType);
-                      }
-                      if (typeButtonController.orderType == 'dat_lich' &&
-                          typeButtonController.timeType == '') {
-                        HAppUtils.showSnackBarError("Lỗi",
-                            'Bạn chưa chọn thời gian giao hàng cho tùy chọn đặt lịch');
-                      }
-                    }
+                  onPressed: () async {
+                    orderController.processOrder();
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(HAppSize.deviceWidth * 0.45, 50),

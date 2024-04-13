@@ -25,7 +25,7 @@ class SearchProductInStore extends StatefulWidget {
 class _SearchProductInStoreState extends State<SearchProductInStore> {
   String storeId = Get.arguments['storeId'];
 
-  final storeController = StoreController.instance;
+  final storeController = Get.put(StoreController());
   FocusNode focusNode = FocusNode();
 
   var searchResetToggle = false.obs;

@@ -18,6 +18,7 @@ import 'package:on_demand_grocery/src/features/personalization/controllers/addre
 import 'package:on_demand_grocery/src/features/shop/controllers/delivery_person_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/initialize_location_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/map_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/delivery_person_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/delivery_process_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
@@ -35,9 +36,24 @@ class LiveTrackingScreen extends StatefulWidget {
 
 class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
   final deliveryPersonController = Get.put(DeliveryPersonController());
+  final orderController = Get.put(OrderController());
 
   final stepperData = Get.arguments['stepperData'];
-  OrderModel order = Get.arguments['order'];
+  OrderModel orderData = Get.arguments['order'];
+
+  int length = 0;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      length = orderData.storeOrders.length;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   var isDelivery = false.obs;
 
@@ -50,41 +66,56 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
   var activeStep = 0.obs;
 
   @override
-  void initState() {
-    super.initState();
-    deliveryPersonController.deliveryPerson.value = DeliveryPersonModel.empty();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
           child: StreamBuilder(
         stream: FirebaseDatabase.instance
             .ref()
-            .child('Orders/${order.oderId}')
+            .child('Orders/${orderData.oderId}')
             .onValue,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child:
-                  CircularProgressIndicator(color: HAppColor.hBluePrimaryColor),
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(
+                    color: HAppColor.hBluePrimaryColor),
+              ),
             );
           }
+
           if (snapshot.hasError) {
-            return const Text('Đã có lỗi xảy ra, vui lòng thử lại');
+            Get.back();
+            return const SizedBox();
           }
 
           if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
             Get.back();
-            return const Text('Không có dữ liệu');
+            return const SizedBox();
           }
 
           OrderModel order = OrderModel.fromJson(
               jsonDecode(jsonEncode(snapshot.data!.snapshot.value)));
-          if (order.orderStatus != null) {
+
+          if (length != order.storeOrders.length) {
+            length = order.storeOrders.length;
+            if (length != 0) {
+              int totalPrice = 0;
+              for (var cartProduct in order.orderProducts) {
+                totalPrice += cartProduct.price! * cartProduct.quantity;
+              }
+              order.price = totalPrice;
+            } else {
+              orderController.saveOrder(
+                  order: order,
+                  status: 'Từ chối',
+                  activeStep: activeStep.value);
+            }
+          }
+
+          if (order.orderStatus != null &&
+              reverseOrderStatus(order.orderStatus!) != activeStep.value) {
             activeStep.value = reverseOrderStatus(order.orderStatus!);
-            print(activeStep.value);
           }
           if (order.deliveryPerson != null) {
             deliveryPersonController.deliveryPerson.value =
@@ -99,11 +130,14 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                 DeliveryProcessModel deliveryProcess =
                     DeliveryProcessModel.fromJson(
                         jsonDecode(jsonEncode(event.snapshot.value)));
+                print(deliveryProcess.toString());
+                print("${deliveryProcess.l[0]}, ${deliveryProcess.l[1]}");
                 moveToPosition(
                     LatLng(deliveryProcess.l[0], deliveryProcess.l[1]));
               }
             });
           }
+
           return Stack(
             children: [
               SizedBox(
@@ -152,6 +186,7 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          OrderController.instance.resetToggle.toString();
                           Get.back();
                         },
                         child: Container(
@@ -232,7 +267,14 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                                                 : HAppColor.hWhiteColor,
                                           ),
                                         ),
-                                        title: HAppUtils.orderStatus(0),
+                                        customTitle: Text(
+                                          HAppUtils.orderStatus(0),
+                                          textAlign: TextAlign.left,
+                                          style: HAppStyle.paragraph3Regular
+                                              .copyWith(
+                                                  color: HAppColor
+                                                      .hGreyColorShade600),
+                                        ),
                                       ),
                                       EasyStep(
                                         customStep: CircleAvatar(
@@ -246,7 +288,13 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                                                 : HAppColor.hWhiteColor,
                                           ),
                                         ),
-                                        title: HAppUtils.orderStatus(1),
+                                        customTitle: Text(
+                                          HAppUtils.orderStatus(1),
+                                          style: HAppStyle.paragraph3Regular
+                                              .copyWith(
+                                                  color: HAppColor
+                                                      .hGreyColorShade600),
+                                        ),
                                         topTitle: true,
                                       ),
                                       EasyStep(
@@ -261,7 +309,13 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                                                 : HAppColor.hWhiteColor,
                                           ),
                                         ),
-                                        title: HAppUtils.orderStatus(2),
+                                        customTitle: Text(
+                                          HAppUtils.orderStatus(2),
+                                          style: HAppStyle.paragraph3Regular
+                                              .copyWith(
+                                                  color: HAppColor
+                                                      .hGreyColorShade600),
+                                        ),
                                       ),
                                       EasyStep(
                                         customStep: CircleAvatar(
@@ -275,7 +329,13 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                                                 : HAppColor.hWhiteColor,
                                           ),
                                         ),
-                                        title: HAppUtils.orderStatus(3),
+                                        customTitle: Text(
+                                          HAppUtils.orderStatus(3),
+                                          style: HAppStyle.paragraph3Regular
+                                              .copyWith(
+                                                  color: HAppColor
+                                                      .hGreyColorShade600),
+                                        ),
                                         topTitle: true,
                                       ),
                                       EasyStep(
@@ -290,117 +350,226 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                                                 : HAppColor.hWhiteColor,
                                           ),
                                         ),
-                                        title: HAppUtils.orderStatus(4),
+                                        customTitle: Text(
+                                          HAppUtils.orderStatus(4),
+                                          textAlign: TextAlign.right,
+                                          style: HAppStyle.paragraph3Regular
+                                              .copyWith(
+                                                  color: HAppColor
+                                                      .hGreyColorShade600),
+                                        ),
                                       ),
                                     ],
-                                    onStepReached: (index) =>
-                                        activeStep.value = index,
                                   ),
                                 ),
-                                gapH12,
                                 order.deliveryPerson != null
-                                    ? Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          order.deliveryPerson!.image! != ''
-                                              ? ImageNetwork(
-                                                  image: order
-                                                      .deliveryPerson!.image!,
-                                                  height: 60,
-                                                  width: 60,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          100),
-                                                  onLoading:
-                                                      const CustomShimmerWidget
-                                                          .circular(
-                                                          width: 60,
-                                                          height: 60),
-                                                )
-                                              : Image.asset(
-                                                  'assets/logos/logo.png',
-                                                  height: 60,
-                                                  width: 60,
+                                    ? Container(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 12),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            order.deliveryPerson!.image! != ''
+                                                ? ImageNetwork(
+                                                    image: order
+                                                        .deliveryPerson!.image!,
+                                                    height: 60,
+                                                    width: 60,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            100),
+                                                    onLoading:
+                                                        const CustomShimmerWidget
+                                                            .circular(
+                                                            width: 60,
+                                                            height: 60),
+                                                  )
+                                                : Image.asset(
+                                                    'assets/logos/logo.png',
+                                                    height: 60,
+                                                    width: 60,
+                                                  ),
+                                            gapW10,
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  order.deliveryPerson!.name!,
+                                                  style:
+                                                      HAppStyle.heading5Style,
                                                 ),
-                                          gapW10,
-                                          Column(
-                                            children: [
-                                              Text(
-                                                order.deliveryPerson!.name!,
-                                                style: HAppStyle.heading5Style,
+                                                gapH4,
+                                                Text(
+                                                  order.deliveryPerson!
+                                                      .phoneNumber!,
+                                                  style: HAppStyle
+                                                      .paragraph2Regular
+                                                      .copyWith(
+                                                          color: HAppColor
+                                                              .hGreyColorShade600),
+                                                )
+                                              ],
+                                            ),
+                                            const Spacer(),
+                                            GestureDetector(
+                                              onTap: () {},
+                                              child: const Icon(
+                                                EvaIcons.phoneOutline,
+                                                size: 18,
                                               ),
-                                              gapH4,
-                                              Text(
-                                                order.deliveryPerson!
-                                                    .phoneNumber!,
-                                                style: HAppStyle
-                                                    .paragraph2Regular
-                                                    .copyWith(
-                                                        color: HAppColor
-                                                            .hGreyColorShade600),
-                                              )
+                                            ),
+                                            gapW10,
+                                            GestureDetector(
+                                              onTap: () => Get.to(
+                                                  const ChatOrderRealtimeScreen(),
+                                                  arguments: {
+                                                    'orderId': order.oderId,
+                                                    'anotherId':
+                                                        order.orderUserId,
+                                                    'otherId':
+                                                        order.deliveryPerson!.id
+                                                  }),
+                                              child: const Icon(
+                                                EvaIcons.messageSquareOutline,
+                                                size: 18,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Container(),
+                                gapH12,
+                                GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet<void>(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          SafeArea(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(
+                                              hAppDefaultPadding),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Row(children: [
+                                                Text(
+                                                  'Hành động',
+                                                  style: HAppStyle.heading4Style
+                                                      .copyWith(
+                                                          color: HAppColor
+                                                              .hDarkColor),
+                                                ),
+                                                const Spacer(),
+                                                GestureDetector(
+                                                  onTap: () => Get.back(),
+                                                  child: const Icon(
+                                                      EvaIcons.close),
+                                                )
+                                              ]),
+                                              gapH6,
+                                              Divider(
+                                                color: HAppColor
+                                                    .hGreyColorShade300,
+                                              ),
+                                              gapH12,
+                                              for (int i = 0;
+                                                  i < order.storeOrders.length;
+                                                  i++)
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 6),
+                                                  child: Row(children: [
+                                                    Expanded(
+                                                        child: Text(
+                                                      '$i: ${order.storeOrders[i].name}',
+                                                      style: HAppStyle
+                                                          .heading5Style
+                                                          .copyWith(
+                                                              color: HAppColor
+                                                                  .hDarkColor),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    )),
+                                                    GestureDetector(
+                                                      onTap: () {},
+                                                      child: const Icon(
+                                                        EvaIcons.phoneOutline,
+                                                        size: 18,
+                                                      ),
+                                                    ),
+                                                    gapW10,
+                                                    GestureDetector(
+                                                      onTap: () => Get.to(
+                                                          const ChatOrderRealtimeScreen(),
+                                                          arguments: {
+                                                            'orderId':
+                                                                order.oderId,
+                                                            'anotherId': order
+                                                                .orderUserId,
+                                                            'otherId': order
+                                                                .storeOrders[i]
+                                                                .storeId
+                                                          }),
+                                                      child: const Icon(
+                                                        EvaIcons
+                                                            .messageSquareOutline,
+                                                        size: 18,
+                                                      ),
+                                                    ),
+                                                  ]),
+                                                ),
                                             ],
                                           ),
-                                          const Spacer(),
-                                          GestureDetector(
-                                            onTap: () {},
-                                            child: const Icon(
-                                              EvaIcons.phone,
-                                              size: 18,
-                                            ),
-                                          ),
-                                          gapW10,
-                                          GestureDetector(
-                                            onTap: () => Get.to(
-                                                const ChatOrderRealtimeScreen(),
-                                                arguments: {
-                                                  'orderId': order.oderId
-                                                }),
-                                            child: const Icon(
-                                              EvaIcons.messageSquareOutline,
-                                              size: 18,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : gapH12,
-                                AnotherStepper(
-                                  barThickness: 0.5,
-                                  stepperList: stepperData,
-                                  stepperDirection: Axis.vertical,
-                                  iconWidth: 30,
-                                  iconHeight: 30,
-                                  verticalGap: 20,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: AnotherStepper(
+                                    barThickness: 0.5,
+                                    stepperList: stepperData,
+                                    activeIndex: order.storeOrders
+                                        .lastIndexWhere((element) =>
+                                            element.isCheckFullProduct == 1),
+                                    stepperDirection: Axis.vertical,
+                                    iconWidth: 30,
+                                    iconHeight: 30,
+                                    verticalGap: 20,
+                                  ),
+                                ),
+                                gapH6,
+                                Text(
+                                  'Nhấn vào các cửa hàng để thực hiện cách hành động: Gọi và Nhắn tin',
+                                  style: HAppStyle.paragraph3Regular.copyWith(
+                                      color: HAppColor.hGreyColorShade600),
                                 ),
                                 gapH12,
-                                for (int i = 0;
-                                    i < order.storeOrders.length;
-                                    i++)
-                                  ExpansionTile(
-                                    childrenPadding: EdgeInsets.zero,
-                                    initiallyExpanded: true,
-                                    tilePadding: EdgeInsets.zero,
-                                    shape: const Border(),
-                                    title: Text(
-                                        'Số lượng (${order.orderProducts.length})'),
-                                    children: [
-                                      ListView.separated(
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: order.orderProducts.length,
-                                          itemBuilder: (context, index) {
-                                            return ProductItemHorizalOrderWidget(
-                                                model:
-                                                    order.orderProducts[index]);
-                                          },
-                                          separatorBuilder:
-                                              (BuildContext context,
-                                                      int index) =>
-                                                  gapH6),
-                                    ],
-                                  ),
+                                ExpansionTile(
+                                  childrenPadding: EdgeInsets.zero,
+                                  initiallyExpanded: true,
+                                  tilePadding: EdgeInsets.zero,
+                                  shape: const Border(),
+                                  title: Text(
+                                      'Số lượng (${order.orderProducts.length})'),
+                                  children: [
+                                    ListView.separated(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: order.orderProducts.length,
+                                        itemBuilder: (context, index) {
+                                          return ProductItemHorizalOrderWidget(
+                                              model:
+                                                  order.orderProducts[index]);
+                                        },
+                                        separatorBuilder:
+                                            (BuildContext context, int index) =>
+                                                gapH6),
+                                  ],
+                                ),
                                 gapH12,
                                 SectionLiveTracking(
                                     title: 'Thời gian đặt hàng',
@@ -409,24 +578,180 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                                 gapH12,
                                 SectionLiveTracking(
                                     title: 'Phương thức thanh toán',
-                                    subtitle: order.paymentMethod),
+                                    subtitle: HAppUtils.getTitlePaymentMethod(
+                                        order.paymentMethod)),
                                 gapH12,
                                 SectionLiveTracking(
                                     title: 'Tiền hàng',
                                     subtitle:
                                         HAppUtils.vietNamCurrencyFormatting(
-                                            order.price)),
-                                gapH12,
+                                            order.orderProducts.fold(
+                                                0,
+                                                (previousValue, element) =>
+                                                    previousValue +
+                                                    element.price! *
+                                                        element.quantity))),
+                                order.discount == 0
+                                    ? gapH12
+                                    : Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 12),
+                                        child: SectionLiveTracking(
+                                            title: 'Áp dụng khuyến mãi',
+                                            subtitle:
+                                                '-${HAppUtils.vietNamCurrencyFormatting(order.discount)}'),
+                                      ),
                                 SectionLiveTracking(
                                     title: 'Phí giao hàng',
                                     subtitle:
-                                        HAppUtils.vietNamCurrencyFormatting(0)),
+                                        HAppUtils.vietNamCurrencyFormatting(
+                                            order.deliveryCost)),
+                                gapH12,
+                                SectionLiveTracking(
+                                    title: 'Phí dịch vụ',
+                                    subtitle:
+                                        HAppUtils.vietNamCurrencyFormatting(
+                                            5000)),
                                 gapH12,
                                 SectionLiveTracking(
                                     title: 'Tổng cộng',
                                     subtitle:
                                         HAppUtils.vietNamCurrencyFormatting(
                                             order.price)),
+                                if (order.orderStatus != null &&
+                                    order.orderStatus! ==
+                                        HAppUtils.orderStatus(4))
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      gapH24,
+                                      const Text(
+                                        'Đơn hàng đã được giao tới nơi',
+                                        style: HAppStyle.heading4Style,
+                                      ),
+                                      gapH8,
+                                      Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Nhấn "Đã nhận" để hoàn tất đơn hàng',
+                                              style: HAppStyle.paragraph2Regular
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hGreyColorShade600),
+                                            ),
+                                            gapW6,
+                                            GestureDetector(
+                                              onTap: () => showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (context) => AlertDialog(
+                                                            content: const Text(
+                                                                'Người giao hàng đã giao đơn hàng tới địa chỉ của bạn thành công, hãy nhấn "Đã nhận" để hoàn tất, còn nếu bạn chưa nhận được hàng, hãy nhấn ngay "Chưa nhận" để thông báo cho chúng tôi, chúng tôi sẽ xử lý cho bạn'),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () =>
+                                                                    Get.back(),
+                                                                child: Text(
+                                                                  'Đã biết',
+                                                                  style: HAppStyle
+                                                                      .label4Bold
+                                                                      .copyWith(
+                                                                          color:
+                                                                              HAppColor.hBluePrimaryColor),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          )),
+                                              child: const Icon(
+                                                EvaIcons.infoOutline,
+                                                size: 15,
+                                                color:
+                                                    HAppColor.hBluePrimaryColor,
+                                              ),
+                                            )
+                                          ]),
+                                      gapH12,
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: OutlinedButton(
+                                                onPressed: () {},
+                                                style: OutlinedButton.styleFrom(
+                                                    maximumSize: Size(
+                                                        HAppSize.deviceWidth *
+                                                            0.5,
+                                                        50),
+                                                    foregroundColor:
+                                                        HAppColor.hRedColor,
+                                                    side: const BorderSide(
+                                                        color: HAppColor
+                                                            .hRedColor)),
+                                                child: Text(
+                                                  "Chưa nhận",
+                                                  style: HAppStyle.label2Bold
+                                                      .copyWith(
+                                                          color: HAppColor
+                                                              .hRedColor),
+                                                )),
+                                          ),
+                                          gapW10,
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                orderController.saveOrder(
+                                                    order: order,
+                                                    status: 'Hoàn thành',
+                                                    activeStep:
+                                                        activeStep.value);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                maximumSize: Size(
+                                                    HAppSize.deviceWidth * 0.5,
+                                                    50),
+                                                backgroundColor:
+                                                    HAppColor.hBluePrimaryColor,
+                                              ),
+                                              child: Text(
+                                                "Đã nhận",
+                                                style: HAppStyle.label2Bold
+                                                    .copyWith(
+                                                        color: HAppColor
+                                                            .hWhiteColor),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                if (order.orderStatus == null ||
+                                    order.orderStatus ==
+                                        HAppUtils.orderStatus(0) ||
+                                    order.orderStatus ==
+                                        HAppUtils.orderStatus(1))
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 12),
+                                    child: OutlinedButton(
+                                        onPressed: () {
+                                          orderController.saveOrder(
+                                              order: order,
+                                              status: 'Hủy',
+                                              activeStep: activeStep.value);
+                                        },
+                                        style: OutlinedButton.styleFrom(
+                                          minimumSize:
+                                              Size(HAppSize.deviceWidth, 50),
+                                          side: const BorderSide(
+                                              color: HAppColor.hRedColor),
+                                        ),
+                                        child: Text(
+                                          "Hủy đơn hàng",
+                                          style: HAppStyle.label2Bold.copyWith(
+                                              color: HAppColor.hRedColor),
+                                        )),
+                                  ),
                                 gapH24,
                               ],
                             ),

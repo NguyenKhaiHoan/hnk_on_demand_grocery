@@ -4,13 +4,16 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item_horizal_widget.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class WishlistItemScreen extends StatefulWidget {
   const WishlistItemScreen({super.key});
@@ -22,6 +25,8 @@ class WishlistItemScreen extends StatefulWidget {
 class _WishlistItemScreenState extends State<WishlistItemScreen> {
   final productController = ProductController.instance;
   final rootController = RootController.instance;
+  final cartController = Get.put(CartController());
+  final wishlistController = Get.put(WishlistController());
 
   final WishlistModel model = Get.arguments['model'];
   final List<ProductModel> list = Get.arguments['list'];
@@ -102,21 +107,111 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
         color: HAppColor.hTransparentColor,
         child: ElevatedButton(
           onPressed: () {
-            // if (list.isNotEmpty) {
-            //   for (var model in list) {
-            //     productController.addProductInCart(model);
-            //     if (model.quantity == 0) {
-            //       model.quantity++;
-            //       productController.refreshList(productController.isInCart);
-            //       productController.refreshAllList();
-            //     }
-            //   }
-            //   list.refresh();
-            // } else {
-            //   Get.offAllNamed(HAppRoutes.root);
-            //   rootController.animateToScreen(1);
-            // }
-            // setState(() {});
+            if (list.isNotEmpty) {
+              showDialog(
+                context: Get.overlayContext!,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Thêm vào Giỏ hàng'),
+                    content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Bạn có muốn thêm tất cả sản phẩm trong danh sách mong ước hiện tại vào Giỏ hàng không?',
+                            style: HAppStyle.paragraph2Regular
+                                .copyWith(color: HAppColor.hGreyColorShade600),
+                          ),
+                        ]),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Get.back();
+                          if (cartController.cartProducts.isNotEmpty) {
+                            showDialog(
+                              context: Get.overlayContext!,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title:
+                                      const Text('Thêm vào danh sách mong ước'),
+                                  content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Bạn đang có ${cartController.numberOfCart} sản phẩm trong giỏ hàng. Bạn muốn xóa tất cả và lưu lại các sản phẩm hiện có trong giỏ hàng vào danh sách mong ước không?',
+                                          style: HAppStyle.paragraph2Regular
+                                              .copyWith(
+                                                  color: HAppColor
+                                                      .hGreyColorShade600),
+                                        ),
+                                      ]),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.back();
+                                        for (var product
+                                            in cartController.cartProducts) {
+                                          print(
+                                              'cartController.cartProducts: ${product.productName}');
+                                        }
+                                        Get.toNamed(HAppRoutes.wishlist,
+                                            arguments: {
+                                              'listProductCart':
+                                                  cartController.cartProducts,
+                                              'listProductWishList': list
+                                            });
+                                      },
+                                      child: Text(
+                                        'Có',
+                                        style: HAppStyle.label4Bold.copyWith(
+                                            color: HAppColor.hBluePrimaryColor),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Get.back();
+                                        wishlistController.addToCart(list);
+                                      },
+                                      child: Text(
+                                        'Không',
+                                        style: HAppStyle.label4Bold.copyWith(
+                                            color: HAppColor.hRedColor),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        },
+                        child: Text(
+                          'Có',
+                          style: HAppStyle.label4Bold
+                              .copyWith(color: HAppColor.hBluePrimaryColor),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: Text(
+                          'Không',
+                          style: HAppStyle.label4Bold
+                              .copyWith(color: HAppColor.hRedColor),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
+              Get.toNamed(HAppRoutes.root);
+              rootController.animateToScreen(1);
+            }
           },
           style: ElevatedButton.styleFrom(
             minimumSize: Size(HAppSize.deviceWidth - 48, 50),

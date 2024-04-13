@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
@@ -71,7 +72,9 @@ class UserController extends GetxController {
         currentPosition.value = await HLocationService.getGeoLocationPosition();
         currentPosition.refresh();
         List<String> listPartOfAddress =
-            await HLocationService.getAddressFromLatLong(currentPosition.value);
+            await HLocationService.getAddressFromLatLng(LatLng(
+                currentPosition.value.latitude,
+                currentPosition.value.longitude));
 
         streetAddress.value = listPartOfAddress[0];
         districtAddress.value = listPartOfAddress[1];
@@ -98,7 +101,7 @@ class UserController extends GetxController {
         } else {
           isSetAddressDeliveryTo.value = false;
           HAppUtils.stopLoading();
-          Get.offAllNamed(HAppRoutes.noDeliver);
+          Get.toNamed(HAppRoutes.noDeliver);
           return;
         }
       } else {

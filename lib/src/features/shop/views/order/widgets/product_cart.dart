@@ -27,7 +27,7 @@ class ProductCartWidget extends StatelessWidget {
   });
   final ProductInCartModel model;
 
-  final cartController = CartController.instance;
+  final cartController = Get.put(CartController());
   final detailController = Get.put(DetailController());
 
   @override

@@ -14,12 +14,12 @@ import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class WishlistItemWidget extends StatelessWidget {
-  WishlistItemWidget({
+  const WishlistItemWidget({
     super.key,
     required this.model,
   });
 
-  WishlistModel model;
+  final WishlistModel model;
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +45,8 @@ class WishlistItemWidget extends StatelessWidget {
                       .copyWith(color: HAppColor.hGreyColorShade600),
                 ),
                 Obx(() => FutureBuilder(
-                    key: Key(WishlistController
-                        .instance.refreshWishlistItemData.value
-                        .toString()),
+                    key: Key(
+                        'WishlistItem${WishlistController.instance.refreshWishlistItemData.value.toString()}'),
                     future: ProductRepository.instance
                         .getProductsFromListIds(model.listIds),
                     builder: ((context, snapshot) {

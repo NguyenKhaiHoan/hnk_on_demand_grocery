@@ -1,22 +1,40 @@
-class Chat {
-  final String name, lastMessage, image, time;
-  final bool isActive;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
-  Chat({
-    this.name = '',
-    this.lastMessage = '',
-    this.image = '',
-    this.time = '',
-    this.isActive = false,
+class ChatModel {
+  String? id;
+  String? lastMessage;
+  String? userId;
+  String? storeId;
+  ChatModel({
+    required this.id,
+    this.lastMessage,
+    required this.userId,
+    required this.storeId,
   });
-}
 
-List chatsData = [
-  Chat(
-    name: "Win Mart",
-    lastMessage: "Cảm ơn bạn đã tư vẫn cho tôi",
-    image: "",
-    time: "3 phút trước",
-    isActive: false,
-  ),
-];
+  static ChatModel empty() => ChatModel(id: '', userId: '', storeId: '');
+
+  Map<String, dynamic> toJson() {
+    return {
+      'Id': id,
+      'LastMessage': lastMessage,
+      'UserId': userId,
+      'StoreId': storeId,
+    };
+  }
+
+  factory ChatModel.fromDocumentSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> document) {
+    if (document.data() != null) {
+      final data = document.data()!;
+      return ChatModel(
+        id: document.id,
+        userId: data['UserId'] ?? '',
+        storeId: data['StoreId'] ?? '',
+        lastMessage: data['LastMessage'] ?? '',
+      );
+    }
+    return ChatModel.empty();
+  }
+}

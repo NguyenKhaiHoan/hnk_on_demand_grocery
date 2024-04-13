@@ -65,7 +65,8 @@ class _DeliveryInfomationScreenState extends State<DeliveryInfomationScreen> {
             ]),
             gapH12,
             Obx(() => FutureBuilder(
-                key: Key(addressController.toggleRefresh.value.toString()),
+                key: Key(
+                    'Addresses${addressController.toggleRefresh.value.toString()}'),
                 future: addressController.fetchAllUserAddresses(),
                 builder: ((context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {

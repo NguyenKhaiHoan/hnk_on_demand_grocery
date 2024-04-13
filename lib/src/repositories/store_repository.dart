@@ -20,7 +20,8 @@ class StoreRepository extends GetxController {
     } on FirebaseException catch (e) {
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
-      throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
+      print(e.toString());
+      throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau. ${e.toString()}';
     }
   }
 

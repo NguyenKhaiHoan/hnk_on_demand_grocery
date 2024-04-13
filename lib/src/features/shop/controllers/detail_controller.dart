@@ -44,7 +44,7 @@ class DetailController extends GetxController {
   }
 
   var tempProductInCart = ProductInCartModel.empty();
-  final cartController = CartController.instance;
+  final cartController = Get.put(CartController());
 
   // Future<void> fetchTempProductInCart(ProductModel product) async {
   //   try {

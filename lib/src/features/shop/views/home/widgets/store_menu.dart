@@ -24,8 +24,11 @@ class StoreMenu extends StatelessWidget {
         final address =
             await AddressRepository.instance.getStoreAddress(model.id);
         final stringAddress = address.first.toString();
-        Get.toNamed(HAppRoutes.storeDetail,
-            arguments: {'model': store, 'address': stringAddress});
+        Get.toNamed(
+          HAppRoutes.storeDetail,
+          preventDuplicates: false,
+          arguments: {'model': store, 'address': stringAddress},
+        );
       },
       child: Column(children: [
         Container(

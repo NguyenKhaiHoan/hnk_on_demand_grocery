@@ -31,7 +31,7 @@ class _AllStoreScreenState extends State<AllStoreScreen>
 
   final itemsSort = ['A - Z', 'Z - A', 'Gần - Xa', 'Xa - Gần'];
 
-  final storeController = StoreController.instance;
+  final storeController = Get.put(StoreController());
   final allStoreController = AllStoreController.instance;
 
   final categoryController = CategoryController.instance;

@@ -44,7 +44,7 @@ class WishlistRepository extends GetxController {
 
   Future<String> addAndFindIdForNewWishlist(WishlistModel wishlist) async {
     try {
-      final userId = AuthenticationRepository.instance.authUser?.uid;
+      final userId = AuthenticationRepository.instance.authUser!.uid;
       final currentWishlist = await _db
           .collection('Users')
           .doc(userId)

@@ -8,6 +8,8 @@ import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/district_ward_model.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/initialize_location_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/views/address/picker_location_screen.dart';
 import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
@@ -20,19 +22,18 @@ class FormAddAddressWidget extends StatefulWidget {
 }
 
 class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
-  final addressController = AddressController.instance;
+  final addressController = Get.put(AddressController());
 
   String? valueDistrict;
   String? valueWard;
   String? valueCity;
   List<String> list = [];
 
-  CameraPosition initialCameraPosition = const CameraPosition(
-    target: LatLng(20.980724334716797, 105.7970962524414),
-    zoom: 14,
-  );
+  var checkLocation = false.obs;
+
   Completer<GoogleMapController> googleMapController = Completer();
   GoogleMapController? mapController;
+  final initializeLocationController = Get.put(InitializeLocationController());
 
   @override
   Widget build(BuildContext context) {
@@ -248,42 +249,107 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                     addressController.latitude.value = currentPosition.latitude;
                     addressController.longitude.value =
                         currentPosition.longitude;
+                    checkLocation.value = true;
+                  } else {
+                    addressController.latitude.value =
+                        initializeLocationController.latitude.value;
+                    addressController.longitude.value =
+                        initializeLocationController.longitude.value;
+                    checkLocation.value = false;
                   }
                 })),
+            gapH6,
+            GestureDetector(
+              onTap: () {
+                Get.to(const PickerLocationScreen());
+              },
+              child: SizedBox(
+                height: 200,
+                width: HAppSize.deviceWidth,
+                child: GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(initializeLocationController.latitude.value,
+                        initializeLocationController.longitude.value),
+                    zoom: 14,
+                  ),
+                  mapType: MapType.normal,
+                  myLocationEnabled: true,
+                  onMapCreated: (GoogleMapController controller) async {
+                    googleMapController.complete(controller);
+                    mapController = controller;
+                    Position currentPositon =
+                        await HLocationService.getGeoLocationPosition();
+                    LatLng currentLatLng = LatLng(
+                      currentPositon.latitude,
+                      currentPositon.longitude,
+                    );
+                    CameraPosition cameraPosition = CameraPosition(
+                      target: currentLatLng,
+                      zoom: 14,
+                    );
+                    mapController!.animateCamera(
+                        CameraUpdate.newCameraPosition(cameraPosition));
+                  },
+                ),
+              ),
+            ),
             gapH6,
             SizedBox(
               height: 200,
               width: HAppSize.deviceWidth,
-              child: GoogleMap(
-                initialCameraPosition: initialCameraPosition,
-                mapType: MapType.normal,
-                myLocationButtonEnabled: true,
-                myLocationEnabled: true,
-                zoomControlsEnabled: true,
-                zoomGesturesEnabled: true,
-                onMapCreated: (GoogleMapController controller) async {
-                  googleMapController.complete(controller);
-                  mapController = controller;
-                  Position currentPositon =
-                      await HLocationService.getGeoLocationPosition();
-                  LatLng currentLatLng = LatLng(
-                    currentPositon.latitude,
-                    currentPositon.longitude,
-                  );
-                  CameraPosition cameraPosition = CameraPosition(
-                    target: currentLatLng,
-                    zoom: 14,
-                  );
-                  mapController!.animateCamera(
-                      CameraUpdate.newCameraPosition(cameraPosition));
-                },
-              ),
+              child: Obx(() => GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(
+                          addressController.latitude.value == 0
+                              ? initializeLocationController.latitude.value
+                              : addressController.latitude.value,
+                          addressController.longitude.value == 0
+                              ? initializeLocationController.longitude.value
+                              : addressController.longitude.value),
+                      zoom: 14,
+                    ),
+                    mapType: MapType.normal,
+                    myLocationButtonEnabled: true,
+                    myLocationEnabled: true,
+                    zoomControlsEnabled: true,
+                    zoomGesturesEnabled: true,
+                    onMapCreated: (GoogleMapController controller) async {
+                      googleMapController.complete(controller);
+                      mapController = controller;
+                      Position currentPositon;
+                      LatLng currentLatLng = LatLng(
+                          addressController.latitude.value,
+                          addressController.longitude.value);
+                      if (currentLatLng.latitude == 0 ||
+                          currentLatLng.longitude == 0) {
+                        currentPositon =
+                            await HLocationService.getGeoLocationPosition();
+                        currentLatLng = LatLng(
+                          currentPositon.latitude,
+                          currentPositon.longitude,
+                        );
+                      }
+                      CameraPosition cameraPosition = CameraPosition(
+                        target: currentLatLng,
+                        zoom: 14,
+                      );
+                      mapController!.animateCamera(
+                          CameraUpdate.newCameraPosition(cameraPosition));
+                    },
+                  )),
             ),
             gapH12,
             ElevatedButton(
               onPressed: () {
                 FocusScope.of(context).requestFocus(FocusNode());
-                addressController.addAddress();
+                if (checkLocation.value &&
+                    addressController.latitude.value != 0 &&
+                    addressController.longitude.value != 0) {
+                  addressController.addAddress();
+                } else {
+                  Get.to(const PickerLocationScreen());
+                  checkLocation.value = true;
+                }
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: HAppColor.hBluePrimaryColor,
@@ -291,9 +357,10 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                       Size(HAppSize.deviceWidth - hAppDefaultPadding * 2, 50),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50))),
-              child: Text("Thêm",
+              child: Obx(() => Text(
+                  checkLocation.value ? "Lưu" : "Xác nhận vị trí",
                   style: HAppStyle.label2Bold
-                      .copyWith(color: HAppColor.hWhiteColor)),
+                      .copyWith(color: HAppColor.hWhiteColor))),
             ),
           ],
         ),

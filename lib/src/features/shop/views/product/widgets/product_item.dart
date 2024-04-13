@@ -38,8 +38,8 @@ class ProductItemWidget extends StatelessWidget {
   final String? comparePrice;
 
   final productController = ProductController.instance;
-  final wishlistController = WishlistController.instance;
-  final cartController = CartController.instance;
+  final wishlistController = Get.put(WishlistController());
+  final cartController = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {

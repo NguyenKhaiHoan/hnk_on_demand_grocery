@@ -44,8 +44,8 @@ class AuthenticationRepository extends GetxController {
     } else {
       deviceStorage.writeIfNull('isFirstTime', true);
       deviceStorage.read('isFirstTime') != true
-          ? Get.offAllNamed(HAppRoutes.login)
-          : Get.offAllNamed(HAppRoutes.onboarding);
+          ? Get.toNamed(HAppRoutes.login)
+          : Get.toNamed(HAppRoutes.onboarding);
     }
   }
 
@@ -145,7 +145,7 @@ class AuthenticationRepository extends GetxController {
     try {
       await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();
-      Get.offAllNamed(HAppRoutes.login);
+      Get.toNamed(HAppRoutes.login);
     } on FirebaseAuthException catch (e) {
       throw HFirebaseAuthException(code: e.code).message;
     } on FirebaseException catch (e) {
@@ -177,22 +177,22 @@ class AuthenticationRepository extends GetxController {
           Get.put(BannerController());
           final userController = Get.put(UserController());
           await userController.fetchCurrentPosition();
-          Get.offAllNamed(HAppRoutes.root);
+          Get.toNamed(HAppRoutes.root);
         } else {
           log('user chưa xác thức');
-          Get.offAllNamed(HAppRoutes.verify, arguments: {'email': user.email});
+          Get.toNamed(HAppRoutes.verify, arguments: {'email': user.email});
         }
       } else {
         deviceStorage.writeIfNull('isFirstTime', true);
         deviceStorage.read('isFirstTime') != true
-            ? Get.offAllNamed(HAppRoutes.login)
-            : Get.offAllNamed(HAppRoutes.onboarding);
+            ? Get.toNamed(HAppRoutes.login)
+            : Get.toNamed(HAppRoutes.onboarding);
       }
     } catch (e) {
       deviceStorage.writeIfNull('isFirstTime', true);
       deviceStorage.read('isFirstTime') != true
-          ? Get.offAllNamed(HAppRoutes.login)
-          : Get.offAllNamed(HAppRoutes.onboarding);
+          ? Get.toNamed(HAppRoutes.login)
+          : Get.toNamed(HAppRoutes.onboarding);
       HAppUtils.showSnackBarError(
           'Lỗi', 'Tài khoản người dùng chưa được đăng ký');
     }

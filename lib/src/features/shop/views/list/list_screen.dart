@@ -44,8 +44,8 @@ class _ListScreenState extends State<ListScreen>
   final productController = ProductController.instance;
   final rootController = RootController.instance;
   final exploreController = ExploreController.instance;
-  final storeController = StoreController.instance;
-  final wishlistController = WishlistController.instance;
+  final storeController = Get.put(StoreController());
+  final wishlistController = Get.put(WishlistController());
 
   late final ValueNotifier<bool> _showFab;
 
@@ -143,314 +143,322 @@ class _ListScreenState extends State<ListScreen>
                 )
               ];
             },
-            body: TabBarView(
-                controller: wishlistController.tabController,
-                children: [
-                  Obx(() => FutureBuilder(
-                      key: Key(wishlistController.refreshFavoriteData.value
-                          .toString()),
-                      future: wishlistController.fetchAllFavoriteProductList(),
-                      builder: ((context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CustomLayoutWidget(
-                            widget: GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 3,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 150,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return const ShimmerProductItemHorizalWidget();
-                              },
-                            ),
-                            subWidget: const EndCustomWidget(),
-                          );
-                        }
-
-                        if (snapshot.hasError) {
-                          return const Center(
-                            child: Text(
-                                'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
-                          );
-                        }
-
-                        if (!snapshot.hasData ||
-                            snapshot.data == null ||
-                            snapshot.data!.isEmpty) {
-                          return NotFoundScreenWidget(
-                            title: 'Bạn chưa chọn thích\nsản phẩm nào',
-                            subtitle:
-                                'Hãy tiếp tục chọn và đặt hàng các sản phẩm bạn yêu thích nhé! 😊',
-                            widget: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  minimumSize:
-                                      Size(HAppSize.deviceWidth * 0.45, 50),
-                                  backgroundColor: HAppColor.hBluePrimaryColor,
+            body: Padding(
+              padding:
+                  const EdgeInsets.only(top: hAppDefaultPadding, bottom: 100),
+              child: TabBarView(
+                  controller: wishlistController.tabController,
+                  children: [
+                    Obx(() => FutureBuilder(
+                        key: Key(
+                            'FavoriteProducts${wishlistController.refreshFavoriteData.value.toString()}'),
+                        future:
+                            wishlistController.fetchAllFavoriteProductList(),
+                        builder: ((context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CustomLayoutWidget(
+                              widget: GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: 3,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 1,
+                                  crossAxisSpacing: 10.0,
+                                  mainAxisSpacing: 10.0,
+                                  mainAxisExtent: 150,
                                 ),
-                                onPressed: () {
-                                  rootController.animateToScreen(0);
+                                itemBuilder: (BuildContext context, int index) {
+                                  return const ShimmerProductItemHorizalWidget();
                                 },
-                                child: Text(
-                                  "Mua sắm ngay!",
-                                  style: HAppStyle.label2Bold
-                                      .copyWith(color: HAppColor.hWhiteColor),
-                                )),
-                            subWidget: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  HorizontalListProductWithTitleWidget(
-                                    list: productController.listOfProduct
-                                        .where((p0) => p0.countBuyed > 100)
-                                        .toList(),
-                                    compare: false,
-                                    storeIcon: true,
-                                    title: 'Có thể bạn sẽ thích',
+                              ),
+                              subWidget: const EndCustomWidget(),
+                            );
+                          }
+
+                          if (snapshot.hasError) {
+                            return const Center(
+                              child: Text(
+                                  'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                            );
+                          }
+
+                          if (!snapshot.hasData ||
+                              snapshot.data == null ||
+                              snapshot.data!.isEmpty) {
+                            return NotFoundScreenWidget(
+                              title: 'Bạn chưa chọn thích\nsản phẩm nào',
+                              subtitle:
+                                  'Hãy tiếp tục chọn và đặt hàng các sản phẩm bạn yêu thích nhé! 😊',
+                              widget: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize:
+                                        Size(HAppSize.deviceWidth * 0.45, 50),
+                                    backgroundColor:
+                                        HAppColor.hBluePrimaryColor,
                                   ),
-                                  gapH100,
-                                ]),
-                          );
-                        } else {
-                          final data = snapshot.data!;
-                          return CustomLayoutWidget(
-                            widget: GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: data.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 150,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemHorizalWidget(
-                                  model: data[index],
-                                  compare: false,
-                                );
-                              },
-                            ),
-                            subWidget: const EndCustomWidget(),
-                          );
-                        }
-                      }))),
-                  // SingleChildScrollView(),
-                  Obx(() => FutureBuilder(
-                      key: Key(wishlistController.refreshFavoriteStoreData.value
-                          .toString()),
-                      future: wishlistController.fetchAllFavoriteStoreList(),
-                      builder: ((context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CustomLayoutWidget(
-                            widget: GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 3,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 200,
-                              ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return const ShimmerStoreItemWidget();
-                              },
-                            ),
-                            subWidget: const EndCustomWidget(),
-                          );
-                        }
-
-                        if (snapshot.hasError) {
-                          return const Center(
-                            child: Text(
-                                'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
-                          );
-                        }
-
-                        if (!snapshot.hasData ||
-                            snapshot.data == null ||
-                            snapshot.data!.isEmpty) {
-                          return NotFoundScreenWidget(
-                            title: 'Bạn chưa chọn thích\ncửa hàng nào',
-                            subtitle:
-                                'Bạn sẽ có thể nhận được các thông báo như khuyến mãi, giảm giá, ... từ các cửa hàng yêu thích đó! 😊',
-                            widget: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  minimumSize:
-                                      Size(HAppSize.deviceWidth * 0.45, 50),
-                                  backgroundColor: HAppColor.hBluePrimaryColor,
+                                  onPressed: () {
+                                    rootController.animateToScreen(0);
+                                  },
+                                  child: Text(
+                                    "Mua sắm ngay!",
+                                    style: HAppStyle.label2Bold
+                                        .copyWith(color: HAppColor.hWhiteColor),
+                                  )),
+                              subWidget: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    HorizontalListProductWithTitleWidget(
+                                      list: productController.listOfProduct
+                                          .where((p0) => p0.countBuyed > 100)
+                                          .toList(),
+                                      compare: false,
+                                      storeIcon: true,
+                                      title: 'Có thể bạn sẽ thích',
+                                    ),
+                                    gapH100,
+                                  ]),
+                            );
+                          } else {
+                            final data = snapshot.data!;
+                            return CustomLayoutWidget(
+                              widget: GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: data.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 1,
+                                  crossAxisSpacing: 10.0,
+                                  mainAxisSpacing: 10.0,
+                                  mainAxisExtent: 150,
                                 ),
-                                onPressed: () =>
-                                    rootController.animateToScreen(3),
-                                child: Text(
-                                  "Yêu thích ngay!",
-                                  style: HAppStyle.label2Bold
-                                      .copyWith(color: HAppColor.hWhiteColor),
-                                )),
-                            subWidget: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  HorizontalListStoreWithTitleWidget(
-                                      list: storeController.listOfStore,
-                                      title: 'Các cửa hàng nổi bật'),
-                                  gapH100,
-                                ]),
-                          );
-                        } else {
-                          final data = snapshot.data!;
-                          return CustomLayoutWidget(
-                            widget: GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              padding: const EdgeInsets.only(bottom: 100),
-                              itemCount: data.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 200,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return ProductItemHorizalWidget(
+                                    model: data[index],
+                                    compare: false,
+                                  );
+                                },
                               ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return StoreItemWidget(model: data[index]);
-                              },
-                            ),
-                            subWidget: const EndCustomWidget(),
-                          );
-                        }
-                      }))),
-                  // SingleChildScrollView(),
-                  Obx(() => FutureBuilder(
-                      key: Key(wishlistController.refreshWishlistData.value
-                          .toString()),
-                      future: wishlistController.fetchAllWishlist(),
-                      builder: ((context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CustomLayoutWidget(
-                              widget: ListView.builder(
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: 3,
-                                  itemBuilder: (context, index) {
-                                    return const ShimmerWishlistItemWidget();
-                                  }),
-                              subWidget: Container());
-                        }
+                              subWidget: const EndCustomWidget(),
+                            );
+                          }
+                        }))),
+                    // SingleChildScrollView(),
+                    Obx(() => FutureBuilder(
+                        key: Key(
+                            'FavoriteStores${wishlistController.refreshFavoriteStoreData.value.toString()}'),
+                        future: wishlistController.fetchAllFavoriteStoreList(),
+                        builder: ((context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CustomLayoutWidget(
+                              widget: GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: 3,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 1,
+                                  crossAxisSpacing: 10.0,
+                                  mainAxisSpacing: 10.0,
+                                  mainAxisExtent: 200,
+                                ),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return const ShimmerStoreItemWidget();
+                                },
+                              ),
+                              subWidget: const EndCustomWidget(),
+                            );
+                          }
 
-                        if (snapshot.hasError) {
-                          return const Center(
-                            child: Text(
-                                'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
-                          );
-                        }
+                          if (snapshot.hasError) {
+                            return const Center(
+                              child: Text(
+                                  'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                            );
+                          }
 
-                        if (!snapshot.hasData ||
-                            snapshot.data == null ||
-                            snapshot.data!.isEmpty) {
-                          return NotFoundScreenWidget(
-                              title: 'Bạn chưa có danh sách\nmong ước nào',
+                          if (!snapshot.hasData ||
+                              snapshot.data == null ||
+                              snapshot.data!.isEmpty) {
+                            return NotFoundScreenWidget(
+                              title: 'Bạn chưa chọn thích\ncửa hàng nào',
                               subtitle:
-                                  'Ấn nút Tạo ngay ở bên dưới để bắt đầu tạo danh sách mong ước!',
-                              widget: Container(),
-                              subWidget: Container());
-                        } else {
-                          final data = snapshot.data!;
-                          return CustomLayoutWidget(
-                              widget: ListView.builder(
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: data.length,
-                                  itemBuilder: (context, index) {
-                                    return WishlistItemWidget(
-                                        model: data[index]);
-                                  }),
-                              subWidget: gapH100);
-                        }
-                      }))),
-                  Obx(() => FutureBuilder(
-                      key: Key(wishlistController
-                          .refreshRegisterNotificationData.value
-                          .toString()),
-                      future: wishlistController
-                          .fetchAllRegisterNotificationProductList(),
-                      builder: ((context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return CustomLayoutWidget(
-                            widget: GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 3,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 150,
+                                  'Bạn sẽ có thể nhận được các thông báo như khuyến mãi, giảm giá, ... từ các cửa hàng yêu thích đó! 😊',
+                              widget: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize:
+                                        Size(HAppSize.deviceWidth * 0.45, 50),
+                                    backgroundColor:
+                                        HAppColor.hBluePrimaryColor,
+                                  ),
+                                  onPressed: () =>
+                                      rootController.animateToScreen(3),
+                                  child: Text(
+                                    "Yêu thích ngay!",
+                                    style: HAppStyle.label2Bold
+                                        .copyWith(color: HAppColor.hWhiteColor),
+                                  )),
+                              subWidget: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    HorizontalListStoreWithTitleWidget(
+                                        list: storeController.listOfStore,
+                                        title: 'Các cửa hàng nổi bật'),
+                                    gapH100,
+                                  ]),
+                            );
+                          } else {
+                            final data = snapshot.data!;
+                            return CustomLayoutWidget(
+                              widget: GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.only(bottom: 100),
+                                itemCount: data.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 1,
+                                  crossAxisSpacing: 10.0,
+                                  mainAxisSpacing: 10.0,
+                                  mainAxisExtent: 200,
+                                ),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return StoreItemWidget(model: data[index]);
+                                },
                               ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return const ShimmerProductItemHorizalWidget();
-                              },
-                            ),
-                            subWidget: const EndCustomWidget(),
-                          );
-                        }
+                              subWidget: const EndCustomWidget(),
+                            );
+                          }
+                        }))),
+                    // SingleChildScrollView(),
+                    Obx(() => FutureBuilder(
+                        key: Key(
+                            'Wishlist${wishlistController.refreshWishlistData.value.toString()}'),
+                        future: wishlistController.fetchAllWishlist(),
+                        builder: ((context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CustomLayoutWidget(
+                                widget: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: 3,
+                                    itemBuilder: (context, index) {
+                                      return const ShimmerWishlistItemWidget();
+                                    }),
+                                subWidget: Container());
+                          }
 
-                        if (snapshot.hasError) {
-                          return const Center(
-                            child: Text(
-                                'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
-                          );
-                        }
+                          if (snapshot.hasError) {
+                            return const Center(
+                              child: Text(
+                                  'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                            );
+                          }
 
-                        if (!snapshot.hasData ||
-                            snapshot.data == null ||
-                            snapshot.data!.isEmpty) {
-                          return NotFoundScreenWidget(
-                              title:
-                                  'Bạn chưa đăng ký\nnhận thông báo sản phẩm nào',
-                              subtitle:
-                                  'Với các sản phẩm tạm hết hàng mà bạn quan tâm, hãy ấn biểu tượng chuông để đăng khí nhận thông báo khi có hàng!',
-                              widget: Container(),
-                              subWidget: Container());
-                        } else {
-                          final data = snapshot.data!;
-                          return CustomLayoutWidget(
-                            widget: GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: data.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                crossAxisSpacing: 10.0,
-                                mainAxisSpacing: 10.0,
-                                mainAxisExtent: 150,
+                          if (!snapshot.hasData ||
+                              snapshot.data == null ||
+                              snapshot.data!.isEmpty) {
+                            return NotFoundScreenWidget(
+                                title: 'Bạn chưa có danh sách\nmong ước nào',
+                                subtitle:
+                                    'Ấn nút Tạo ngay ở bên dưới để bắt đầu tạo danh sách mong ước!',
+                                widget: Container(),
+                                subWidget: Container());
+                          } else {
+                            final data = snapshot.data!;
+                            return CustomLayoutWidget(
+                                widget: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: data.length,
+                                    itemBuilder: (context, index) {
+                                      return WishlistItemWidget(
+                                          model: data[index]);
+                                    }),
+                                subWidget: gapH100);
+                          }
+                        }))),
+                    Obx(() => FutureBuilder(
+                        key: Key(
+                            'RegisterNotification${wishlistController.refreshRegisterNotificationData.value.toString()}'),
+                        future: wishlistController
+                            .fetchAllRegisterNotificationProductList(),
+                        builder: ((context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CustomLayoutWidget(
+                              widget: GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: 3,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 1,
+                                  crossAxisSpacing: 10.0,
+                                  mainAxisSpacing: 10.0,
+                                  mainAxisExtent: 150,
+                                ),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return const ShimmerProductItemHorizalWidget();
+                                },
                               ),
-                              itemBuilder: (BuildContext context, int index) {
-                                return ProductItemHorizalWidget(
-                                  model: data[index],
-                                  compare: false,
-                                );
-                              },
-                            ),
-                            subWidget: const EndCustomWidget(),
-                          );
-                        }
-                      }))),
-                  // SingleChildScrollView()
-                ]),
+                              subWidget: const EndCustomWidget(),
+                            );
+                          }
+
+                          if (snapshot.hasError) {
+                            return const Center(
+                              child: Text(
+                                  'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                            );
+                          }
+
+                          if (!snapshot.hasData ||
+                              snapshot.data == null ||
+                              snapshot.data!.isEmpty) {
+                            return NotFoundScreenWidget(
+                                title:
+                                    'Bạn chưa đăng ký\nnhận thông báo sản phẩm nào',
+                                subtitle:
+                                    'Với các sản phẩm tạm hết hàng mà bạn quan tâm, hãy ấn biểu tượng chuông để đăng khí nhận thông báo khi có hàng!',
+                                widget: Container(),
+                                subWidget: Container());
+                          } else {
+                            final data = snapshot.data!;
+                            return CustomLayoutWidget(
+                              widget: GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: data.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 1,
+                                  crossAxisSpacing: 10.0,
+                                  mainAxisSpacing: 10.0,
+                                  mainAxisExtent: 150,
+                                ),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return ProductItemHorizalWidget(
+                                    model: data[index],
+                                    compare: false,
+                                  );
+                                },
+                              ),
+                              subWidget: const EndCustomWidget(),
+                            );
+                          }
+                        }))),
+                    // SingleChildScrollView()
+                  ]),
+            ),
           ),
           floatingActionButton: ValueListenableBuilder<bool>(
             valueListenable: _showFab,

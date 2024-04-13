@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -32,13 +35,17 @@ import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.
 import 'package:on_demand_grocery/src/features/shop/controllers/search_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/home_appbar_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/home_category.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/recent_order_item_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/shopping_reminder_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/store_menu.dart';
+import 'package:on_demand_grocery/src/features/shop/views/live_tracking/live_tracking_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/order/order_detail_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
+import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
@@ -58,37 +65,17 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   bool get wantKeepAlive => true;
 
-  // final storeController = StoreController.instance;
-  // final homeController = HomeController.instance;
-  // final productController = ProductController.instance;
-  // final cartController = CartController.instance;
-  // final chanegPasswordController = ChangePasswordController.instance;
-  // final changeNameController = ChangeNameController.instance;
-  // final changePhoneController = ChangePhoneController.instance;
-  // final dateDeliveryController = DateDeliveryController.instance;
-  // final chatController = ChatController.instance;
-  // final filterStoreController = FilterStoreController.instance;
-  // final searchController = SearchProductController.instance;
-  // final orderController = OrderController.instance;
-
-  final storeController = StoreController.instance;
+  final storeController = Get.put(StoreController());
   final productController = ProductController.instance;
   final cartController = Get.put(CartController());
   final homeController = Get.put(HomeController());
-  final chanegPasswordController = Get.put(ChangePasswordController());
-  final changeNameController = Get.put(ChangeNameController());
-  final changePhoneController = Get.put(ChangePhoneController());
-  final dateDeliveryController = Get.put(DateDeliveryController());
+
   final chatController = Get.put(ChatController());
-  final filterStoreController = Get.put(FilterStoreController());
-  final searchController = Get.put(SearchController());
   final orderController = Get.put(OrderController());
   final rootController = RootController.instance;
 
   final bannerController = BannerController.instance;
   final categoryController = CategoryController.instance;
-  final allStoreController = Get.put(StoreController());
-  final wishlistController = Get.put(WishlistController());
   final exploreController = Get.put(ExploreController());
 
   final storeRepository = Get.put(StoreRepository());
@@ -98,6 +85,11 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    var query = FirebaseDatabase.instance
+        .ref()
+        .child('Orders')
+        .orderByChild('OrderUserId')
+        .equalTo(AuthenticationRepository.instance.authUser!.uid);
     return Scaffold(
       backgroundColor: HAppColor.hBackgroundColor,
       appBar: HomeAppbarWidget(),
@@ -135,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     onTap: () => Get.toNamed(HAppRoutes.search)),
               ),
-              gapH16,
+              gapH12,
               Expanded(
                 child: SingleChildScrollView(
                     child: Column(
@@ -148,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 ? Column(
                                     children: [
                                       ShoppingReminderWidget(),
-                                      gapH16
+                                      gapH12
                                     ],
                                   )
                                 : Container(),
@@ -159,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen>
                           HomeCategory(),
                         ]),
                       ),
-                      gapH16,
+                      gapH12,
                       Obx(() => bannerController.isLoading.value
                           ? Padding(
                               padding: hAppDefaultPaddingLR,
@@ -198,63 +190,222 @@ class _HomeScreenState extends State<HomeScreen>
                                     bannerController.onPageChanged(index),
                               ),
                             )),
-                      gapH16,
+                      gapH12,
                       Padding(
                           padding: hAppDefaultPaddingLR,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Obx(() => orderController.listOder.isNotEmpty
-                                  ? Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                              Obx(() => FutureBuilder(
+                                    key: Key(
+                                        'Orders${orderController.resetToggle.value.toString()}'),
+                                    future: query.once(),
+                                    builder: ((context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            const Text(
-                                              "Đơn gần đây",
-                                              style: HAppStyle.heading3Style,
+                                            CustomShimmerWidget.rectangular(
+                                              height: 16,
+                                              width: 100,
                                             ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                Get.toNamed(
-                                                    HAppRoutes.listOrder);
-                                              },
-                                              child: Text("Xem tất cả",
-                                                  style: HAppStyle
-                                                      .paragraph3Regular
-                                                      .copyWith(
-                                                          color: HAppColor
-                                                              .hBluePrimaryColor)),
-                                            ),
+                                            gapH12,
+                                            SizedBox(
+                                              height: 210,
+                                              child: ListView.separated(
+                                                  shrinkWrap: true,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return CustomShimmerWidget
+                                                        .rectangular(
+                                                      height: 210,
+                                                      width: 210,
+                                                    );
+                                                  },
+                                                  separatorBuilder:
+                                                      (context, index) =>
+                                                          gapW12,
+                                                  itemCount: 3),
+                                            )
                                           ],
-                                        ),
-                                        gapH6,
-                                        SizedBox(
-                                          height: 190,
-                                          child: ListView.separated(
-                                              shrinkWrap: true,
-                                              scrollDirection: Axis.horizontal,
-                                              itemBuilder: (context, index) {
-                                                return RecentOrderItemWidget(
-                                                  onTap: () {},
-                                                  model: orderController
-                                                      .listOder[index],
-                                                );
-                                              },
-                                              separatorBuilder: (_, __) =>
-                                                  gapW10,
-                                              itemCount: orderController
-                                                  .listOder.length),
-                                        ),
-                                        gapH16,
-                                      ],
-                                    )
-                                  : Container()),
+                                        );
+                                      } else if (snapshot.hasError) {
+                                        return const Center(
+                                          child: Text(
+                                              'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                                        );
+                                      } else if (!snapshot.hasData ||
+                                          snapshot.data!.snapshot.value ==
+                                              null) {
+                                        return Obx(() => orderController
+                                                .isLoading.value
+                                            ? Column(
+                                                children: [
+                                                  CustomShimmerWidget
+                                                      .rectangular(
+                                                    height: 16,
+                                                    width: 100,
+                                                  ),
+                                                  gapH12,
+                                                  SizedBox(
+                                                    height: 210,
+                                                    child: ListView.separated(
+                                                        shrinkWrap: true,
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return CustomShimmerWidget
+                                                              .rectangular(
+                                                            height: 210,
+                                                            width: 210,
+                                                          );
+                                                        },
+                                                        separatorBuilder:
+                                                            (context, index) =>
+                                                                gapW12,
+                                                        itemCount: 3),
+                                                  )
+                                                ],
+                                              )
+                                            : orderController.listOder.isEmpty
+                                                ? Container()
+                                                : Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          const Text(
+                                                            "Đơn hàng gần đây",
+                                                            style: HAppStyle
+                                                                .heading4Style,
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {},
+                                                            child: Text(
+                                                                "Xem tất cả",
+                                                                style: HAppStyle
+                                                                    .paragraph3Regular
+                                                                    .copyWith(
+                                                                        color: HAppColor
+                                                                            .hBluePrimaryColor)),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      gapH12,
+                                                      SizedBox(
+                                                        height: 210,
+                                                        child:
+                                                            ListView.separated(
+                                                                shrinkWrap:
+                                                                    true,
+                                                                scrollDirection:
+                                                                    Axis
+                                                                        .horizontal,
+                                                                itemBuilder:
+                                                                    (context,
+                                                                        index) {
+                                                                  var order =
+                                                                      orderController
+                                                                              .listOder[
+                                                                          index];
+                                                                  return RecentOrderItemWidget(
+                                                                      onTap: () =>
+                                                                          Get.to(
+                                                                              () => OrderDetailScreen(),
+                                                                              arguments: {
+                                                                                'order': order
+                                                                              }),
+                                                                      model:
+                                                                          order);
+                                                                },
+                                                                separatorBuilder:
+                                                                    (context,
+                                                                            index) =>
+                                                                        gapW12,
+                                                                itemCount:
+                                                                    orderController
+                                                                        .listOder
+                                                                        .length),
+                                                      )
+                                                    ],
+                                                  ));
+                                      }
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            "Đang hoạt động",
+                                            style: HAppStyle.heading4Style,
+                                          ),
+                                          gapH12,
+                                          SizedBox(
+                                            height: 210,
+                                            child: FirebaseAnimatedList(
+                                                shrinkWrap: true,
+                                                sort: (a, b) {
+                                                  return ((b.value as Map)[
+                                                          'OrderDate'] as int)
+                                                      .compareTo(((a.value
+                                                              as Map)[
+                                                          'OrderDate'] as int));
+                                                },
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                query: query,
+                                                itemBuilder: (context, snapshot,
+                                                    animation, index) {
+                                                  OrderModel order =
+                                                      OrderModel.fromJson(
+                                                          jsonDecode(jsonEncode(
+                                                                  snapshot
+                                                                      .value))
+                                                              as Map<String,
+                                                                  dynamic>);
+                                                  return Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            right: 12),
+                                                    child:
+                                                        RecentOrderItemWidget(
+                                                            onTap: () {
+                                                              var stepperData =
+                                                                  OrderController
+                                                                      .instance
+                                                                      .listStepData(
+                                                                          order);
+                                                              Get.to(
+                                                                  () =>
+                                                                      const LiveTrackingScreen(),
+                                                                  arguments: {
+                                                                    'order':
+                                                                        order,
+                                                                    'stepperData':
+                                                                        stepperData
+                                                                  });
+                                                            },
+                                                            model: order),
+                                                  );
+                                                }),
+                                          ),
+                                        ],
+                                      );
+                                    }),
+                                  )),
+                              gapH12,
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -262,7 +413,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 children: [
                                   const Text(
                                     "Cửa hàng gần đây",
-                                    style: HAppStyle.heading3Style,
+                                    style: HAppStyle.heading4Style,
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -276,7 +427,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   ),
                                 ],
                               ),
-                              gapH16,
+                              gapH12,
                               SizedBox(
                                 height: 110,
                                 child: Obx(() => storeController
@@ -340,37 +491,37 @@ class _HomeScreenState extends State<HomeScreen>
                                         itemCount: storeController
                                             .allNearbyStoreId.length)),
                               ),
-                              gapH16,
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    "Sản phẩm gần đây",
-                                    style: HAppStyle.heading3Style,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      rootController.animateToScreen(1);
-                                      exploreController.animateToTab(0);
-                                    },
-                                    child: Text("Xem tất cả",
-                                        style: HAppStyle.paragraph3Regular
-                                            .copyWith(
-                                                color: HAppColor
-                                                    .hBluePrimaryColor)),
-                                  )
-                                ],
-                              ),
-                              gapH16,
-                              Obx(() => productController.isLoadingNearby.value
-                                  ? const ShimmerHorizontalListProductWidget()
-                                  : HorizontalListProductWidget(
-                                      list: productController
-                                          .sortProductByUploadTime(),
-                                      compare: false)),
-                              gapH16,
+                              gapH12,
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceBetween,
+                              //   crossAxisAlignment: CrossAxisAlignment.center,
+                              //   children: [
+                              //     const Text(
+                              //       "Sản phẩm gần đây",
+                              //       style: HAppStyle.heading4Style,
+                              //     ),
+                              //     GestureDetector(
+                              //       onTap: () {
+                              //         rootController.animateToScreen(1);
+                              //         exploreController.animateToTab(0);
+                              //       },
+                              //       child: Text("Xem tất cả",
+                              //           style: HAppStyle.paragraph3Regular
+                              //               .copyWith(
+                              //                   color: HAppColor
+                              //                       .hBluePrimaryColor)),
+                              //     )
+                              //   ],
+                              // ),
+                              // gapH12,
+                              // Obx(() => productController.isLoadingNearby.value
+                              //     ? const ShimmerHorizontalListProductWidget()
+                              //     : HorizontalListProductWidget(
+                              //         list: productController
+                              //             .sortProductByUploadTime(),
+                              //         compare: false)),
+                              // gapH12,
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -378,7 +529,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 children: [
                                   const Text(
                                     "Bán chạy",
-                                    style: HAppStyle.heading3Style,
+                                    style: HAppStyle.heading4Style,
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -393,7 +544,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   )
                                 ],
                               ),
-                              gapH16,
+                              gapH12,
                               FutureBuilder(
                                 future: ProductRepository.instance
                                     .getTopSellingProducts(),
@@ -421,7 +572,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   }
                                 },
                               ),
-                              gapH16,
+                              gapH12,
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -429,7 +580,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 children: [
                                   const Text(
                                     "Giảm giá",
-                                    style: HAppStyle.heading3Style,
+                                    style: HAppStyle.heading4Style,
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -444,7 +595,7 @@ class _HomeScreenState extends State<HomeScreen>
                                   )
                                 ],
                               ),
-                              gapH16,
+                              gapH12,
                               FutureBuilder(
                                 future: ProductRepository.instance
                                     .getTopSaleProducts(),

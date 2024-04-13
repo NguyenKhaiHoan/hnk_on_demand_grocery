@@ -41,7 +41,7 @@ class _StoreDetailScreenState extends State<StoreDetailScreen> {
 
   final allStoreController = AllStoreController.instance;
   final productController = ProductController.instance;
-  final storeController = StoreController.instance;
+  final storeController = Get.put(StoreController());
   final categoryController = CategoryController.instance;
 
   final double coverHeight = 250;

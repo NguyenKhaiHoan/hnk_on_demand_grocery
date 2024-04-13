@@ -98,7 +98,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 searchController
                     .addListProductInSearch(productController.listOfProduct);
                 searchController.addMapProductInSearch();
-                print(productController.listOfProduct.first.name);
               },
               controller: searchController.controller,
               autofocus: true,
@@ -285,6 +284,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         ),
                                         onPressed: () => Get.toNamed(
                                             HAppRoutes.storeDetail,
+                                            preventDuplicates: false,
                                             arguments: {'model': store}),
                                         child: const Text("Ghé thăm")),
                                   )

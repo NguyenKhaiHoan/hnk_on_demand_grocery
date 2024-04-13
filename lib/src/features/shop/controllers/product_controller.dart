@@ -23,17 +23,18 @@ class ProductController extends GetxController {
   var isLoadingNearby = false.obs;
 
   Future<void> addNearbyProducts(String storeId) async {
-    isLoadingNearby.value = true;
     if (StoreController.instance.allNearbyStoreId.contains(storeId)) {
       final products = await productRepository.getProductsForStore(storeId);
       nearbyProduct.addAll(products);
     }
-    isLoadingNearby.value = false;
   }
 
   List<ProductModel> sortProductByUploadTime() {
-    nearbyProduct.sort((a, b) => -a.uploadTime.compareTo(b.uploadTime));
-    return nearbyProduct;
+    if (nearbyProduct.isNotEmpty) {
+      nearbyProduct.sort((a, b) => -a.uploadTime.compareTo(b.uploadTime));
+      return nearbyProduct;
+    }
+    return [];
   }
 
   var isLoading = false.obs;

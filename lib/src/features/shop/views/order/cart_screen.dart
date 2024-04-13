@@ -23,7 +23,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
   final productController = ProductController.instance;
-  final cartController = CartController.instance;
+  final cartController = Get.put(CartController());
   bool? check1 = false;
 
   @override
@@ -61,7 +61,56 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
             children: [
               gapW12,
               GestureDetector(
-                onTap: () => Get.back(),
+                onTap: () {
+                  if (cartController.isReorder.value) {
+                    showDialog(
+                      context: Get.overlayContext!,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Hủy đặt lại đơn hàng'),
+                          content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Bạn chắc chắn muốn hủy đặt lại đơn hàng không?',
+                                  style: HAppStyle.paragraph2Regular.copyWith(
+                                      color: HAppColor.hGreyColorShade600),
+                                ),
+                              ]),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                cartController.isReorder.value = false;
+                                cartController.loadCartData();
+                                Get.back();
+                                Get.back();
+                              },
+                              child: Text(
+                                'Có',
+                                style: HAppStyle.label4Bold.copyWith(
+                                    color: HAppColor.hBluePrimaryColor),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              child: Text(
+                                'Không',
+                                style: HAppStyle.label4Bold
+                                    .copyWith(color: HAppColor.hRedColor),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    Get.back();
+                  }
+                },
                 child: Container(
                   width: 40,
                   height: 40,
@@ -288,8 +337,6 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    VoucherWidget(),
-                    gapH24,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -301,8 +348,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                                     text: cartController.totalCartPrice.value !=
                                             0
                                         ? HAppUtils.vietNamCurrencyFormatting(
-                                            cartController
-                                                .getPriceWithDiscount())
+                                            cartController.totalCartPrice.value)
                                         : "0₫",
                                     style: HAppStyle.heading4Style.copyWith(
                                         color: HAppColor.hBluePrimaryColor),

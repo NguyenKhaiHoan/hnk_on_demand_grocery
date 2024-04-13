@@ -5,6 +5,7 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
@@ -49,10 +50,10 @@ class HLocationService {
         desiredAccuracy: LocationAccuracy.high);
   }
 
-  static Future<List<String>> getAddressFromLatLong(Position position) async {
+  static Future<List<String>> getAddressFromLatLng(LatLng latLng) async {
     try {
       List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
+          await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
       Placemark place = placemarks[0];
       return [
         place.street ?? '',
@@ -66,7 +67,7 @@ class HLocationService {
   }
 
   static Future<void> getNearbyStoresAndProducts() async {
-    final storeController = StoreController.instance;
+    final storeController = Get.put(StoreController());
     final productController = ProductController.instance;
     storeController.allNearbyStoreId.clear();
     productController.nearbyProduct.clear();

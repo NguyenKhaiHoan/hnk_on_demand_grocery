@@ -10,7 +10,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
-import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatOrderRealtimeScreen extends StatefulWidget {
@@ -23,11 +22,20 @@ class ChatOrderRealtimeScreen extends StatefulWidget {
 
 class _ChatOrderRealtimeScreenState extends State<ChatOrderRealtimeScreen> {
   final String orderId = Get.arguments['orderId'];
+  final String anotherId = Get.arguments['anotherId'];
+  final String otherId = Get.arguments['otherId'];
 
   final List<types.Message> _messages = [];
   final _user = types.User(
-    id: UserController.instance.user.value.id,
-  );
+      id: UserController.instance.user.value.id,
+      firstName: UserController.instance.user.value.name.substring(
+          0,
+          UserController.instance.user.value.name.length > 10
+              ? 10
+              : UserController.instance.user.value.name.length),
+      imageUrl: UserController.instance.user.value.profileImage == ''
+          ? 'https://icons.veryicon.com/png/o/business/menu-icon/user-195.png'
+          : UserController.instance.user.value.profileImage);
 
   @override
   void initState() {
@@ -36,11 +44,9 @@ class _ChatOrderRealtimeScreenState extends State<ChatOrderRealtimeScreen> {
   }
 
   void _addMessage(types.Message message) {
-    setState(() {
-      _messages.insert(0, message);
-    });
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref().child('Chats/$orderId');
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref()
+        .child('Chats/$orderId/$anotherId/$otherId');
     ref.push().set({'message': message.toJson()});
   }
 
@@ -79,9 +85,17 @@ class _ChatOrderRealtimeScreenState extends State<ChatOrderRealtimeScreen> {
       previewData: previewData,
     );
 
-    setState(() {
-      _messages[index] = updatedMessage;
-    });
+    _messages[index] = updatedMessage;
+
+    updateView();
+  }
+
+  void updateView() {
+    if (!mounted) {
+      return;
+    } else {
+      setState(() {});
+    }
   }
 
   void _handleAttachmentPressed() {
@@ -129,18 +143,18 @@ class _ChatOrderRealtimeScreenState extends State<ChatOrderRealtimeScreen> {
   }
 
   void _loadMessages() async {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref().child('Chats/$orderId');
+    DatabaseReference ref = FirebaseDatabase.instance
+        .ref()
+        .child('Chats/$orderId/$anotherId/$otherId');
     ref.onChildAdded.listen((event) {
       if (event.snapshot.value != null) {
         DataSnapshot snapshot = event.snapshot;
         var message = types.Message.fromJson(
             jsonDecode(jsonEncode(((snapshot.value as Map)['message']))));
-        setState(() {
-          _messages.add(message);
-        });
-      } else {
-        // var message = types.Message.fromJson(dataMap);
+
+        _messages.insert(0, message);
+
+        updateView();
       }
     });
   }
@@ -151,7 +165,7 @@ class _ChatOrderRealtimeScreenState extends State<ChatOrderRealtimeScreen> {
           titleSpacing: 0,
           centerTitle: false,
           automaticallyImplyLeading: false,
-          backgroundColor: HAppColor.hTransparentColor,
+          backgroundColor: HAppColor.hBackgroundColor,
           toolbarHeight: 80,
           title: Padding(
             padding: hAppDefaultPaddingL,
@@ -190,13 +204,21 @@ class _ChatOrderRealtimeScreenState extends State<ChatOrderRealtimeScreen> {
           showUserAvatars: true,
           showUserNames: true,
           user: _user,
+          l10n: const ChatL10nVi(),
           theme: const DefaultChatTheme(
-            backgroundColor: HAppColor.hBackgroundColor,
-            seenIcon: Text(
-              'read',
-              style: HAppStyle.paragraph3Regular,
-            ),
-          ),
+              backgroundColor: HAppColor.hBackgroundColor),
         ),
       );
+}
+
+@immutable
+class ChatL10nVi extends ChatL10n {
+  const ChatL10nVi({
+    super.attachmentButtonAccessibilityLabel = 'Gửi phương tiện',
+    super.emptyChatPlaceholder = 'Chưa có tin nhắn ở đây',
+    super.fileButtonAccessibilityLabel = 'Tệp',
+    super.inputPlaceholder = 'Tin nhắn',
+    super.sendButtonAccessibilityLabel = 'Gửi',
+    super.unreadMessagesLabel = 'Tin nhắn chưa đọc',
+  });
 }

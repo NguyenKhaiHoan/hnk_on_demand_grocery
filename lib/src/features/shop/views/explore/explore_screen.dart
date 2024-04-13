@@ -32,10 +32,16 @@ class _ExploreScreenState extends State<ExploreScreen>
   @override
   bool get wantKeepAlive => true;
 
-  final exploreController = ExploreController.instance;
+  final exploreController = Get.put(ExploreController());
   final productController = ProductController.instance;
   final categoryController = CategoryController.instance;
-  final cartController = CartController.instance;
+  final cartController = Get.put(CartController());
+
+  @override
+  void dispose() {
+    exploreController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +156,7 @@ class _TabBodyState extends State<TabBody> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => FutureBuilder(
-        key: Key(exploreController.refreshData.value.toString()),
+        key: Key('Explore${exploreController.refreshData.value.toString()}'),
         future: productController.fetchProductsByQuery(
             productController
                 .getFutureQuery(exploreController.tabController.index),

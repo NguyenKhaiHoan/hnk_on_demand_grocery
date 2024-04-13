@@ -262,13 +262,13 @@ abstract class HAppPages {
       curve: Curves.easeOut,
       transition: Transition.fadeIn,
     ),
-    GetPage(
-      name: HAppRoutes.selectDeliveryAddress,
-      page: () => const SelectDeliveryAddressScreen(),
-      transitionDuration: const Duration(milliseconds: 500),
-      curve: Curves.easeOut,
-      transition: Transition.fadeIn,
-    ),
+    // GetPage(
+    //   name: HAppRoutes.selectDeliveryAddress,
+    //   page: () => const SelectDeliveryAddressScreen(),
+    //   transitionDuration: const Duration(milliseconds: 500),
+    //   curve: Curves.easeOut,
+    //   transition: Transition.fadeIn,
+    // ),
     GetPage(
       name: HAppRoutes.showMoreProductInStore,
       page: () => const ShowMoreProductInStore(),

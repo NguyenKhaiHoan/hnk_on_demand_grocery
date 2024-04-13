@@ -26,9 +26,9 @@ class StoreItemWidget extends StatefulWidget {
 class _StoreItemWidgetState extends State<StoreItemWidget> {
   var storeLocation = StoreLocationModel.empty().obs;
 
-  final storeController = StoreController.instance;
+  final storeController = Get.put(StoreController());
 
-  final wishlistController = WishlistController.instance;
+  final wishlistController = Get.put(WishlistController());
 
   @override
   void initState() {

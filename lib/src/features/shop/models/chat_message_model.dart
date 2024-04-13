@@ -1,29 +1,35 @@
-import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
+// import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
-enum ChatMessageType { text, image, video }
+// enum MessageType { Default, Product }
 
-enum MessageStatus { not_sent, not_view, viewed }
+// class ChatMessageModel {
+//   types.Message? message;
+//   MessageType? messageType;
+//   ProductModel? product;
 
-class ChatMessage {
-  final String text;
-  final ChatMessageType messageType;
-  final MessageStatus messageStatus;
-  final bool isSender;
-  final ProductModel? product;
+//   ChatMessageModel({this.message, this.product, required this.messageType});
 
-  ChatMessage(
-      {this.text = '',
-      required this.messageType,
-      required this.messageStatus,
-      required this.isSender,
-      this.product});
-}
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'Message': message,
+//       'MessageType': messageType!.name,
+//       'Product': product,
+//     };
+//   }
 
-List<ChatMessage> demeChatMessages = [
-  ChatMessage(
-    text: "Xin chào, chúng tôi có thể giúp gì được cho bạn ?",
-    messageType: ChatMessageType.text,
-    messageStatus: MessageStatus.viewed,
-    isSender: false,
-  ),
-];
+//   factory ChatMessageModel.fromDocumentSnapshot(
+//       DocumentSnapshot<Map<String, dynamic>> document) {
+//     final data = document.data()!;
+//     return ChatMessageModel(
+//       message: data['Message'] != null
+//           ? types.Message.fromJson(data['Message'])
+//           : null,
+//       messageType: MessageType.values.byName(data['MessageType']),
+//       product: data['Product'] != null
+//           ? ProductModel.fromDocumentSnapshot(data['Product'])
+//           : null,
+//     );
+//   }
+// }

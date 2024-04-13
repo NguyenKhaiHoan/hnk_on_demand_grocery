@@ -101,7 +101,8 @@ class StoreController extends GetxController
   var showFilter = false.obs;
 
   StoreLocationModel convertStoreModelToStoreLocationModel(String storeId) {
-    final index = StoreController.instance.allNearbyStoreLocation
+    final index = Get.put(StoreController())
+        .allNearbyStoreLocation
         .indexWhere((element) => element.storeId == storeId);
     if (index >= 0) {
       return StoreController.instance.allNearbyStoreLocation[index];

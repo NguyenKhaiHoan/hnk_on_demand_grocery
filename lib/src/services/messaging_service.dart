@@ -16,7 +16,9 @@ import 'package:on_demand_grocery/src/features/personalization/controllers/user_
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/user_model.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/delivery_person_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/delivery_person_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_note_model.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
@@ -69,80 +71,175 @@ class HNotificationService {
         if (message.notification!.title != null &&
             message.notification!.body != null) {
           final notificationData = message.data;
-          if (notificationData['deliveryPerson'] == null) {
-            log('Null không có gì');
-          }
+          if (notificationData['deliveryPerson'] != null) {
+            DeliveryPersonModel deliveryPersonData =
+                DeliveryPersonModel.fromJson(
+                    json.decode(notificationData['deliveryPerson']));
 
-          DeliveryPersonModel deliveryPersonData = DeliveryPersonModel.fromJson(
-              json.decode(notificationData['deliveryPerson']));
-
-          HAppUtils.showSnackBarSuccess(
-              message.notification!.title!, message.notification!.body!);
-          showDialog(
-            context: Get.overlayContext!,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(message.notification!.title!),
-                content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        message.notification!.body!,
-                        style: HAppStyle.paragraph2Regular
-                            .copyWith(color: HAppColor.hGreyColorShade600),
+            HAppUtils.showSnackBarSuccess(
+                message.notification!.title!, message.notification!.body!);
+            showDialog(
+              context: Get.overlayContext!,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(message.notification!.title!),
+                  content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          message.notification!.body!,
+                          style: HAppStyle.paragraph2Regular
+                              .copyWith(color: HAppColor.hGreyColorShade600),
+                        ),
+                        gapH10,
+                        const Text(
+                          'Thông tin người giao hàng:',
+                          style: HAppStyle.paragraph1Bold,
+                        ),
+                        gapH8,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            deliveryPersonData.image == '' ||
+                                    deliveryPersonData.image == null
+                                ? Image.asset(
+                                    'assets/logos/logo.png',
+                                    height: 60,
+                                    width: 60,
+                                  )
+                                : ImageNetwork(
+                                    image: deliveryPersonData.image!,
+                                    height: 60,
+                                    width: 60,
+                                    borderRadius: BorderRadius.circular(100),
+                                    onLoading:
+                                        const CustomShimmerWidget.circular(
+                                            width: 60, height: 60),
+                                  ),
+                            gapW10,
+                            Text.rich(TextSpan(
+                                text: deliveryPersonData.name,
+                                style: HAppStyle.heading5Style,
+                                children: [
+                                  TextSpan(
+                                      text:
+                                          '\n${deliveryPersonData.phoneNumber}',
+                                      style: HAppStyle.paragraph2Regular
+                                          .copyWith(
+                                              color:
+                                                  HAppColor.hGreyColorShade600))
+                                ])),
+                          ],
+                        )
+                      ]),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Get.back(),
+                      child: Text(
+                        'Đã biết',
+                        style: HAppStyle.label4Bold
+                            .copyWith(color: HAppColor.hBluePrimaryColor),
                       ),
-                      gapH10,
-                      const Text(
-                        'Thông tin người giao hàng:',
-                        style: HAppStyle.paragraph1Bold,
-                      ),
-                      gapH8,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          deliveryPersonData.image == '' ||
-                                  deliveryPersonData.image == null
-                              ? Image.asset(
-                                  'assets/logos/logo.png',
-                                  height: 60,
-                                  width: 60,
-                                )
-                              : ImageNetwork(
-                                  image: deliveryPersonData.image!,
-                                  height: 60,
-                                  width: 60,
-                                  borderRadius: BorderRadius.circular(100),
-                                  onLoading: const CustomShimmerWidget.circular(
-                                      width: 60, height: 60),
-                                ),
-                          gapW10,
-                          Text.rich(TextSpan(
-                              text: deliveryPersonData.name,
-                              style: HAppStyle.heading5Style,
-                              children: [
-                                TextSpan(
-                                    text: '\n${deliveryPersonData.phoneNumber}',
-                                    style: HAppStyle.paragraph2Regular.copyWith(
-                                        color: HAppColor.hGreyColorShade600))
-                              ])),
-                        ],
-                      )
-                    ]),
-                actions: [
-                  TextButton(
-                    onPressed: () => Get.back(),
-                    child: Text(
-                      'Đã biết',
-                      style: HAppStyle.label4Bold
-                          .copyWith(color: HAppColor.hBluePrimaryColor),
                     ),
-                  ),
-                ],
+                  ],
+                );
+              },
+            );
+          }
+          if (notificationData['reject'] != null) {
+            final orderController = OrderController.instance;
+            OrderModel orderData =
+                OrderModel.fromJson(json.decode(notificationData['order']));
+            if (notificationData['store']
+                .toString()
+                .contains('Bị từ chối tất cả')) {
+              showDialog(
+                context: Get.overlayContext!,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(message.notification!.title!),
+                    content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            message.notification!.body!,
+                            style: HAppStyle.paragraph2Regular
+                                .copyWith(color: HAppColor.hGreyColorShade600),
+                          ),
+                        ]),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          orderController.removeOrder(orderData.oderId);
+                          orderController.saveOrder(
+                              order: orderData,
+                              status: 'Hủy',
+                              activeStep: orderData.activeStep);
+                          Get.back();
+                        },
+                        child: Text(
+                          'Hủy',
+                          style: HAppStyle.label4Bold
+                              .copyWith(color: HAppColor.hRedColor),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               );
-            },
-          );
+            } else if (notificationData['reject']
+                .toString()
+                .contains('Bị từ chối')) {
+              showDialog(
+                context: Get.overlayContext!,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(message.notification!.title!),
+                    content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            message.notification!.body!,
+                            style: HAppStyle.paragraph2Regular
+                                .copyWith(color: HAppColor.hGreyColorShade600),
+                          ),
+                        ]),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          orderController.removeOrder(orderData.oderId);
+                          orderController.saveOrder(
+                              order: orderData,
+                              status: 'Hủy',
+                              activeStep: orderData.activeStep);
+                          Get.back();
+                        },
+                        child: Text(
+                          'Hủy đơn hàng',
+                          style: HAppStyle.label4Bold
+                              .copyWith(color: HAppColor.hRedColor),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Get.back(),
+                        child: Text(
+                          'Tiếp tục đơn hàng',
+                          style: HAppStyle.label4Bold
+                              .copyWith(color: HAppColor.hBluePrimaryColor),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+          }
         }
       }
     });

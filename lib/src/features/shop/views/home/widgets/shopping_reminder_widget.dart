@@ -60,7 +60,7 @@ class ShoppingReminderWidget extends StatelessWidget {
                   ),
                   gapW4,
                   Text(
-                    "Giỏ hàng (${CartController.instance.cartProducts.length} sản phẩm)",
+                    "Giỏ hàng (${Get.put(CartController()).cartProducts.length} sản phẩm)",
                     style: HAppStyle.label3Bold,
                   )
                 ],
@@ -74,7 +74,7 @@ class ShoppingReminderWidget extends StatelessWidget {
           gapH6,
           ProductInCartListStackWidget(
             maxItems: 8,
-            items: CartController.instance.cartProducts,
+            items: Get.put(CartController()).cartProducts,
           ),
         ]),
       ),

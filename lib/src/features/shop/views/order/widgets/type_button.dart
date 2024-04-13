@@ -25,27 +25,38 @@ class TypeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final typeButtonController = Get.put(TypeButtonController());
-    return Obx(
-      () => Row(children: [
-        Radio(
-          value: value,
-          groupValue: isOrder
-              ? typeButtonController.orderType
-              : typeButtonController.paymentMethodType,
-          onChanged: (String? valueString) {
-            typeButtonController.setType(value, isOrder);
-          },
-          activeColor: HAppColor.hBluePrimaryColor,
-        ),
-        gapW10,
-        Text(title),
-        const Spacer(),
-        Text(isFree
-            ? '(Miễn phí)'
-            : price != -1
-                ? '(${isOrder ? '+' : ''}${HAppUtils.vietNamCurrencyFormatting(price)})'
-                : '')
-      ]),
+    final checkoutController = CheckoutController.instance;
+
+    return GestureDetector(
+      onTap: () {
+        if (value == 'dat_lich') {
+          checkoutController.showModalBottomSheetDay(context);
+        }
+        typeButtonController.setType(value, isOrder);
+      },
+      child: Obx(
+        () => Row(children: [
+          Radio(
+            value: value,
+            groupValue: isOrder
+                ? typeButtonController.orderType
+                : typeButtonController.paymentMethodType,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            onChanged: (String? valueString) {
+              // typeButtonController.setType(value, isOrder);
+            },
+            activeColor: HAppColor.hBluePrimaryColor,
+          ),
+          gapW10,
+          Text(title),
+          const Spacer(),
+          Text(isFree
+              ? '(Miễn phí)'
+              : price != -1
+                  ? '(${isOrder ? '+' : ''}${HAppUtils.vietNamCurrencyFormatting(price)})'
+                  : '')
+        ]),
+      ),
     );
   }
 }
@@ -67,23 +78,27 @@ class TypeTimeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final typeButtonController = Get.put(TypeButtonController());
-    return Obx(() => Row(children: [
-          Radio(
-            value: value,
-            groupValue: typeButtonController.timeType,
-            onChanged: (String? valueString) {
-              typeButtonController.setTimeType(value);
-            },
-            activeColor: HAppColor.hBluePrimaryColor,
-          ),
-          gapW10,
-          Text(title),
-          const Spacer(),
-          Text(isFree
-              ? '(Miễn phí)'
-              : price != -1
-                  ? '(+${HAppUtils.vietNamCurrencyFormatting(price)})'
-                  : '')
-        ]));
+    return GestureDetector(
+      onTap: () => typeButtonController.setTimeType(value),
+      child: Obx(() => Row(children: [
+            Radio(
+              value: value,
+              groupValue: typeButtonController.timeType,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onChanged: (String? valueString) {
+                // typeButtonController.setTimeType(value);
+              },
+              activeColor: HAppColor.hBluePrimaryColor,
+            ),
+            gapW10,
+            Text(title),
+            const Spacer(),
+            Text(isFree
+                ? '(Miễn phí)'
+                : price != -1
+                    ? '(+${HAppUtils.vietNamCurrencyFormatting(price)})'
+                    : '')
+          ])),
+    );
   }
 }

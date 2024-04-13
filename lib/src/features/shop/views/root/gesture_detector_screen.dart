@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 
 class GestureDetectorScreen extends StatelessWidget {
@@ -6,7 +7,7 @@ class GestureDetectorScreen extends StatelessWidget {
 
   Widget screen;
 
-  final cartController = CartController.instance;
+  final cartController = Get.put(CartController());
 
   void handleAllGestures() {
     cartController.toggleAnimation.value = false;

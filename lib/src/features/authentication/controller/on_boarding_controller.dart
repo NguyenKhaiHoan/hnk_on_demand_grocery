@@ -43,6 +43,6 @@ class OnboardingController extends GetxController {
   void nextToLoginScreen() {
     final storage = GetStorage();
     storage.write('isFirstTime', false);
-    Get.offAllNamed(HAppRoutes.login);
+    Get.toNamed(HAppRoutes.login);
   }
 }

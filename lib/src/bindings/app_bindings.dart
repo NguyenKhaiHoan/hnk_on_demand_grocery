@@ -25,8 +25,10 @@ import 'package:on_demand_grocery/src/features/shop/controllers/product_controll
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/search_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/voucher_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/repositories/address_repository.dart';
+import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/repositories/banner_repository.dart';
 import 'package:on_demand_grocery/src/repositories/category_repository.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
@@ -55,20 +57,19 @@ class HAppBinding extends Bindings {
     Get.lazyPut(() => SearchProductController(), fenix: true);
     Get.lazyPut(() => LoginController(), fenix: true);
     Get.lazyPut(() => ProductController(), fenix: true);
-    // Get.lazyPut(() => ExploreController(), fenix: true);
     Get.lazyPut(() => BannerController(), fenix: true);
     Get.lazyPut(() => StoreController(), fenix: true);
     Get.lazyPut(() => OrderController(), fenix: true);
     Get.lazyPut(() => CartController(), fenix: true);
+    Get.lazyPut(() => VoucherController(), fenix: true);
     Get.lazyPut(() => ChangePhoneController(), fenix: true);
     Get.lazyPut(() => DateDeliveryController(), fenix: true);
-    Get.lazyPut(() => WishlistController(), fenix: true);
-    Get.lazyPut(() => AllStoreController(), fenix: true);
     Get.put<ExploreController>(ExploreController(), permanent: true);
-    // Get.put<WishlistController>(WishlistController(), permanent: true);
-    // Get.put<AllStoreController>(AllStoreController(), permanent: true);
+    Get.put<WishlistController>(WishlistController(), permanent: true);
+    Get.put<AllStoreController>(AllStoreController(), permanent: true);
     Get.lazyPut(() => ForgetPasswordController(), fenix: true);
-
+    Get.put<AuthenticationRepository>(AuthenticationRepository(),
+        permanent: true);
     Get.lazyPut(() => UserRepository(), fenix: true);
     Get.lazyPut(() => StoreRepository(), fenix: true);
     Get.lazyPut(() => BannerRepository(), fenix: true);

@@ -7,6 +7,7 @@ import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
@@ -25,40 +26,7 @@ class CompleteCheckoutScreen extends StatefulWidget {
 class _CompleteCheckoutScreenState extends State<CompleteCheckoutScreen> {
   OrderModel order = Get.arguments['order'];
 
-  List<StepperData> listStepData(OrderModel order) {
-    List<StepperData> stepperData = [];
-    stepperData.addAll(order.storeOrders.map((e) {
-      return StepperData(
-          title: StepperText(
-            "Lấy: ${e.name}",
-          ),
-          subtitle: StepperText(e.address),
-          iconWidget: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(
-                color: HAppColor.hBluePrimaryColor,
-                borderRadius: BorderRadius.all(Radius.circular(30))),
-            child: const Center(
-              child: Icon(Icons.storefront_outlined,
-                  size: 14, color: HAppColor.hWhiteColor),
-            ),
-          ));
-    }));
-    stepperData.add(StepperData(
-        title: StepperText("Giao: ${order.orderUser.name}"),
-        subtitle: StepperText(order.orderUserAddress.toString()),
-        iconWidget: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: const BoxDecoration(
-              color: HAppColor.hBluePrimaryColor,
-              borderRadius: BorderRadius.all(Radius.circular(30))),
-          child: const Center(
-            child: Icon(EvaIcons.homeOutline,
-                size: 14, color: HAppColor.hWhiteColor),
-          ),
-        )));
-    return stepperData;
-  }
+  final orderController = Get.put(OrderController());
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +35,7 @@ class _CompleteCheckoutScreenState extends State<CompleteCheckoutScreen> {
         title: 'Đặt hàng thành công!',
         widget1: ElevatedButton(
           onPressed: () {
-            final stepperData = listStepData(order);
+            final stepperData = orderController.listStepData(order);
             Get.toNamed(HAppRoutes.liveTracking,
                 arguments: {'order': order, 'stepperData': stepperData});
             ExploreController.instance.dispose();
@@ -83,7 +51,9 @@ class _CompleteCheckoutScreenState extends State<CompleteCheckoutScreen> {
         ),
         widget2: OutlinedButton(
             onPressed: () {
-              Get.offAllNamed(HAppRoutes.root);
+              // OrderController.instance.fetchAllOrders();
+              OrderController.instance.resetToggle.toString();
+              Get.toNamed(HAppRoutes.root);
             },
             style: ElevatedButton.styleFrom(
                 minimumSize: Size(HAppSize.deviceWidth * 0.5, 50),
