@@ -4,6 +4,7 @@ import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/check_box_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
@@ -79,6 +80,50 @@ class ProductController extends GetxController {
 
       final products =
           await productRepository.getProductsByQuery(query, storeId);
+
+      return products;
+    } catch (e) {
+      HAppUtils.showSnackBarError('Lỗi', e.toString());
+      return [];
+    }
+  }
+
+  Future<List<ProductModel>> fetchProductsByQueryExceptId(
+      ProductInCartModel model) async {
+    try {
+      QuerySnapshot querySnapshot;
+      querySnapshot = await FirebaseFirestore.instance
+          .collection("Products")
+          .where(
+            'StoreId',
+            isEqualTo: model.storeId,
+          )
+          .where("Name", isGreaterThanOrEqualTo: model.productName)
+          .where("Name", isLessThanOrEqualTo: "${model.productName}\uf7ff")
+          .orderBy('Name')
+          .orderBy("UploadTime", descending: true)
+          .limit(10)
+          .get();
+
+      final List<ProductModel> products = querySnapshot.docs
+          .map((document) => ProductModel.fromQuerySnapshot(document))
+          .toList();
+
+      products.removeWhere((element) => element.id == model.productId);
+
+      products.sort((a, b) {
+        if (model.replacementProduct != null &&
+            a.id == model.replacementProduct!.id &&
+            b.id != model.replacementProduct!.id) {
+          return -1;
+        } else if (model.replacementProduct != null &&
+            b.id == model.replacementProduct!.id &&
+            a.id != model.replacementProduct!.id) {
+          return 1;
+        } else {
+          return (a.priceSale).compareTo(b.priceSale);
+        }
+      });
 
       return products;
     } catch (e) {

@@ -11,6 +11,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.
 import 'package:on_demand_grocery/src/features/shop/controllers/type_button_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/voucher_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/repositories/order_repository.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/services/payment_service.dart';
@@ -203,5 +204,28 @@ class OrderController extends GetxController {
         }
       }
     }
+  }
+
+  int totalDifference(OrderModel order) {
+    int difference = 0;
+
+    if (order.replacedProducts != null) {
+      print('Không null');
+
+      for (var product in order.replacedProducts!) {
+        difference += (product.priceDifference ?? 0) * product.quantity;
+      }
+      return difference;
+    }
+    return difference;
+  }
+
+  int totalCartValue(List<ProductInCartModel> products) {
+    int total = 0;
+    for (var product in products) {
+      total += (product.replacementProduct?.priceSale ?? product.price!) *
+          product.quantity;
+    }
+    return total;
   }
 }

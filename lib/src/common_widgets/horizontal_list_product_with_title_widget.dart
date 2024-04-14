@@ -14,13 +14,17 @@ class HorizontalListProductWithTitleWidget extends StatelessWidget {
       required this.compare,
       required this.storeIcon,
       required this.title,
-      this.function});
+      this.function,
+      this.quantity,
+      this.modelCompare});
 
   final List<ProductModel> list;
   final bool compare;
   final bool storeIcon;
   final String title;
   final Function()? function;
+  final int? quantity;
+  final ProductModel? modelCompare;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +48,14 @@ class HorizontalListProductWithTitleWidget extends StatelessWidget {
               : Container()
         ]),
         gapH12,
-        HorizontalListProductWidget(list: list, compare: compare)
+        !compare
+            ? HorizontalListProductWidget(list: list, compare: compare)
+            : HorizontalListProductWidget(
+                list: list,
+                compare: compare,
+                quantity: quantity,
+                modelCompare: modelCompare,
+              )
       ],
     );
   }

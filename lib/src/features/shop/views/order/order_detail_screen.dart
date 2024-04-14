@@ -29,9 +29,14 @@ class OrderDetailScreen extends StatelessWidget {
   final OrderModel order = Get.arguments['order'];
   final reviewController = Get.put(ReviewController());
 
+  var difference = 0.obs;
+
   @override
   Widget build(BuildContext context) {
     final stepperData = orderController.listStepData(order);
+    Future.delayed(Duration.zero).then((value) {
+      difference.value = orderController.totalDifference(order);
+    });
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -366,6 +371,16 @@ class OrderDetailScreen extends StatelessWidget {
               SectionLiveTracking(
                   title: 'Tổng cộng',
                   subtitle: HAppUtils.vietNamCurrencyFormatting(order.price)),
+              order.replacedProducts != null
+                  ? Obx(() => Container(
+                        margin: const EdgeInsets.only(top: 12),
+                        child: SectionLiveTracking(
+                            title:
+                                difference.value > 0 ? 'Trả thêm' : 'Hoàn lại',
+                            subtitle: HAppUtils.vietNamCurrencyFormatting(
+                                difference.value.abs())),
+                      ))
+                  : Container(),
               gapH24,
               Text.rich(
                 TextSpan(

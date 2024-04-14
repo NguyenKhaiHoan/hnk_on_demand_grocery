@@ -15,7 +15,7 @@ class ProductRepository extends GetxController {
       final snapshot = await _db
           .collection('Products')
           .orderBy('UploadTime', descending: true)
-          .limit(10)
+          .limit(30)
           .get();
       final list = snapshot.docs
           .map((document) => ProductModel.fromDocumentSnapshot(document))
@@ -57,8 +57,8 @@ class ProductRepository extends GetxController {
             'StoreId',
             isEqualTo: storeId,
           )
-          .where("Name", isGreaterThan: text)
-          .where("Name", isLessThanOrEqualTo: "$text\uf8ff")
+          .where("Name", isGreaterThanOrEqualTo: text)
+          .where("Name", isLessThanOrEqualTo: "$text\uf7ff")
           .orderBy('Name')
           .orderBy("UploadTime", descending: true)
           .limit(10)
@@ -166,6 +166,7 @@ class ProductRepository extends GetxController {
     } on FirebaseException catch (e) {
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
+      print(e.toString());
       throw 'Đã có sự cố xảy ra. Xin vui lòng thử lại';
     }
   }

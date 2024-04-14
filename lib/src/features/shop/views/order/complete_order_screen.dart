@@ -53,7 +53,7 @@ class _CompleteCheckoutScreenState extends State<CompleteCheckoutScreen> {
             onPressed: () {
               // OrderController.instance.fetchAllOrders();
               OrderController.instance.resetToggle.toString();
-              Get.toNamed(HAppRoutes.root);
+              Get.offAllNamed(HAppRoutes.root);
             },
             style: ElevatedButton.styleFrom(
                 minimumSize: Size(HAppSize.deviceWidth * 0.5, 50),

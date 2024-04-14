@@ -260,6 +260,25 @@ class CartController extends GetxController {
     calculateCart();
   }
 
+  ProductModel convertToProductModel(ProductInCartModel product) {
+    return ProductModel(
+        id: product.productId,
+        name: product.productName!,
+        image: product.image!,
+        categoryId: '',
+        description: '',
+        status: '',
+        price: product.price!,
+        salePersent: 0,
+        priceSale: product.price!,
+        unit: product.unit!,
+        countBuyed: 0,
+        rating: 0,
+        origin: '',
+        storeId: product.storeId,
+        uploadTime: DateTime.now());
+  }
+
   ProductInCartModel convertToCartProduct(ProductModel product, int quantity) {
     final price = product.salePersent != 0 ? product.priceSale : product.price;
     return ProductInCartModel(
@@ -278,6 +297,32 @@ class CartController extends GetxController {
     return cartProducts
         .where((productInCart) => productInCart.productId == productId)
         .fold(0, (previousValue, element) => previousValue + element.quantity);
+  }
+
+  void replaceProduct(String productId, ProductModel replaceProduct) {
+    var product = cartProducts
+        .where((productInCart) => productInCart.productId == productId)
+        .first;
+    if (product.replacementProduct == null) {
+      product.addReplacement(replaceProduct);
+      print(product.replacementProduct!.name);
+      return;
+    }
+    product.replacementProduct = null;
+    product.priceDifference = null;
+    return;
+  }
+
+  bool checkReplaceProduct(String productId, ProductModel replaceProduct) {
+    var product = cartProducts
+        .where((productInCart) => productInCart.productId == productId)
+        .first;
+
+    if (product.replacementProduct != null &&
+        product.replacementProduct!.id == replaceProduct.id) {
+      return true;
+    }
+    return false;
   }
 
   void animationButtonAdd(ProductModel model) {
@@ -342,9 +387,12 @@ class CartController extends GetxController {
 
       final uid = const Uuid().v1();
 
-      // print(voucherController.useVoucher.value.id != ''
-      //     ? voucherController.useVoucher.value.toJson().toString()
-      //     : VoucherModel.empty().toJson().toString());
+      for (var product in productInOrder) {
+        print('Vào for đây: ${product.productName}');
+        if (product.replacementProduct != null) {
+          print('Sản phẩm thay thế ${product.replacementProduct!.name}');
+        }
+      }
 
       final order = OrderModel(
           // oderId: '',
@@ -365,7 +413,8 @@ class CartController extends GetxController {
           discount: getDiscountCost(),
           voucher: voucherController.useVoucher.value.id != ''
               ? voucherController.useVoucher.value
-              : VoucherModel.empty());
+              : VoucherModel.empty(),
+          replacedProducts: []);
 
       if (timeOrder != '') {
         order.timeOrder = timeOrder;
@@ -400,11 +449,9 @@ class CartController extends GetxController {
         HAppUtils.showSnackBarSuccess('Thất bại',
             'Đã xảy ra sự cố trong quá trình tải đơn hàng lên hệ thống: ${error.toString()}');
       });
-      update();
     } catch (e) {
       HAppUtils.stopLoading();
       HAppUtils.showSnackBarError('Thất bại', 'Đặt hàng không thành công');
-      update();
     }
   }
 
@@ -594,5 +641,58 @@ class CartController extends GetxController {
 
   int getServiceCost() {
     return 5000;
+  }
+
+  int totalDifference() {
+    int difference = 0;
+    for (var item in cartProducts) {
+      difference += (item.priceDifference ?? 0) * item.quantity;
+    }
+    return difference;
+  }
+
+  int totalCartValue() {
+    int total = 0;
+    for (var item in cartProducts) {
+      total +=
+          (item.replacementProduct?.priceSale ?? item.price!) * item.quantity;
+      print(
+          (item.replacementProduct?.priceSale ?? item.price!) * item.quantity);
+    }
+    return total;
+  }
+
+  calculatingDifference(ProductModel product1, int product2Price) {
+    if (product1.salePersent == 0) {
+      int result = product1.price - product2Price;
+      return result >= 0
+          ? result == 0
+              ? "= ${HAppUtils.vietNamCurrencyFormatting(result)}"
+              : "> ${HAppUtils.vietNamCurrencyFormatting(result)}"
+          : "< ${HAppUtils.vietNamCurrencyFormatting(result)}";
+    } else {
+      int result = product1.priceSale - product2Price;
+      return result >= 0
+          ? result == 0
+              ? "= ${HAppUtils.vietNamCurrencyFormatting(result)}"
+              : "> ${HAppUtils.vietNamCurrencyFormatting(result)}"
+          : "< ${HAppUtils.vietNamCurrencyFormatting(result)}";
+    }
+  }
+
+  String comparePrice(String s) {
+    List<String> parts = s.split(" ");
+    if (parts[0] == ">") {
+      return ">";
+    } else if (parts[0] == "<") {
+      return "<";
+    } else {
+      return "=";
+    }
+  }
+
+  String comparePriceNumber(String s) {
+    List<String> parts = s.split(" ");
+    return parts[1];
   }
 }

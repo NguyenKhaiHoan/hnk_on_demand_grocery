@@ -21,28 +21,39 @@ import 'package:on_demand_grocery/src/utils/utils.dart';
 import 'package:toastification/toastification.dart';
 
 class ProductItemWidget extends StatelessWidget {
-  ProductItemWidget({
-    super.key,
-    required this.model,
-    required this.compare,
-    this.modelCompare,
-    this.differentText,
-    this.compareOperator,
-    this.comparePrice,
-  });
+  ProductItemWidget(
+      {super.key,
+      required this.model,
+      required this.compare,
+      this.modelCompare,
+      this.differentText,
+      this.compareOperator,
+      this.comparePrice,
+      this.quantity});
   final ProductModel model;
   final ProductModel? modelCompare;
   final bool compare;
   final String? differentText;
   final String? compareOperator;
   final String? comparePrice;
+  final int? quantity;
 
   final productController = ProductController.instance;
   final wishlistController = Get.put(WishlistController());
   final cartController = Get.put(CartController());
 
+  var choose = false.obs;
+
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration.zero).then(
+      (value) {
+        if (compare) {
+          choose.value =
+              cartController.checkReplaceProduct(modelCompare!.id, model);
+        }
+      },
+    );
     return GestureDetector(
       child: Stack(alignment: Alignment.bottomRight, children: [
         Container(
@@ -72,93 +83,97 @@ class ProductItemWidget extends StatelessWidget {
                     color: Colors.red,
                   ),
                 ),
-                model.salePersent != 0
-                    ? Positioned(
-                        top: 10,
-                        left: 10,
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: HAppColor.hOrangeColor),
-                          child: Text('${model.salePersent}%',
-                              style: HAppStyle.label4Bold
-                                  .copyWith(color: HAppColor.hWhiteColor)),
-                        ),
-                      )
-                    : Container(),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: GestureDetector(
-                    onTap: () => wishlistController
-                        .addOrRemoveProductInFavoriteList(model.id),
-                    child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: HAppColor.hBackgroundColor),
-                      child: Center(
-                          child: Obx(
-                        () => !UserController
-                                .instance.user.value.listOfFavoriteProduct!
-                                .contains(model.id)
-                            ? const Icon(
-                                EvaIcons.heartOutline,
-                                color: HAppColor.hGreyColor,
-                              )
-                            : const Icon(
-                                EvaIcons.heart,
-                                color: HAppColor.hRedColor,
-                              ),
-                      )),
+                if (!compare)
+                  model.salePersent != 0
+                      ? Positioned(
+                          top: 10,
+                          left: 10,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: HAppColor.hOrangeColor),
+                            child: Text('${model.salePersent}%',
+                                style: HAppStyle.label4Bold
+                                    .copyWith(color: HAppColor.hWhiteColor)),
+                          ),
+                        )
+                      : Container(),
+                if (!compare)
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: GestureDetector(
+                      onTap: () => wishlistController
+                          .addOrRemoveProductInFavoriteList(model.id),
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: HAppColor.hBackgroundColor),
+                        child: Center(
+                            child: Obx(
+                          () => !UserController
+                                  .instance.user.value.listOfFavoriteProduct!
+                                  .contains(model.id)
+                              ? const Icon(
+                                  EvaIcons.heartOutline,
+                                  color: HAppColor.hGreyColor,
+                                )
+                              : const Icon(
+                                  EvaIcons.heart,
+                                  color: HAppColor.hRedColor,
+                                ),
+                        )),
+                      ),
                     ),
                   ),
-                ),
-                model.status != "Còn hàng"
-                    ? Positioned(
-                        bottom: 10,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(5),
-                                  bottomLeft: Radius.circular(5)),
-                              color: HAppColor.hGreyColorShade300),
-                          child: Center(
-                              child: Text(
-                            model.status,
-                            style: HAppStyle.label4Regular,
-                          )),
-                        ),
-                      )
-                    : Container()
+                if (!compare)
+                  model.status != "Còn hàng"
+                      ? Positioned(
+                          bottom: 10,
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(5),
+                                    bottomLeft: Radius.circular(5)),
+                                color: HAppColor.hGreyColorShade300),
+                            child: Center(
+                                child: Text(
+                              model.status,
+                              style: HAppStyle.label4Regular,
+                            )),
+                          ),
+                        )
+                      : Container()
               ]),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                              child: Text(
-                                  CategoryController
-                                      .instance
-                                      .listOfCategory[
-                                          int.parse(model.categoryId)]
-                                      .name,
-                                  style: HAppStyle.paragraph3Regular.copyWith(
-                                      color: HAppColor.hGreyColorShade600,
-                                      overflow: TextOverflow.ellipsis))),
-                          Text(model.unit,
-                              style: HAppStyle.paragraph3Regular.copyWith(
-                                  color: HAppColor.hGreyColorShade600)),
-                        ],
-                      ),
+                      if (!compare)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                                child: Text(
+                                    CategoryController
+                                        .instance
+                                        .listOfCategory[
+                                            int.parse(model.categoryId)]
+                                        .name,
+                                    style: HAppStyle.paragraph3Regular.copyWith(
+                                        color: HAppColor.hGreyColorShade600,
+                                        overflow: TextOverflow.ellipsis))),
+                            Text(model.unit,
+                                style: HAppStyle.paragraph3Regular.copyWith(
+                                    color: HAppColor.hGreyColorShade600)),
+                          ],
+                        ),
                       gapH4,
                       Text(
                         model.name,
@@ -168,50 +183,51 @@ class ProductItemWidget extends StatelessWidget {
                         maxLines: 1,
                       ),
                       gapH4,
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                EvaIcons.star,
-                                color: HAppColor.hOrangeColor,
-                                size: 16,
-                              ),
-                              gapW2,
-                              Text.rich(
-                                TextSpan(
-                                  style: HAppStyle.paragraph2Bold,
-                                  text: model.rating.toStringAsFixed(1),
-                                  children: [
-                                    TextSpan(
-                                      text: '/5',
-                                      style: HAppStyle.paragraph3Regular
-                                          .copyWith(
-                                              color:
-                                                  HAppColor.hGreyColorShade600),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          Text.rich(
-                            TextSpan(
-                              style: HAppStyle.paragraph2Bold,
-                              text: '${model.countBuyed} ',
+                      if (!compare)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
                               children: [
-                                TextSpan(
-                                  text: 'Đã bán',
-                                  style: HAppStyle.paragraph3Regular.copyWith(
-                                      color: HAppColor.hGreyColorShade600),
+                                const Icon(
+                                  EvaIcons.star,
+                                  color: HAppColor.hOrangeColor,
+                                  size: 16,
+                                ),
+                                gapW2,
+                                Text.rich(
+                                  TextSpan(
+                                    style: HAppStyle.paragraph2Bold,
+                                    text: model.rating.toStringAsFixed(1),
+                                    children: [
+                                      TextSpan(
+                                        text: '/5',
+                                        style: HAppStyle.paragraph3Regular
+                                            .copyWith(
+                                                color: HAppColor
+                                                    .hGreyColorShade600),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      )
+                            const Spacer(),
+                            Text.rich(
+                              TextSpan(
+                                style: HAppStyle.paragraph2Bold,
+                                text: '${model.countBuyed} ',
+                                children: [
+                                  TextSpan(
+                                    text: 'Đã bán',
+                                    style: HAppStyle.paragraph3Regular.copyWith(
+                                        color: HAppColor.hGreyColorShade600),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
                     ]),
               ),
               const Spacer(),
@@ -322,7 +338,9 @@ class ProductItemWidget extends StatelessWidget {
                                                       size: 20,
                                                     )
                                                   : Container(),
-                                          gapW4,
+                                          compareOperator == "="
+                                              ? Container()
+                                              : gapW4,
                                           Text(
                                             compareOperator == "="
                                                 ? "Bằng giá"
@@ -339,26 +357,6 @@ class ProductItemWidget extends StatelessWidget {
                                               decoration: TextDecoration.none))
                                     ],
                                   )),
-                        GestureDetector(
-                          child: Container(
-                            width: 45,
-                            height: 45,
-                            decoration: const BoxDecoration(
-                              color: HAppColor.hBluePrimaryColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(20),
-                              ),
-                            ),
-                            child: Center(
-                                child: Image.asset(
-                              'assets/images/other/search_tick.png',
-                              height: 20,
-                              width: 20,
-                            )),
-                          ),
-                          onTap: () => Get.toNamed(HAppRoutes.compare),
-                        )
                       ],
                     )
             ],
@@ -367,106 +365,134 @@ class ProductItemWidget extends StatelessWidget {
         Positioned(
             bottom: 10,
             right: 10,
-            child: Visibility(
-                visible: model.status == "Còn hàng" ? true : false,
-                child: Obx(() {
-                  final productQuantityInCart =
-                      cartController.getProductQuantity(model.id);
-                  return AnimatedCrossFade(
-                    crossFadeState: cartController.toggleAnimation.value &&
-                            cartController.listIdToggleAnimation
-                                .contains(model.id)
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    duration: const Duration(milliseconds: 300),
-                    firstCurve: Curves.easeOutQuart,
-                    secondCurve: Curves.easeOutQuart,
-                    firstChild: Container(
-                        height: 45,
-                        width: 45,
-                        decoration: const BoxDecoration(
-                          color: HAppColor.hBluePrimaryColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: GestureDetector(
-                            onTap: () async {
-                              cartController.animationButtonAdd(model);
-                              final cartProduct =
-                                  cartController.convertToCartProduct(model, 1);
-                              cartController
-                                  .addSingleProductInCart(cartProduct);
-                            },
-                            child: productQuantityInCart > 0
-                                ? Center(
-                                    child: Text(
-                                      productQuantityInCart.toString(),
-                                      style: HAppStyle.paragraph1Bold.copyWith(
-                                          color: HAppColor.hWhiteColor),
-                                    ),
-                                  )
-                                : const Icon(
-                                    EvaIcons.plus,
-                                    color: HAppColor.hWhiteColor,
-                                  ))),
-                    secondChild: Container(
-                        height: 45,
-                        decoration: BoxDecoration(
-                            color: HAppColor.hBluePrimaryColor,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                                onPressed: () {
-                                  cartController.animationButtonAdd(model);
-                                  final cartProduct = cartController
-                                      .convertToCartProduct(model, 1);
-                                  cartController
-                                      .removeSingleProductInCart(cartProduct);
-                                },
-                                icon: const Icon(
-                                  EvaIcons.minus,
-                                  color: HAppColor.hWhiteColor,
-                                )),
-                            gapW4,
-                            Text(
-                              productQuantityInCart.toString(),
-                              style: HAppStyle.paragraph1Bold
-                                  .copyWith(color: HAppColor.hWhiteColor),
+            child: !compare
+                ? Visibility(
+                    visible: model.status == "Còn hàng" ? true : false,
+                    child: Obx(() {
+                      final productQuantityInCart =
+                          cartController.getProductQuantity(model.id);
+                      return AnimatedCrossFade(
+                        crossFadeState: cartController.toggleAnimation.value &&
+                                cartController.listIdToggleAnimation
+                                    .contains(model.id)
+                            ? CrossFadeState.showSecond
+                            : CrossFadeState.showFirst,
+                        duration: const Duration(milliseconds: 300),
+                        firstCurve: Curves.easeOutQuart,
+                        secondCurve: Curves.easeOutQuart,
+                        firstChild: Container(
+                            height: 45,
+                            width: 45,
+                            decoration: const BoxDecoration(
+                              color: HAppColor.hBluePrimaryColor,
+                              shape: BoxShape.circle,
                             ),
-                            gapW4,
-                            IconButton(
-                                onPressed: () {
+                            child: GestureDetector(
+                                onTap: () async {
                                   cartController.animationButtonAdd(model);
                                   final cartProduct = cartController
                                       .convertToCartProduct(model, 1);
                                   cartController
                                       .addSingleProductInCart(cartProduct);
                                 },
-                                icon: const Icon(
-                                  EvaIcons.plus,
-                                  color: HAppColor.hWhiteColor,
-                                ))
-                          ],
-                        )),
-                    layoutBuilder: (Widget topChild, Key topChildKey,
-                        Widget bottomChild, Key bottomChildKey) {
-                      return Stack(
-                        alignment: Alignment.centerRight,
-                        children: <Widget>[
-                          Positioned(
-                            key: bottomChildKey,
-                            child: bottomChild,
-                          ),
-                          Positioned(
-                            key: topChildKey,
-                            child: topChild,
-                          ),
-                        ],
+                                child: productQuantityInCart > 0
+                                    ? Center(
+                                        child: Text(
+                                          productQuantityInCart.toString(),
+                                          style: HAppStyle.paragraph1Bold
+                                              .copyWith(
+                                                  color: HAppColor.hWhiteColor),
+                                        ),
+                                      )
+                                    : const Icon(
+                                        EvaIcons.plus,
+                                        color: HAppColor.hWhiteColor,
+                                      ))),
+                        secondChild: Container(
+                            height: 45,
+                            decoration: BoxDecoration(
+                                color: HAppColor.hBluePrimaryColor,
+                                borderRadius: BorderRadius.circular(100)),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      cartController.animationButtonAdd(model);
+                                      final cartProduct = cartController
+                                          .convertToCartProduct(model, 1);
+                                      cartController.removeSingleProductInCart(
+                                          cartProduct);
+                                    },
+                                    icon: const Icon(
+                                      EvaIcons.minus,
+                                      color: HAppColor.hWhiteColor,
+                                    )),
+                                gapW4,
+                                Text(
+                                  productQuantityInCart.toString(),
+                                  style: HAppStyle.paragraph1Bold
+                                      .copyWith(color: HAppColor.hWhiteColor),
+                                ),
+                                gapW4,
+                                IconButton(
+                                    onPressed: () {
+                                      cartController.animationButtonAdd(model);
+                                      final cartProduct = cartController
+                                          .convertToCartProduct(model, 1);
+                                      cartController
+                                          .addSingleProductInCart(cartProduct);
+                                    },
+                                    icon: const Icon(
+                                      EvaIcons.plus,
+                                      color: HAppColor.hWhiteColor,
+                                    ))
+                              ],
+                            )),
+                        layoutBuilder: (Widget topChild, Key topChildKey,
+                            Widget bottomChild, Key bottomChildKey) {
+                          return Stack(
+                            alignment: Alignment.centerRight,
+                            children: <Widget>[
+                              Positioned(
+                                key: bottomChildKey,
+                                child: bottomChild,
+                              ),
+                              Positioned(
+                                key: topChildKey,
+                                child: topChild,
+                              ),
+                            ],
+                          );
+                        },
                       );
+                    }))
+                : GestureDetector(
+                    onTap: () {
+                      print('Vào đây');
+                      cartController.replaceProduct(modelCompare!.id, model);
+                      choose.value = cartController.checkReplaceProduct(
+                          modelCompare!.id, model);
+                      Get.back();
                     },
-                  );
-                })))
+                    child: Obx(() => Container(
+                          height: 45,
+                          width: 45,
+                          decoration: BoxDecoration(
+                            color: choose.value
+                                ? HAppColor.hBluePrimaryColor
+                                : HAppColor.hDarkColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              quantity!.toString(),
+                              style: HAppStyle.paragraph1Bold
+                                  .copyWith(color: HAppColor.hWhiteColor),
+                            ),
+                          ),
+                        )),
+                  ))
       ]),
       onTap: () async {
         final product =

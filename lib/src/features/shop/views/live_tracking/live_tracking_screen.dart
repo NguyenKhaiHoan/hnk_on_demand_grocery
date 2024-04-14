@@ -42,6 +42,9 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
   OrderModel orderData = Get.arguments['order'];
 
   int length = 0;
+
+  var difference = 0.obs;
+
   @override
   void initState() {
     super.initState();
@@ -96,6 +99,10 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
 
           OrderModel order = OrderModel.fromJson(
               jsonDecode(jsonEncode(snapshot.data!.snapshot.value)));
+
+          Future.delayed(Duration.zero).then((value) {
+            difference.value = orderController.totalDifference(order);
+          });
 
           if (length != order.storeOrders.length) {
             length = order.storeOrders.length;
@@ -618,6 +625,19 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                                     subtitle:
                                         HAppUtils.vietNamCurrencyFormatting(
                                             order.price)),
+                                order.replacedProducts != null
+                                    ? Obx(() => Container(
+                                          margin:
+                                              const EdgeInsets.only(top: 12),
+                                          child: SectionLiveTracking(
+                                              title: difference.value > 0
+                                                  ? 'Trả thêm'
+                                                  : 'Hoàn lại',
+                                              subtitle: HAppUtils
+                                                  .vietNamCurrencyFormatting(
+                                                      difference.value.abs())),
+                                        ))
+                                    : Container(),
                                 if (order.orderStatus != null &&
                                     order.orderStatus! ==
                                         HAppUtils.orderStatus(4))

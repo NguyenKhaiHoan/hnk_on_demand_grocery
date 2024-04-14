@@ -54,40 +54,6 @@ class DetailController extends GetxController {
   //   }
   // }
 
-  calculatingDifference(ProductModel product1, int product2Price) {
-    if (product1.salePersent == 0) {
-      int result = product1.price - product2Price;
-      return result >= 0
-          ? result == 0
-              ? "= ${HAppUtils.vietNamCurrencyFormatting(result)}"
-              : "> ${HAppUtils.vietNamCurrencyFormatting(result)}"
-          : "< ${HAppUtils.vietNamCurrencyFormatting(result)}";
-    } else {
-      int result = product1.priceSale - product2Price;
-      return result >= 0
-          ? result == 0
-              ? "= ${HAppUtils.vietNamCurrencyFormatting(result)}"
-              : "> ${HAppUtils.vietNamCurrencyFormatting(result)}"
-          : "< ${HAppUtils.vietNamCurrencyFormatting(result)}";
-    }
-  }
-
-  String comparePrice(String s) {
-    List<String> parts = s.split(" ");
-    if (parts[0] == ">") {
-      return ">";
-    } else if (parts[0] == "<") {
-      return "<";
-    } else {
-      return "=";
-    }
-  }
-
-  String comparePriceNumber(String s) {
-    List<String> parts = s.split(" ");
-    return parts[1];
-  }
-
   void showLargeImage(String image) {
     Get.to(
         () => Dialog.fullscreen(

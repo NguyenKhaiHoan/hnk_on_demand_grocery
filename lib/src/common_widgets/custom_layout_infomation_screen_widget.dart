@@ -24,7 +24,7 @@ class CustomLayoutInformationScreenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: true,
+      canPop: false,
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,

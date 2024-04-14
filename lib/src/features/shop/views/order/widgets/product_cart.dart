@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_network/image_network.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/horizontal_list_product_with_title_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/swipe_action_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
@@ -11,6 +13,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.
 import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
@@ -28,6 +31,8 @@ class ProductCartWidget extends StatelessWidget {
   final ProductInCartModel model;
 
   final cartController = Get.put(CartController());
+  final productController = Get.put(ProductController());
+  final storeController = Get.put(StoreController());
   final detailController = Get.put(DetailController());
 
   @override
@@ -38,7 +43,7 @@ class ProductCartWidget extends StatelessWidget {
       colorIcon: HAppColor.hRedColor,
       icon: EvaIcons.trashOutline,
       function: (_) {
-        cartController.removeProduct(model);
+        // cartController.removeProduct(model);
       },
       child: GestureDetector(
         child: Container(
@@ -74,7 +79,169 @@ class ProductCartWidget extends StatelessWidget {
                             .copyWith(color: HAppColor.hGreyColor),
                       ),
                       GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            showModalBottomSheet(
+                                context: context,
+                                useRootNavigator: true,
+                                isScrollControlled: true,
+                                builder: (context) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: hAppDefaultPadding,
+                                        horizontal: hAppDefaultPadding),
+                                    decoration: const BoxDecoration(
+                                        color: HAppColor.hBackgroundColor,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            topRight: Radius.circular(10))),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                const Text(
+                                                  "Thay thế sản phẩm",
+                                                  style:
+                                                      HAppStyle.heading4Style,
+                                                ),
+                                                GestureDetector(
+                                                    onTap: () {
+                                                      Get.back();
+                                                    },
+                                                    child: const Icon(
+                                                        EvaIcons.close))
+                                              ],
+                                            ),
+                                            gapH6,
+                                            Divider(
+                                              color:
+                                                  HAppColor.hGreyColorShade300,
+                                            ),
+                                            gapH12,
+                                            Row(
+                                              children: [
+                                                Obx(() => cartController
+                                                            .totalCartPrice
+                                                            .value !=
+                                                        0
+                                                    ? Text.rich(TextSpan(
+                                                        text:
+                                                            'Tổng chênh lệch: ',
+                                                        style: HAppStyle
+                                                            .heading5Style,
+                                                        children: [
+                                                            TextSpan(
+                                                                text: HAppUtils
+                                                                    .vietNamCurrencyFormatting(
+                                                                        cartController
+                                                                            .totalDifference()),
+                                                                style: HAppStyle
+                                                                    .paragraph2Regular
+                                                                    .copyWith(
+                                                                        color: HAppColor
+                                                                            .hGreyColorShade600))
+                                                          ]))
+                                                    : Container()),
+                                                gapW4,
+                                                const Icon(EvaIcons.infoOutline)
+                                              ],
+                                            ),
+                                            gapH6,
+                                            Row(
+                                              children: [
+                                                Obx(() => cartController
+                                                            .totalCartPrice
+                                                            .value !=
+                                                        0
+                                                    ? Text.rich(TextSpan(
+                                                        text:
+                                                            'Tổng giá trị đơn hàng thay thế: ',
+                                                        style: HAppStyle
+                                                            .heading5Style,
+                                                        children: [
+                                                            TextSpan(
+                                                                text: HAppUtils
+                                                                    .vietNamCurrencyFormatting(
+                                                                        cartController
+                                                                            .totalCartValue()),
+                                                                style: HAppStyle
+                                                                    .paragraph2Regular
+                                                                    .copyWith(
+                                                                        color: HAppColor
+                                                                            .hGreyColorShade600))
+                                                          ]))
+                                                    : Container()),
+                                                gapW4,
+                                                const Icon(EvaIcons.infoOutline)
+                                              ],
+                                            ),
+                                            gapH12,
+                                            FutureBuilder(
+                                              future: productController
+                                                  .fetchProductsByQueryExceptId(
+                                                      model),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              bottom: 16),
+                                                      child:
+                                                          const ShimmerHorizontalListProductWithTitleWidget());
+                                                }
+
+                                                if (snapshot.hasError) {
+                                                  return const Center(
+                                                    child: Text(
+                                                        'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
+                                                  );
+                                                }
+
+                                                if (!snapshot.hasData ||
+                                                    snapshot.data == null ||
+                                                    snapshot.data!.isEmpty) {
+                                                  return Text(
+                                                      'Không có sản phẩm tương tự');
+                                                } else {
+                                                  final products =
+                                                      snapshot.data!;
+                                                  var modelCompare =
+                                                      cartController
+                                                          .convertToProductModel(
+                                                              model);
+                                                  return Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            bottom: 16),
+                                                    child: HorizontalListProductWithTitleWidget(
+                                                        list: products,
+                                                        compare: true,
+                                                        storeIcon: false,
+                                                        quantity:
+                                                            model.quantity,
+                                                        modelCompare:
+                                                            modelCompare,
+                                                        title:
+                                                            'Các sản phẩm liên quan'),
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                            gapH12,
+                                          ]),
+                                    ),
+                                  );
+                                });
+                          },
                           child: const Row(
                             children: [
                               Icon(
