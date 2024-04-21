@@ -23,8 +23,6 @@ class ProductRepositoryTest extends GetxController {
           .map((document) => ProductModel.fromDocumentSnapshot(document))
           .toList();
       return list;
-    } on FirebaseException catch (e) {
-      throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
@@ -43,8 +41,6 @@ class ProductRepositoryTest extends GetxController {
           .map((document) => ProductModel.fromDocumentSnapshot(document))
           .toList();
       return list;
-    } on FirebaseException catch (e) {
-      throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
@@ -69,10 +65,27 @@ class ProductRepositoryTest extends GetxController {
           .map((document) => ProductModel.fromDocumentSnapshot(document))
           .toList();
       return list;
-    } on FirebaseException catch (e) {
-      throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
+    }
+  }
+
+  Future<List<ProductModel>> getSearchAllProducts(String text) async {
+    try {
+      final snapshot = await db
+          .collection("Products")
+          .where("Name", isGreaterThanOrEqualTo: text)
+          .where("Name", isLessThanOrEqualTo: "$text\uf7ff")
+          .orderBy('Name')
+          .orderBy("UploadTime", descending: true)
+          .limit(10)
+          .get();
+      final list = snapshot.docs
+          .map((document) => ProductModel.fromDocumentSnapshot(document))
+          .toList();
+      return list;
+    } catch (e) {
+      throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau. ${e.toString()}';
     }
   }
 
@@ -89,8 +102,6 @@ class ProductRepositoryTest extends GetxController {
           .map((document) => ProductModel.fromDocumentSnapshot(document))
           .toList();
       return list;
-    } on FirebaseException catch (e) {
-      throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
@@ -108,8 +119,6 @@ class ProductRepositoryTest extends GetxController {
           .map((document) => ProductModel.fromDocumentSnapshot(document))
           .toList();
       return list;
-    } on FirebaseException catch (e) {
-      throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
@@ -124,8 +133,6 @@ class ProductRepositoryTest extends GetxController {
       } else {
         return ProductModel.empty();
       }
-    } on FirebaseException catch (e) {
-      throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
@@ -165,8 +172,6 @@ class ProductRepositoryTest extends GetxController {
           .map((document) => ProductModel.fromQuerySnapshot(document))
           .toList();
       return products;
-    } on FirebaseException catch (e) {
-      throw HFirebaseException(code: e.code).message;
     } catch (e) {
       print(e.toString());
       throw 'Đã có sự cố xảy ra. Xin vui lòng thử lại';
@@ -187,8 +192,6 @@ class ProductRepositoryTest extends GetxController {
             .toList());
       }
       return products;
-    } on FirebaseException catch (e) {
-      throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã có sự cố xảy ra. Xin vui lòng thử lại';
     }
@@ -207,8 +210,6 @@ class ProductRepositoryTest extends GetxController {
             .toList());
       }
       return stores;
-    } on FirebaseException catch (e) {
-      throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã có sự cố xảy ra. Xin vui lòng thử lại';
     }
@@ -218,8 +219,6 @@ class ProductRepositoryTest extends GetxController {
       String productId, Map<String, dynamic> json) async {
     try {
       await db.collection('Products').doc(productId).update(json);
-    } on FirebaseException catch (e) {
-      throw HFirebaseException(code: e.code).message;
     } catch (e) {
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }

@@ -206,7 +206,7 @@ void main() {
       });
     });
 
-    group('Cart', () {
+    group('Order', () {
       test('Add products in cart', () {
         // Check cart is empty
         expect(cartController.cartProducts.length, 0);
@@ -288,9 +288,7 @@ void main() {
         // storeOrder.note = '';
         // expect(cartController.storeOrderMap[product.storeId]!.note, '');
       });
-    });
 
-    group('Checkout', () {
       test('Add and choose new address', () async {
         currentUserAddress = AddressModel(
             id: '',
@@ -395,42 +393,53 @@ void main() {
           expect(voucherControllerTest.useVoucher.value.name, voucher.name);
           expect(cartController.getDiscountCost(), discountCost);
         });
+      });
 
-        group('Order', () {
-          setUp(() {
-            typeButtonControllerTest.setType('', true);
-            typeButtonControllerTest.setType('', false);
-            typeButtonControllerTest.setTimeType('');
-            voucherControllerTest.resetVoucher();
-          });
+      test('Place an order', () async {
+        // Reset all
+        typeButtonControllerTest.setType('', true);
+        typeButtonControllerTest.setType('', false);
+        typeButtonControllerTest.setTimeType('');
+        voucherControllerTest.resetVoucher();
 
-          test('Place an order', () async {
-            typeButtonControllerTest.setType('tieu_chuan', true);
-            typeButtonControllerTest.setType('tien_mat', false);
-            var vouchers = await voucherRepositoryTest
-                .getAllGroFastVoucher(currentUser.id);
-            var voucher =
-                vouchers.firstWhere((voucher) => voucher.name == 'DEMOSALE30');
-            await voucherControllerTest.checkVoucherButton(
-                voucher,
-                voucher.name,
-                cartController.totalCartPrice.value,
-                cartController.cartProducts,
-                currentUser.id);
+        typeButtonControllerTest.setType('tieu_chuan', true);
+        typeButtonControllerTest.setType('tien_mat', false);
+        var vouchers =
+            await voucherRepositoryTest.getAllGroFastVoucher(currentUser.id);
+        var voucher =
+            vouchers.firstWhere((voucher) => voucher.name == 'DEMOSALE30');
+        await voucherControllerTest.checkVoucherButton(
+            voucher,
+            voucher.name,
+            cartController.totalCartPrice.value,
+            cartController.cartProducts,
+            currentUser.id);
 
-            cartController.calculateCart();
+        cartController.calculateCart();
 
-            var addresses =
-                await addressRepositoryTest.getAllUserAddress(currentUser.id);
-            var selectAddress =
-                addresses.firstWhere((address) => address.selectedAddress);
-            await orderControllerTest.processOrder(currentUser, selectAddress);
+        var addresses =
+            await addressRepositoryTest.getAllUserAddress(currentUser.id);
+        var selectAddress =
+            addresses.firstWhere((address) => address.selectedAddress);
+        await orderControllerTest.processOrder(currentUser, selectAddress);
 
-            expect(orderControllerTest.statusOrder.value,
-                'Đã xong kiểm tra các điều kiện đơn hàng');
-            expect(cartController.status.value, 'Đặt hàng thành công');
-          });
-        });
+        expect(orderControllerTest.statusOrder.value,
+            'Đã xong kiểm tra các điều kiện đơn hàng');
+        expect(cartController.status.value, 'Đặt hàng thành công');
+      });
+    });
+
+    group('Search for products by name', () {
+      test('No products found', () async {
+        var list = await productRepository.getSearchAllProducts('demo');
+
+        expect(list.isNotEmpty, false);
+      });
+
+      test('Product found', () async {
+        var list = await productRepository.getSearchAllProducts('Chanh');
+
+        expect(list.isNotEmpty, true);
       });
     });
   });
