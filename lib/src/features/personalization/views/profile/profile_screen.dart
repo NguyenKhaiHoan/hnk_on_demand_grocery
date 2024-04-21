@@ -8,6 +8,7 @@ import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart'
 import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/change_name_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/change_password_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/change_phone_controller.dart';
@@ -141,7 +142,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => Get.toNamed(HAppRoutes.allAddress),
+                        onTap: () {
+                          Get.toNamed(HAppRoutes.allAddress);
+                          // var list = DummyData.getAllProducts(
+                          //     DummyData.getAllStore(
+                          //         DummyData.getAllCategory()));
+
+                          // for (var product in list) {
+                          //   print(product.toJson().toString());
+                          // }
+                        },
                         child: const ListTile(
                           contentPadding: EdgeInsets.zero,
                           leading: Icon(EneftyIcons.location_outline),

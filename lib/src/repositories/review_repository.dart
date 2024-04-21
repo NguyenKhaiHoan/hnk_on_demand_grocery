@@ -12,11 +12,11 @@ import 'package:on_demand_grocery/src/repositories/authentication_repository.dar
 class ReviewRepository extends GetxController {
   static ReviewRepository get instance => Get.find();
 
-  final _db = FirebaseFirestore.instance;
+  final db = FirebaseFirestore.instance;
 
   Future<List<ReviewModel>> getAllProductReviews(String productId) async {
     try {
-      final snapshot = await _db
+      final snapshot = await db
           .collection('Reviews')
           .doc(productId)
           .collection('ProductReview')
@@ -36,7 +36,7 @@ class ReviewRepository extends GetxController {
   Future<void> updateReview(
       String productId, String reviewId, Map<String, dynamic> json) async {
     try {
-      await _db
+      await db
           .collection('Reviews')
           .doc(productId)
           .collection('ProductReview')
@@ -50,7 +50,7 @@ class ReviewRepository extends GetxController {
   Future<String> addAndFindIdForNewReview(
       String productId, ReviewModel rating) async {
     try {
-      final newReview = await _db
+      final newReview = await db
           .collection('Reviews')
           .doc(productId)
           .collection('ProductReview')
@@ -66,7 +66,7 @@ class ReviewRepository extends GetxController {
     bool isReviewed = false;
     try {
       final userId = AuthenticationRepository.instance.authUser!.uid;
-      await _db
+      await db
           .collection('Reviews')
           .doc(productId)
           .collection('ProductReview')

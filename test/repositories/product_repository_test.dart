@@ -5,10 +5,12 @@ import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/services/firebase_storage_service.dart';
 
-class ProductRepository extends GetxController {
-  static ProductRepository get instance => Get.find();
+class ProductRepositoryTest extends GetxController {
+  static ProductRepositoryTest get instance => Get.find();
 
-  var db = FirebaseFirestore.instance;
+  ProductRepositoryTest({required this.db});
+
+  FirebaseFirestore db;
 
   Future<List<ProductModel>> getAllProducts() async {
     try {

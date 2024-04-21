@@ -259,41 +259,6 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                   }
                 })),
             gapH6,
-            GestureDetector(
-              onTap: () {
-                Get.to(const PickerLocationScreen());
-              },
-              child: SizedBox(
-                height: 200,
-                width: HAppSize.deviceWidth,
-                child: GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(initializeLocationController.latitude.value,
-                        initializeLocationController.longitude.value),
-                    zoom: 14,
-                  ),
-                  mapType: MapType.normal,
-                  myLocationEnabled: true,
-                  onMapCreated: (GoogleMapController controller) async {
-                    googleMapController.complete(controller);
-                    mapController = controller;
-                    Position currentPositon =
-                        await HLocationService.getGeoLocationPosition();
-                    LatLng currentLatLng = LatLng(
-                      currentPositon.latitude,
-                      currentPositon.longitude,
-                    );
-                    CameraPosition cameraPosition = CameraPosition(
-                      target: currentLatLng,
-                      zoom: 14,
-                    );
-                    mapController!.animateCamera(
-                        CameraUpdate.newCameraPosition(cameraPosition));
-                  },
-                ),
-              ),
-            ),
-            gapH6,
             SizedBox(
               height: 200,
               width: HAppSize.deviceWidth,
@@ -362,6 +327,7 @@ class _FormAddAddressWidgetState extends State<FormAddAddressWidget> {
                   style: HAppStyle.label2Bold
                       .copyWith(color: HAppColor.hWhiteColor))),
             ),
+            gapH12,
           ],
         ),
       ),

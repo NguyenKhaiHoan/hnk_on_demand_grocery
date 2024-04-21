@@ -1,18 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
-import 'package:on_demand_grocery/src/features/shop/models/banner_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
-import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 
-class OrderRepository extends GetxController {
-  static OrderRepository get instance => Get.find();
+class OrderRepositoryTest extends GetxController {
+  static OrderRepositoryTest get instance => Get.find();
 
-  final db = FirebaseFirestore.instance;
+  OrderRepositoryTest({required this.db});
 
-  Future<List<OrderModel>> getAllUserOrder() async {
+  FirebaseFirestore db;
+
+  Future<List<OrderModel>> getAllUserOrder(String userId) async {
     try {
-      final userId = AuthenticationRepository.instance.authUser!.uid;
       if (userId.isEmpty) {
         throw 'Không có thông tin người dùng';
       }
@@ -26,7 +24,6 @@ class OrderRepository extends GetxController {
           .map((snapshot) => OrderModel.fromDocumentSnapshot(snapshot))
           .toList();
     } catch (e) {
-      print(e.toString());
       throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
   }

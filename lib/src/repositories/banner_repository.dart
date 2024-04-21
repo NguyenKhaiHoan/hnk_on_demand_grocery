@@ -6,11 +6,11 @@ import 'package:on_demand_grocery/src/features/shop/models/banner_model.dart';
 class BannerRepository extends GetxController {
   static BannerRepository get instance => Get.find();
 
-  final _db = FirebaseFirestore.instance;
+  final db = FirebaseFirestore.instance;
 
   Future<List<BannerModel>> getAllBanners() async {
     try {
-      final snapshot = await _db
+      final snapshot = await db
           .collection('Banners')
           .where('IsActive', isEqualTo: true)
           .get();

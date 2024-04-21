@@ -27,7 +27,7 @@ class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
   final _auth = FirebaseAuth.instance;
   final deviceStorage = GetStorage();
-  final _db = FirebaseFirestore.instance;
+  final db = FirebaseFirestore.instance;
 
   User? get authUser => _auth.currentUser;
 
@@ -159,7 +159,7 @@ class AuthenticationRepository extends GetxController {
     try {
       log('user không null: ${user.uid}');
       bool userIsRegistered = false;
-      await _db
+      await db
           .collection('Users')
           .where('Id', isEqualTo: user.uid)
           .get()

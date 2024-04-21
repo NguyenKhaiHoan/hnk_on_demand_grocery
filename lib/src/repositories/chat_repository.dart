@@ -7,14 +7,12 @@ import 'package:on_demand_grocery/src/features/shop/models/chat_model.dart';
 class ChatRepository extends GetxController {
   static ChatRepository get instance => Get.find();
 
-  final _db = FirebaseFirestore.instance;
+  final db = FirebaseFirestore.instance;
 
   Future<List<ChatModel>> getAllChats(String userId) async {
     try {
-      final snapshot = await _db
-          .collection('Chats')
-          .where('UserId', isEqualTo: userId)
-          .get();
+      final snapshot =
+          await db.collection('Chats').where('UserId', isEqualTo: userId).get();
       final list = snapshot.docs
           .map((document) => ChatModel.fromDocumentSnapshot(document))
           .toList();

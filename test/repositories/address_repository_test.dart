@@ -2,17 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_address_model.dart';
-import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
-class AddressRepository extends GetxController {
-  static AddressRepository get instance => Get.find();
+class AddressRepositoryTest extends GetxController {
+  static AddressRepositoryTest get instance => Get.find();
 
-  final db = FirebaseFirestore.instance;
+  AddressRepositoryTest({required this.db});
 
-  Future<List<AddressModel>> getAllUserAddress() async {
+  FirebaseFirestore db;
+
+  Future<List<AddressModel>> getAllUserAddress(String userId) async {
     try {
-      final userId = AuthenticationRepository.instance.authUser!.uid;
       if (userId.isEmpty) throw 'Không có thông tin người dùng';
 
       final addresses = await db
@@ -45,9 +45,8 @@ class AddressRepository extends GetxController {
   }
 
   Future<void> updateAddressField(
-      String addressId, Map<String, dynamic> json) async {
+      String addressId, Map<String, dynamic> json, String userId) async {
     try {
-      final userId = AuthenticationRepository.instance.authUser!.uid;
       await db
           .collection('Users')
           .doc(userId)
@@ -59,9 +58,9 @@ class AddressRepository extends GetxController {
     }
   }
 
-  Future<String> addAndFindIdForNewAddress(AddressModel address) async {
+  Future<String> addAndFindIdForNewAddress(
+      AddressModel address, String userId) async {
     try {
-      final userId = AuthenticationRepository.instance.authUser!.uid;
       final currentAddress = await db
           .collection('Users')
           .doc(userId)

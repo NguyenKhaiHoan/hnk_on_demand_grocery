@@ -1,12 +1,16 @@
 import 'package:another_stepper/dto/stepper_data.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
+import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
+import 'package:on_demand_grocery/src/features/personalization/models/user_model.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/type_button_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/voucher_controller.dart';
@@ -17,34 +21,16 @@ import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/services/payment_service.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
-class OrderController extends GetxController {
-  static OrderController get instance => Get.find();
+import '../repositories/order_repository_test.dart';
+import 'cart_controller_test.dart';
+import 'type_button_controller_test.dart';
 
-  var resetToggle = false.obs;
+class OrderControllerTest extends GetxController {
+  static OrderControllerTest get instance => Get.find();
 
-  var listOder = <OrderModel>[].obs;
-  var isLoading = false.obs;
-  @override
-  void onInit() {
-    fetchAllOrders();
-    super.onInit();
-  }
+  final orderRepository = OrderRepositoryTest.instance;
 
-  Future<void> fetchAllOrders() async {
-    try {
-      isLoading.value = true;
-      final orders = await orderRepository.getAllUserOrder();
-      orders.sort((a, b) => b.orderDate!.millisecondsSinceEpoch
-          .compareTo(a.orderDate!.millisecondsSinceEpoch));
-      listOder.assignAll(orders);
-      isLoading.value = false;
-    } catch (e) {
-      isLoading.value = false;
-      HAppUtils.showSnackBarError('Lỗi', e.toString());
-    }
-  }
-
-  final orderRepository = Get.put(OrderRepository());
+  var statusOrder = 'Đã xong kiểm tra các điều kiện đơn hàng'.obs;
 
   var isFirstTimeRequest = false.obs;
 
@@ -83,81 +69,12 @@ class OrderController extends GetxController {
     return stepperData;
   }
 
-  OrderModel updateOrder(
-      {required OrderModel order,
-      required String status,
-      required int activeStep}) {
-    FirebaseDatabase.instance
-        .ref()
-        .child('Orders/${order.oderId}')
-        .update({'ActiveStep': activeStep, 'OrderStatus': status});
-
-    order.orderStatus = status;
-    order.activeStep = activeStep;
-    return order;
-  }
-
-  removeOrder(String orderId) {
-    FirebaseDatabase.instance.ref().child('Orders/$orderId').remove();
-    FirebaseDatabase.instance.ref().child('Charts/$orderId').remove();
-    isFirstTimeRequest.value = false;
-  }
-
-  Future<void> saveOrder(
-      {required OrderModel order,
-      required String status,
-      required int activeStep}) async {
-    try {
-      Get.back();
-      HAppUtils.loadingOverlays();
-      var presentId = order.oderId;
-
-      final isConnected = await NetworkController.instance.isConnected();
-      if (!isConnected) {
-        HAppUtils.stopLoading();
-        return;
-      }
-
-      var orderNew =
-          updateOrder(order: order, status: status, activeStep: activeStep);
-
-      final id = await orderRepository.addAndFindIdNewOrder(orderNew);
-      orderNew.oderId = id;
-
-      await orderRepository
-          .updateOrderField(orderNew.oderId, {'OrderId': orderNew.oderId});
-
-      removeOrder(presentId);
-      await fetchAllOrders();
-
-      if (orderNew.orderStatus == 'Hoàn thành') {
-        Future.forEach(orderNew.orderProducts, (productInCart) async {
-          final product = await ProductRepository.instance
-              .getProductInformation(productInCart.productId);
-          await ProductRepository.instance.updateSingleField(
-              productInCart.productId,
-              {'CountBuyed': product.countBuyed + productInCart.quantity});
-        });
-      }
-
-      removeOrder(presentId);
-      await fetchAllOrders();
-      resetToggle.toggle();
-      HAppUtils.stopLoading();
-    } catch (e) {
-      HAppUtils.stopLoading();
-      HAppUtils.showSnackBarError(
-          'Lỗi', 'Thêm lịch sử đơn hàng mới không thành công');
-    }
-  }
-
-  Future<void> processOrder() async {
-    final addressController = AddressController.instance;
-    final typeButtonController = TypeButtonController.instance;
-    final cartController = Get.put(CartController());
-    if (addressController.selectedAddress.value.phoneNumber == '') {
-      HAppUtils.showSnackBarWarning('Cảnh báo',
-          'Có vẻ bạn chưa nhập số điện thoại. Hãy nhập số điện thoại để hoàn tất đặt hàng');
+  Future<void> processOrder(UserModel user, AddressModel address) async {
+    final typeButtonController = TypeButtonControllerTest.instance;
+    final cartController = CartControllerTest.instance;
+    if (address.phoneNumber == '') {
+      statusOrder.value =
+          'Có vẻ bạn chưa nhập số điện thoại. Hãy nhập số điện thoại để hoàn tất đặt hàng';
       return;
     } else {
       if (typeButtonController.orderType != '' &&
@@ -166,8 +83,8 @@ class OrderController extends GetxController {
         String timeOrder = '';
         if (typeButtonController.orderType == 'dat_lich' &&
             typeButtonController.timeType == '') {
-          HAppUtils.showSnackBarWarning("Cảnh báo",
-              'Bạn chưa chọn thời gian giao hàng cho tùy chọn đặt lịch');
+          statusOrder.value =
+              'Bạn chưa chọn thời gian giao hàng cho tùy chọn đặt lịch';
           return;
         }
         if (typeButtonController.orderType == 'dat_lich' &&
@@ -175,31 +92,31 @@ class OrderController extends GetxController {
           timeOrder = typeButtonController.timeType;
         }
         if (typeButtonController.paymentMethodType == 'momo_vn') {
-          HAppUtils.showSnackBarWarning("Cảnh báo",
-              'Tính năng này sẽ được tích hợp sau, vui lòng chọn phương thức thanh toán khác');
+          statusOrder.value =
+              'Tính năng này sẽ được tích hợp sau, vui lòng chọn phương thức thanh toán khác';
           return;
         }
         if (typeButtonController.paymentMethodType == 'tin_dung') {
           status =
               await HPaymentService.makePayment(cartController.getTotalPrice());
           if (!status) {
-            HAppUtils.showSnackBarWarning("Cảnh báo", 'Bạn chưa thanh toán');
+            statusOrder.value = 'Bạn chưa thanh toán';
             return;
           }
         }
 
-        cartController.processOrder(
+        await cartController.processOrder(
             typeButtonController.paymentMethodType,
             status ? 'Đã thanh toán' : 'Chưa thanh toán',
             typeButtonController.orderType,
-            timeOrder);
+            timeOrder,
+            user,
+            address);
       } else {
         if (typeButtonController.orderType == '') {
-          HAppUtils.showSnackBarWarning(
-              "Cảnh báo", 'Bạn chưa chọn phương thức giao hàng');
+          statusOrder.value = 'Bạn chưa chọn phương thức giao hàng';
         } else if (typeButtonController.paymentMethodType == '') {
-          HAppUtils.showSnackBarWarning(
-              "Cảnh báo", 'Bạn chưa chọn phương thức giao hàng thanh toán');
+          statusOrder.value = 'Bạn chưa chọn phương thức giao hàng thanh toán';
         }
       }
     }
@@ -209,8 +126,6 @@ class OrderController extends GetxController {
     int difference = 0;
 
     if (order.replacedProducts != null) {
-      print('Không null');
-
       for (var product in order.replacedProducts!) {
         difference += (product.priceDifference ?? 0) * product.quantity;
       }

@@ -89,4 +89,25 @@ class AddressModel {
       longitude: json['Longitude']?.toDouble() ?? 0.0,
     );
   }
+
+  String fullAddressString() {
+    return [
+      name,
+      phoneNumber,
+      street,
+      ward,
+      district,
+      city,
+      latitude,
+      longitude
+    ].join(', ');
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is AddressModel) {
+      return fullAddressString() == other.fullAddressString();
+    }
+    return false;
+  }
 }

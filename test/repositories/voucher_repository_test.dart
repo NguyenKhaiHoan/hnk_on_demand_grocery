@@ -5,14 +5,15 @@ import 'package:on_demand_grocery/src/features/shop/models/voucher_model.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
-class VoucherRepository extends GetxController {
-  static VoucherRepository get instance => Get.find();
+class VoucherRepositoryTest extends GetxController {
+  static VoucherRepositoryTest get instance => Get.find();
 
-  final db = FirebaseFirestore.instance;
+  VoucherRepositoryTest({required this.db});
 
-  Future<List<VoucherModel>> getAllStoreVoucher() async {
+  FirebaseFirestore db;
+
+  Future<List<VoucherModel>> getAllStoreVoucher(String userId) async {
     try {
-      final userId = AuthenticationRepository.instance.authUser!.uid;
       if (userId.isEmpty) throw 'Không có thông tin người dùng';
 
       final storeVouchers = await db
@@ -33,9 +34,8 @@ class VoucherRepository extends GetxController {
     }
   }
 
-  Future<List<VoucherModel>> getAllGroFastVoucher() async {
+  Future<List<VoucherModel>> getAllGroFastVoucher(String userId) async {
     try {
-      final userId = AuthenticationRepository.instance.authUser!.uid;
       if (userId.isEmpty) throw 'Không có thông tin người dùng';
 
       final groFastVouchers = await db

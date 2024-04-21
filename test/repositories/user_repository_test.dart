@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
@@ -8,10 +7,12 @@ import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/user_model.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 
-class UserRepository extends GetxController {
-  static UserRepository get instance => Get.find();
+class UserRepositoryTest extends GetxController {
+  static UserRepositoryTest get instance => Get.find();
 
-  final db = FirebaseFirestore.instance;
+  UserRepositoryTest({required this.db});
+
+  FirebaseFirestore db;
 
   Future<void> saveUserRecord(UserModel user) async {
     try {

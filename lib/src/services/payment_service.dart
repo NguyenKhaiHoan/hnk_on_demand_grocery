@@ -26,7 +26,6 @@ class HPaymentService {
 
       status = await displayPaymentSheet(status);
     } catch (e) {
-      print(e.toString());
       HAppUtils.showSnackBarError("Lỗi", "Lỗi khi thực hiện thanh toán: $e");
     }
     return status;
@@ -54,7 +53,6 @@ class HPaymentService {
         throw 'Không thể tạo thanh toán';
       }
     } catch (e) {
-      print(e.toString());
       HAppUtils.showSnackBarError("Lỗi", "Lỗi khi tạo thanh toán: $e");
       rethrow;
     }

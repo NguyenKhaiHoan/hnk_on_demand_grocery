@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 
-class StoreRepository extends GetxController {
-  static StoreRepository get instance => Get.find();
+class StoreRepositoryTest extends GetxController {
+  static StoreRepositoryTest get instance => Get.find();
 
-  final db = FirebaseFirestore.instance;
+  StoreRepositoryTest({required this.db});
+
+  FirebaseFirestore db;
 
   Future<StoreModel> getStoreInformation(String storeId) async {
     try {
@@ -19,8 +21,7 @@ class StoreRepository extends GetxController {
     } on FirebaseException catch (e) {
       throw HFirebaseException(code: e.code).message;
     } catch (e) {
-      print(e.toString());
-      throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau. ${e.toString()}';
+      throw 'Đã xảy ra sự cố. Xin vui lòng thử lại sau.';
     }
   }
 

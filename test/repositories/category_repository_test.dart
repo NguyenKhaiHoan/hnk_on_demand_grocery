@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
 import 'package:on_demand_grocery/src/features/shop/models/category_model.dart';
 
-class CategoryRepository extends GetxController {
-  static CategoryRepository get instance => Get.find();
+class CategoryRepositoryTest extends GetxController {
+  static CategoryRepositoryTest get instance => Get.find();
 
-  final db = FirebaseFirestore.instance;
+  CategoryRepositoryTest({required this.db});
+
+  FirebaseFirestore db;
 
   Future<List<CategoryModel>> getAllCategories() async {
     try {

@@ -41,6 +41,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                             child: const Text("Xóa tất cả"),
                             onTap: () {
                               cartController.clearCart();
+                              cartController.updateCart();
                               HAppUtils.showSnackBarSuccess('Xóa khỏi giỏ hàng',
                                   'Bạn đã xóa thành công tất cả sản phẩm trong giỏ hàng');
                             },

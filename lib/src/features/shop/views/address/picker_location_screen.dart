@@ -218,8 +218,6 @@ class _PickerLocationScreenState extends State<PickerLocationScreen> {
             '${listPartOfAddress[0]}, ${listPartOfAddress[1]}, ${listPartOfAddress[2]}';
         if (listPartOfAddress[2] == 'Hà Nội') {
           checkLocation = true;
-        } else {
-          HAppUtils.showSnackBarError('Lỗi', 'Khu vực này không được phục vụ');
         }
       },
       onCameraMove: (cameraPosition) {

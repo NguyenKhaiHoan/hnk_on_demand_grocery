@@ -6,14 +6,14 @@ import 'package:on_demand_grocery/src/repositories/authentication_repository.dar
 class WishlistRepository extends GetxController {
   static WishlistRepository get instance => Get.find();
 
-  final _db = FirebaseFirestore.instance;
+  final db = FirebaseFirestore.instance;
 
   Future<List<WishlistModel>> getAllUserWishlist() async {
     try {
       final userId = AuthenticationRepository.instance.authUser!.uid;
       if (userId.isEmpty) throw 'Không có thông tin người dùng';
 
-      final wishlists = await _db
+      final wishlists = await db
           .collection('Users')
           .doc(userId)
           .collection('Wishlists')
@@ -31,7 +31,7 @@ class WishlistRepository extends GetxController {
       String wishlistId, Map<String, dynamic> json) async {
     try {
       final userId = AuthenticationRepository.instance.authUser!.uid;
-      await _db
+      await db
           .collection('Users')
           .doc(userId)
           .collection('Wishlists')
@@ -45,7 +45,7 @@ class WishlistRepository extends GetxController {
   Future<String> addAndFindIdForNewWishlist(WishlistModel wishlist) async {
     try {
       final userId = AuthenticationRepository.instance.authUser!.uid;
-      final currentWishlist = await _db
+      final currentWishlist = await db
           .collection('Users')
           .doc(userId)
           .collection('Wishlists')

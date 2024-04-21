@@ -12,6 +12,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/product_controll
 import 'package:on_demand_grocery/src/features/shop/controllers/search_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
+import 'package:on_demand_grocery/src/repositories/address_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
@@ -282,10 +283,21 @@ class _SearchScreenState extends State<SearchScreen> {
                                               color:
                                                   HAppColor.hGreyColorShade300),
                                         ),
-                                        onPressed: () => Get.toNamed(
+                                        onPressed: () async {
+                                          final address =
+                                              await AddressRepository.instance
+                                                  .getStoreAddress(store.id);
+                                          final stringAddress =
+                                              address.first.toString();
+                                          Get.toNamed(
                                             HAppRoutes.storeDetail,
                                             preventDuplicates: false,
-                                            arguments: {'model': store}),
+                                            arguments: {
+                                              'model': store,
+                                              'address': stringAddress
+                                            },
+                                          );
+                                        },
                                         child: const Text("Ghé thăm")),
                                   )
                                 ]),
