@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -14,7 +15,6 @@ import 'package:on_demand_grocery/src/repositories/authentication_repository.dar
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -32,6 +32,9 @@ Future<void> main() async {
 
   Stripe.publishableKey = HAppKey.stripePublishableKey;
 
+  Gemini.init(
+    apiKey: HAppKey.geminiApi,
+  );
   await GetStorage.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -79,7 +82,8 @@ class _MyAppState extends State<MyApp> {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate
         ],
-        supportedLocales: const [Locale('vi', 'VN')],
+        supportedLocales: const [Locale('vi')],
+        locale: const Locale('vi'),
         theme: HAppTheme().lightTheme,
         getPages: HAppPages.pages,
         builder: (context, child) => child!,

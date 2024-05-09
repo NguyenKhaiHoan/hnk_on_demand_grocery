@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -49,12 +46,25 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyB3Fd3bSB7GQg0YpjRhVxwpUsHLqG48PyA',
+    appId: '1:297352060294:web:c0741047938cabc587a007',
+    messagingSenderId: '297352060294',
+    projectId: 'grofast-ondemandgroceryapp',
+    authDomain: 'grofast-ondemandgroceryapp.firebaseapp.com',
+    databaseURL:
+        'https://grofast-ondemandgroceryapp-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'grofast-ondemandgroceryapp.appspot.com',
+    measurementId: 'G-55N8EG4W5Z',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCtJ48obT8h0qdDIUxT3vO41E1y3zmnaLA',
     appId: '1:297352060294:android:91701f9ce0a9adaa87a007',
     messagingSenderId: '297352060294',
     projectId: 'grofast-ondemandgroceryapp',
-    databaseURL: 'https://grofast-ondemandgroceryapp-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://grofast-ondemandgroceryapp-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'grofast-ondemandgroceryapp.appspot.com',
   );
 
@@ -63,10 +73,13 @@ class DefaultFirebaseOptions {
     appId: '1:297352060294:ios:b42320670402c4d487a007',
     messagingSenderId: '297352060294',
     projectId: 'grofast-ondemandgroceryapp',
-    databaseURL: 'https://grofast-ondemandgroceryapp-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://grofast-ondemandgroceryapp-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'grofast-ondemandgroceryapp.appspot.com',
-    androidClientId: '297352060294-m3iqe6jo38lkitupoq0nlf8nsnthir7k.apps.googleusercontent.com',
-    iosClientId: '297352060294-lclhedvmn79ek3l15uhk1v4v23vrbh17.apps.googleusercontent.com',
+    androidClientId:
+        '297352060294-m3iqe6jo38lkitupoq0nlf8nsnthir7k.apps.googleusercontent.com',
+    iosClientId:
+        '297352060294-lclhedvmn79ek3l15uhk1v4v23vrbh17.apps.googleusercontent.com',
     iosBundleId: 'com.example.onDemandGrocery',
   );
 }

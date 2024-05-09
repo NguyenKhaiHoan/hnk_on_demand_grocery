@@ -1,13 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/voucher_model.dart';
-import 'package:on_demand_grocery/src/repositories/voucher_repository.dart';
-import 'package:on_demand_grocery/src/utils/utils.dart';
 
 import '../repositories/voucher_repository_test.dart';
 

@@ -1,25 +1,13 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 
-import 'package:on_demand_grocery/src/features/shop/models/banner_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/payment_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/store_note_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/widgets/type_button.dart';
-import 'package:on_demand_grocery/src/repositories/banner_repository.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
-import 'package:on_demand_grocery/src/utils/utils.dart';
-import 'package:http/http.dart' as http;
 
 class CheckoutController extends GetxController {
   static CheckoutController get instance => Get.find();

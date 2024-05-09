@@ -4,17 +4,12 @@ import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/all_store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/custom_chip_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/store/widgets/store_item_wiget.dart';
-import 'package:on_demand_grocery/src/repositories/address_repository.dart';
-import 'package:on_demand_grocery/src/repositories/store_repository.dart';
-import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class AllStoreScreen extends StatefulWidget {
@@ -196,7 +191,8 @@ class _AllStoreScreenState extends State<AllStoreScreen>
                           model: allStoreController.listFilterStore[index]);
                     },
                   )),
-              gapH24,
+              gapH40,
+              gapH40,
             ]),
           ))
         ]),

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/services/firebase_storage_service.dart';
@@ -173,6 +173,54 @@ class ProductRepository extends GetxController {
       return products;
     } catch (e) {
       throw 'Đã có sự cố xảy ra. Xin vui lòng thử lại';
+    }
+  }
+
+  Future<List<ProductModel>> getProductsRegistration() async {
+    try {
+      List<ProductModel> products = [];
+      List<String> productIds = [];
+      final snapshot = await db
+          .collection('Users')
+          .doc(UserController.instance.user.value.id)
+          .collection('RegisteredProducts')
+          .get();
+
+      for (var doc in snapshot.docs) {
+        Map<String, dynamic> data = doc.data();
+        productIds.add(data['ProductId']);
+      }
+      products = await getProductsFromListIds(productIds);
+      return products;
+    } catch (e) {
+      throw 'Đã có sự cố xảy ra. Xin vui lòng thử lại';
+    }
+  }
+
+  Future<List<ProductModel>> fetchProductsByName(
+      List<String> productNames) async {
+    try {
+      List<ProductModel> products = [];
+      if (productNames.isNotEmpty) {
+        final productsRef = FirebaseFirestore.instance.collection('Products');
+
+        for (String name in productNames) {
+          final querySnapshot = await productsRef
+              .where("Name", isGreaterThanOrEqualTo: name)
+              .where("Name", isLessThanOrEqualTo: "$name\uf7ff")
+              .orderBy('Name')
+              .limit(3)
+              .get();
+
+          for (var doc in querySnapshot.docs) {
+            final product = ProductModel.fromDocumentSnapshot(doc);
+            products.add(product);
+          }
+        }
+      }
+      return products;
+    } catch (e) {
+      throw 'Đã có sự cố xảy ra. Xin vui lòng thử lại ';
     }
   }
 

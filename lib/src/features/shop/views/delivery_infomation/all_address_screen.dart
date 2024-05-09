@@ -8,7 +8,6 @@ import 'package:on_demand_grocery/src/features/personalization/controllers/addre
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/delivery_infomation_dart.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
-import 'package:shimmer/shimmer.dart';
 
 class AllAddressScreen extends StatefulWidget {
   const AllAddressScreen({super.key});

@@ -10,15 +10,7 @@ import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/views/address/picker_location_screen.dart';
-import 'package:on_demand_grocery/src/features/shop/views/chat/all_chat_screen.dart';
-import 'package:on_demand_grocery/src/features/shop/views/live_tracking/live_tracking_screen.dart';
-import 'package:on_demand_grocery/src/features/shop/views/order/chat_order.dart';
-import 'package:on_demand_grocery/src/features/shop/views/review/write_review_screen.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
-import 'package:on_demand_grocery/src/services/location_service.dart';
-import 'package:on_demand_grocery/src/services/messaging_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
 class HomeAppbarWidget extends StatelessWidget implements PreferredSizeWidget {

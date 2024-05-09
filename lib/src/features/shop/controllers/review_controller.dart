@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/review_model.dart';
 import 'package:on_demand_grocery/src/repositories/review_repository.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';

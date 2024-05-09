@@ -27,21 +27,37 @@ void main() {
       password = "Password1234!";
     });
 
-    group('Login', () {
-      test('Login', () async {
+    group('Sign up', () {
+      test('1.1 Sign up when entering your registered email', () async {
         when(
-          () => mockFirebaseAuth.signInWithEmailAndPassword(
+          () => mockFirebaseAuth.createUserWithEmailAndPassword(
+              email: email, password: password),
+        ).thenThrow(FirebaseAuthException(code: 'email-already-in-use'));
+
+        expectLater(
+          authenticationRepositoryTest.registerWithEmailAndPassword(
+              email, password),
+          throwsA(
+              'Địa chỉ email đã được đăng ký. Vui lòng sử dụng một địa chỉ email khác.'),
+        );
+      });
+
+      test('1.2 Sign up in by entering a valid email and password', () async {
+        when(
+          () => mockFirebaseAuth.createUserWithEmailAndPassword(
               email: email, password: password),
         ).thenAnswer((realInvocation) =>
             Future<MockUserCredential>.value(mockUserCredential));
 
         expect(
-            await authenticationRepositoryTest.loginWithEmailAndPassword(
+            await authenticationRepositoryTest.registerWithEmailAndPassword(
                 email, password),
             mockUserCredential);
       });
+    });
 
-      test('Login with wrong credentials throws exception', () {
+    group('Login', () {
+      test('2.1 Log in by entering a invalid email and password', () {
         when(
           () => mockFirebaseAuth.signInWithEmailAndPassword(
               email: email, password: password),
@@ -54,34 +70,18 @@ void main() {
               'Thông tin đăng nhập không hợp lệ. Người dùng không được tìm thấy.'),
         );
       });
-    });
 
-    group('Sign up', () {
-      test('Sign up', () async {
+      test('2.2 Log in by entering a valid email and password', () async {
         when(
-          () => mockFirebaseAuth.createUserWithEmailAndPassword(
+          () => mockFirebaseAuth.signInWithEmailAndPassword(
               email: email, password: password),
         ).thenAnswer((realInvocation) =>
             Future<MockUserCredential>.value(mockUserCredential));
 
         expect(
-            await authenticationRepositoryTest.registerWithEmailAndPassword(
+            await authenticationRepositoryTest.loginWithEmailAndPassword(
                 email, password),
             mockUserCredential);
-      });
-
-      test('Sign up with email already in use throws exception', () async {
-        when(
-          () => mockFirebaseAuth.createUserWithEmailAndPassword(
-              email: email, password: password),
-        ).thenThrow(FirebaseAuthException(code: 'email-already-in-use'));
-
-        expectLater(
-          authenticationRepositoryTest.registerWithEmailAndPassword(
-              email, password),
-          throwsA(
-              'Địa chỉ email đã được đăng ký. Vui lòng sử dụng một địa chỉ email khác.'),
-        );
       });
     });
   });

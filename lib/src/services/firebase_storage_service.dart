@@ -1,12 +1,7 @@
-import 'dart:ffi';
-import 'dart:typed_data';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
-import 'package:on_demand_grocery/src/features/shop/models/category_model.dart';
 
 class HFirebaseStorageService extends GetxController {
   static HFirebaseStorageService get instance => Get.find();

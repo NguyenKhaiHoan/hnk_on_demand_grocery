@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:another_stepper/widgets/another_stepper.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -10,16 +9,13 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_network/image_network.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/delivery_person_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/initialize_location_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/map_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/delivery_person_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/delivery_process_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/chat_order.dart';
@@ -41,7 +37,7 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
   final stepperData = Get.arguments['stepperData'];
   OrderModel orderData = Get.arguments['order'];
 
-  int length = 0;
+  var length = 0.obs;
 
   var difference = 0.obs;
 
@@ -49,7 +45,7 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      length = orderData.storeOrders.length;
+      length.value = orderData.storeOrders.length;
     });
   }
 
@@ -88,37 +84,40 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
           }
 
           if (snapshot.hasError) {
-            Get.back();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Get.back();
+            });
             return const SizedBox();
           }
 
           if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
-            Get.back();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Get.back();
+            });
             return const SizedBox();
           }
 
           OrderModel order = OrderModel.fromJson(
               jsonDecode(jsonEncode(snapshot.data!.snapshot.value)));
 
-          Future.delayed(Duration.zero).then((value) {
+          Future.delayed(Duration.zero).then((value) async {
             difference.value = orderController.totalDifference(order);
-          });
-
-          if (length != order.storeOrders.length) {
-            length = order.storeOrders.length;
-            if (length != 0) {
-              int totalPrice = 0;
-              for (var cartProduct in order.orderProducts) {
-                totalPrice += cartProduct.price! * cartProduct.quantity;
+            if (length.value != order.storeOrders.length) {
+              length.value = order.storeOrders.length;
+              if (length.value != 0) {
+                int totalPrice = 0;
+                for (var cartProduct in order.orderProducts) {
+                  totalPrice += cartProduct.price! * cartProduct.quantity;
+                }
+                order.price = totalPrice;
+              } else {
+                await orderController.saveOrder(
+                    order: order,
+                    status: 'Từ chối',
+                    activeStep: activeStep.value);
               }
-              order.price = totalPrice;
-            } else {
-              orderController.saveOrder(
-                  order: order,
-                  status: 'Từ chối',
-                  activeStep: activeStep.value);
             }
-          }
+          });
 
           if (order.orderStatus != null &&
               reverseOrderStatus(order.orderStatus!) != activeStep.value) {
@@ -719,8 +718,8 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                                           gapW10,
                                           Expanded(
                                             child: ElevatedButton(
-                                              onPressed: () {
-                                                orderController.saveOrder(
+                                              onPressed: () async {
+                                                await orderController.saveOrder(
                                                     order: order,
                                                     status: 'Hoàn thành',
                                                     activeStep:
@@ -754,8 +753,8 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 12),
                                     child: OutlinedButton(
-                                        onPressed: () {
-                                          orderController.saveOrder(
+                                        onPressed: () async {
+                                          await orderController.saveOrder(
                                               order: order,
                                               status: 'Hủy',
                                               activeStep: activeStep.value);

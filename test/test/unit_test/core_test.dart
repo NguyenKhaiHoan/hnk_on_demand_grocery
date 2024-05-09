@@ -206,8 +206,21 @@ void main() {
       });
     });
 
+    group('Search for products by name', () {
+      test('3.1 Product found', () async {
+        var list = await productRepository.getSearchAllProducts('Chanh');
+
+        expect(list.isNotEmpty, true);
+      });
+
+      test('3.2 No products found', () async {
+        var list = await productRepository.getSearchAllProducts('demo');
+
+        expect(list.isNotEmpty, false);
+      });
+    });
     group('Order', () {
-      test('Add products in cart', () {
+      test('4.1 Add products in cart', () {
         // Check cart is empty
         expect(cartController.cartProducts.length, 0);
 
@@ -227,23 +240,30 @@ void main() {
         expect(cartController.cartProducts.length, 2);
       });
 
-      test('Change quantity of a product or remove a product in cart', () {
-        // Change the quantity of product1 from 1 to 3
-        var product1InCart = cartController.convertToCartProduct(product1, 1);
-        cartController.addSingleProductInCart(product1InCart);
-        cartController.addSingleProductInCart(product1InCart);
+      group('Change quantity of a product or remove a product in cart', () {
+        test('5.1 Increase the quantity of product1', () {
+          // Increase the quantity of product1 from 1 to 3
+          var product1InCart = cartController.convertToCartProduct(product1, 1);
+          cartController.addSingleProductInCart(product1InCart);
+          cartController.addSingleProductInCart(product1InCart);
 
-        // Remove product2
-        var product2InCart = cartController.convertToCartProduct(product2, 1);
-        cartController.removeSingleProductInCart(product2InCart);
+          expect(cartController.numberOfCart.value, 4);
+          expect(cartController.cartProducts.length, 2);
+        });
 
-        // Check the number of quantity and products in the cart
-        expect(cartController.numberOfCart.value, 3);
-        expect(cartController.cartProducts.length, 1);
+        test('5.2 Decrease the quantity of product1', () {
+          // Remove product2
+          var product2InCart = cartController.convertToCartProduct(product2, 1);
+          cartController.removeSingleProductInCart(product2InCart);
+
+          // Check the number of quantity and products in the cart
+          expect(cartController.numberOfCart.value, 3);
+          expect(cartController.cartProducts.length, 1);
+        });
       });
 
       group('Enable/disable payment for products in the cart', () {
-        test('Disable payment', () {
+        test('6.1 Disable payment', () {
           // First product in cart
           var product = cartController.cartProducts.first;
 
@@ -256,7 +276,7 @@ void main() {
           expect(cartController.numberOfCart.value, 0);
         });
 
-        test('Enable payment', () {
+        test('6.2 Enable payment', () {
           // First product in cart
           var product = cartController.cartProducts.first;
 
@@ -270,8 +290,7 @@ void main() {
         });
       });
 
-      test(
-          'Add/remove a note to the store where the product needs to be ordered',
+      test('7.1 Add a note to the store where the product needs to be ordered',
           () {
         // First product in cart
         var product = cartController.cartProducts.first;
@@ -289,7 +308,7 @@ void main() {
         // expect(cartController.storeOrderMap[product.storeId]!.note, '');
       });
 
-      test('Add and choose new address', () async {
+      test('8.1 Add and choose new address', () async {
         currentUserAddress = AddressModel(
             id: '',
             city: "Hà Nội",
@@ -312,26 +331,26 @@ void main() {
       });
 
       group('Select delivery method', () {
-        test('Use priority delivery method', () {
+        test('9.1 Use priority delivery method', () {
           typeButtonControllerTest.setType('uu_tien', true);
 
           expect(cartController.getTotalPrice(), 51000);
         });
 
-        test('Use standard delivery method', () {
+        test('9.2 Use standard delivery method', () {
           typeButtonControllerTest.setType('tieu_chuan', true);
 
           expect(cartController.getTotalPrice(), 41000);
         });
 
-        test('Use the scheduled delivery method with peak hours', () {
+        test('9.3 Use the scheduled delivery method with peak hours', () {
           typeButtonControllerTest.setType('dat_lich', true);
           typeButtonControllerTest.setTimeType('16:00 - 17:00');
 
           expect(cartController.getTotalPrice(), 46000);
         });
 
-        test('Use the scheduled delivery method without peak hours', () {
+        test('9.4 Use the scheduled delivery method without peak hours', () {
           typeButtonControllerTest.setType('dat_lich', true);
           typeButtonControllerTest.setTimeType('14:00 - 15:00');
           cartController.calculateCart();
@@ -345,17 +364,22 @@ void main() {
           typeButtonControllerTest.setType('tieu_chuan', true);
         });
 
-        test('Use cash', () {
+        test('10.1 Use cash', () {
           typeButtonControllerTest.setType('tien_mat', false);
         });
 
-        test('Use credit card', () {
+        test('10.2 Use Momo', () {
+          typeButtonControllerTest.setType('momo_vn', false);
+        });
+
+        test('10.3 Use credit card', () {
           typeButtonControllerTest.setType('tin_dung', false);
         });
       });
 
       group('Select a voucher', () {
-        test('Use a voucher with a minimum value greater than the cart price',
+        test(
+            '11.1 Use a voucher with a minimum value greater than the cart price',
             () async {
           var vouchers =
               await voucherRepositoryTest.getAllGroFastVoucher(currentUser.id);
@@ -372,7 +396,7 @@ void main() {
               'Mã ưu đãi này không được áp dụng do không đủ điểu kiện.');
         });
 
-        test('Use a voucher', () async {
+        test('11.2 Use a valid voucher', () async {
           var vouchers =
               await voucherRepositoryTest.getAllGroFastVoucher(currentUser.id);
           var voucher =
@@ -395,7 +419,7 @@ void main() {
         });
       });
 
-      test('Place an order', () async {
+      test('12.1 Place an order', () async {
         // Reset all
         typeButtonControllerTest.setType('', true);
         typeButtonControllerTest.setType('', false);
@@ -426,20 +450,6 @@ void main() {
         expect(orderControllerTest.statusOrder.value,
             'Đã xong kiểm tra các điều kiện đơn hàng');
         expect(cartController.status.value, 'Đặt hàng thành công');
-      });
-    });
-
-    group('Search for products by name', () {
-      test('No products found', () async {
-        var list = await productRepository.getSearchAllProducts('demo');
-
-        expect(list.isNotEmpty, false);
-      });
-
-      test('Product found', () async {
-        var list = await productRepository.getSearchAllProducts('Chanh');
-
-        expect(list.isNotEmpty, true);
       });
     });
   });

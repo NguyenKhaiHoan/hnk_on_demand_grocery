@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:on_demand_grocery/src/features/shop/models/delivery_process_model.dart';
 
 class MapController extends GetxController {
   static MapController get instance => Get.find();

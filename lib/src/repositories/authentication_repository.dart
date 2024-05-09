@@ -3,24 +3,16 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:on_demand_grocery/src/common_widgets/splash_screen_widget.dart';
 import 'package:on_demand_grocery/src/exceptions/firebase_auth_exceptions.dart';
 import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
-import 'package:on_demand_grocery/src/features/authentication/views/login/login_screen.dart';
-import 'package:on_demand_grocery/src/features/authentication/views/on_boarding/on_boarding_screen.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/banner_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
-import 'package:on_demand_grocery/src/services/firebase_notification_service.dart';
 import 'package:on_demand_grocery/src/services/local_service.dart';
-import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class AuthenticationRepository extends GetxController {
@@ -44,8 +36,8 @@ class AuthenticationRepository extends GetxController {
     } else {
       deviceStorage.writeIfNull('isFirstTime', true);
       deviceStorage.read('isFirstTime') != true
-          ? Get.toNamed(HAppRoutes.login)
-          : Get.toNamed(HAppRoutes.onboarding);
+          ? Get.offAllNamed(HAppRoutes.login)
+          : Get.offAllNamed(HAppRoutes.onboarding);
     }
   }
 
@@ -145,7 +137,7 @@ class AuthenticationRepository extends GetxController {
     try {
       await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();
-      Get.toNamed(HAppRoutes.login);
+      Get.offAllNamed(HAppRoutes.login);
     } on FirebaseAuthException catch (e) {
       throw HFirebaseAuthException(code: e.code).message;
     } on FirebaseException catch (e) {
@@ -177,7 +169,7 @@ class AuthenticationRepository extends GetxController {
           Get.put(BannerController());
           final userController = Get.put(UserController());
           await userController.fetchCurrentPosition();
-          Get.toNamed(HAppRoutes.root);
+          Get.offAllNamed(HAppRoutes.root);
         } else {
           log('user chưa xác thức');
           Get.toNamed(HAppRoutes.verify, arguments: {'email': user.email});
@@ -185,14 +177,14 @@ class AuthenticationRepository extends GetxController {
       } else {
         deviceStorage.writeIfNull('isFirstTime', true);
         deviceStorage.read('isFirstTime') != true
-            ? Get.toNamed(HAppRoutes.login)
-            : Get.toNamed(HAppRoutes.onboarding);
+            ? Get.offAllNamed(HAppRoutes.login)
+            : Get.offAllNamed(HAppRoutes.onboarding);
       }
     } catch (e) {
       deviceStorage.writeIfNull('isFirstTime', true);
       deviceStorage.read('isFirstTime') != true
-          ? Get.toNamed(HAppRoutes.login)
-          : Get.toNamed(HAppRoutes.onboarding);
+          ? Get.offAllNamed(HAppRoutes.login)
+          : Get.offAllNamed(HAppRoutes.onboarding);
       HAppUtils.showSnackBarError(
           'Lỗi', 'Tài khoản người dùng chưa được đăng ký');
     }

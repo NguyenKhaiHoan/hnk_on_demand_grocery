@@ -1,7 +1,9 @@
 import 'dart:math';
-import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -29,10 +31,16 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:readmore/readmore.dart';
 import 'package:toastification/toastification.dart';
 
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends StatefulWidget {
   ProductDetailScreen({super.key});
 
+  @override
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final detailController = DetailController.instance;
+
   final productController = ProductController.instance;
   final storeController = Get.put(StoreController());
   final wishlistController = Get.put(WishlistController());
@@ -43,15 +51,24 @@ class ProductDetailScreen extends StatelessWidget {
 
   int randomNumber = 0;
 
-  final List<double> rates = [0.1, 0.3, 0.5, 0.7, 0.9];
+  var checkStatus = false.obs;
+
   @override
-  Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () async {
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       detailController.showAppBar.value = false;
       detailController.showNameInAppBar.value = false;
       var rng = Random();
       randomNumber = rng.nextInt(101) + 100;
+      checkStatus.value = await checkStatusProduct();
     });
+  }
+
+  final List<double> rates = [0.1, 0.3, 0.5, 0.7, 0.9];
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
           child: Stack(
@@ -141,7 +158,6 @@ class ProductDetailScreen extends StatelessWidget {
                             onTap: () {
                               wishlistController
                                   .addOrRemoveProductInFavoriteList(product.id);
-                              showSnackbarFavorite(context, product);
                             },
                             child: Container(
                               width: 40,
@@ -274,7 +290,6 @@ class ProductDetailScreen extends StatelessWidget {
                                       wishlistController
                                           .addOrRemoveProductInFavoriteList(
                                               product.id);
-                                      showSnackbarFavorite(context, product);
                                     },
                                     child: Container(
                                       width: 40,
@@ -389,119 +404,6 @@ class ProductDetailScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            // gapH12,
-                            // ExpansionTile(
-                            //   initiallyExpanded: false,
-                            //   tilePadding: EdgeInsets.zero,
-                            //   shape: const Border(),
-                            //   onExpansionChanged: (value) {
-                            //     if (value) {
-                            //       productController
-                            //           .getComparePriceProduct(model);
-                            //     }
-                            //   },
-                            //   title: Row(
-                            //     children: [
-                            //       model.salePersent == 0
-                            //           ? Text(
-                            //               HAppUtils.vietNamCurrencyFormatting(
-                            //                   model.price),
-                            //               style: HAppStyle.label1Bold.copyWith(
-                            //                   color:
-                            //                       HAppColor.hBluePrimaryColor),
-                            //             )
-                            //           : Text.rich(
-                            //               TextSpan(
-                            //                 style:
-                            //                     HAppStyle.label1Bold.copyWith(
-                            //                   color: HAppColor.hOrangeColor,
-                            //                 ),
-                            //                 text:
-                            //                     '${HAppUtils.vietNamCurrencyFormatting(model.priceSale)} ',
-                            //                 children: [
-                            //                   TextSpan(
-                            //                     text: DummyData
-                            //                         .vietNamCurrencyFormatting(
-                            //                             model.price),
-                            //                     style: HAppStyle.paragraph2Bold
-                            //                         .copyWith(
-                            //                             color: HAppColor
-                            //                                 .hGreyColor,
-                            //                             decoration:
-                            //                                 TextDecoration
-                            //                                     .lineThrough),
-                            //                   ),
-                            //                 ],
-                            //               ),
-                            //             ),
-                            //       const Spacer(),
-                            //       const Text("So sánh giá")
-                            //     ],
-                            //   ),
-                            //   children: [
-                            //     SizedBox(
-                            //         width: double.infinity,
-                            //         height: 315,
-                            //         child: Obx(() => ListView.separated(
-                            //               scrollDirection: Axis.horizontal,
-                            //               itemCount: productController
-                            //                   .comparePriceProducts.length,
-                            //               itemBuilder:
-                            //                   (BuildContext context, index) {
-                            //                 String differentText = "";
-                            //                 String compareOperator = "";
-                            //                 String comparePrice = "";
-
-                            //                 if (model.salePersent == 0) {
-                            //                   differentText = detailController
-                            //                       .calculatingDifference(
-                            //                           productController
-                            //                                   .comparePriceProducts[
-                            //                               index],
-                            //                           model.price);
-                            //                   compareOperator = detailController
-                            //                       .comparePrice(differentText);
-                            //                   comparePrice = detailController
-                            //                       .comparePriceNumber(
-                            //                           differentText);
-                            //                 } else {
-                            //                   differentText = detailController
-                            //                       .calculatingDifference(
-                            //                           productController
-                            //                                   .comparePriceProducts[
-                            //                               index],
-                            //                           model.priceSale);
-                            //                   compareOperator = detailController
-                            //                       .comparePrice(differentText);
-                            //                   comparePrice = detailController
-                            //                       .comparePriceNumber(
-                            //                           differentText);
-                            //                 }
-                            //                 return Padding(
-                            //                   padding: const EdgeInsets.only(
-                            //                       bottom: 16),
-                            //                   child: ProductItemWidget(
-                            //                     storeIcon: true,
-                            //                     model: productController
-                            //                             .comparePriceProducts[
-                            //                         index],
-                            //                     list: productController
-                            //                         .comparePriceProducts,
-                            //                     compare: true,
-                            //                     differentText: differentText,
-                            //                     compareOperator:
-                            //                         compareOperator,
-                            //                     comparePrice: comparePrice,
-                            //                   ),
-                            //                 );
-                            //               },
-                            //               separatorBuilder:
-                            //                   (BuildContext context,
-                            //                           int index) =>
-                            //                       gapW10,
-                            //             )))
-                            //   ],
-                            // ),
                             gapH24,
                             Row(
                               children: [
@@ -987,8 +889,8 @@ class ProductDetailScreen extends StatelessWidget {
                         ),
                       )),
                   ElevatedButton(
-                    onPressed: () {
-                      cartController.addToCart(product);
+                    onPressed: () async {
+                      await cartController.addToCart(product);
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: Size(HAppSize.deviceWidth * 0.1, 50),
@@ -1011,11 +913,58 @@ class ProductDetailScreen extends StatelessWidget {
             else
               Row(children: [
                 GestureDetector(
-                  onTap: () {
-                    wishlistController
-                        .addOrRemoveProductInRegisterNotificationList(
-                            product.id);
-                    showSnackbarRegisterNotification(context, product);
+                  onTap: () async {
+                    // wishlistController
+                    //     .addOrRemoveProductInRegisterNotificationList(
+                    //         product.id)
+                    checkStatus.value = await checkStatusProduct();
+                    setState(() {});
+                    if (checkStatus.value) {
+                      await FirebaseFirestore.instance
+                          .collection('Users')
+                          .doc(UserController.instance.user.value.id)
+                          .collection('RegisteredProducts')
+                          .doc(product.id)
+                          .delete()
+                          .then((value) {
+                        DatabaseReference ref = FirebaseDatabase.instance
+                            .ref()
+                            .child('RegisteredProducts/${product.id}');
+                        ref
+                            .child(UserController.instance.user.value.id)
+                            .remove()
+                            .then((_) {
+                          print('Xóa thành công');
+                          HAppUtils.showSnackBarSuccess(
+                              'Hủy nhận thông báo thành công',
+                              'Bạn đã hủy nhận thông báo khi sản phẩm này có hàng trở lại');
+                        }).catchError((error) {
+                          print('Có lỗi xảy ra: $error');
+                        });
+                      });
+                    } else {
+                      await FirebaseFirestore.instance
+                          .collection('Users')
+                          .doc(UserController.instance.user.value.id)
+                          .collection('RegisteredProducts')
+                          .doc(product.id)
+                          .set({'ProductId': product.id}).then((value) {
+                        DatabaseReference ref = FirebaseDatabase.instance
+                            .ref()
+                            .child('RegisteredProducts/${product.id}');
+                        ref.update({
+                          UserController.instance.user.value.id: UserController
+                              .instance.user.value.cloudMessagingToken
+                        }).then((_) {
+                          print('Cập nhật thành công');
+                          HAppUtils.showSnackBarSuccess(
+                              'Đăng ký nhận thông báo thành công',
+                              'Chúng tôi sẽ gửi cho bạn thông báo khi sản phẩm này có hàng trở lại');
+                        }).catchError((error) {
+                          print('Có lỗi xảy ra: $error');
+                        });
+                      });
+                    }
                   },
                   child: Container(
                     width: 40,
@@ -1028,9 +977,7 @@ class ProductDetailScreen extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: HAppColor.hBackgroundColor),
                     child: Center(
-                        child: Obx(() => !UserController.instance.user.value
-                                .listOfRegisterNotificationProduct!
-                                .contains(product.id)
+                        child: Obx(() => !checkStatus.value
                             ? const Icon(EneftyIcons.notification_bing_outline)
                             : const Icon(
                                 EneftyIcons.notification_bing_bold,
@@ -1068,107 +1015,68 @@ class ProductDetailScreen extends StatelessWidget {
     );
   }
 
-  void showSnackbarFavorite(BuildContext context, ProductModel model) {
-    if (UserController.instance.user.value.listOfFavoriteProduct!
-        .contains(model.id)) {
-      HAppUtils.showToastSuccess(
-          Text(
-            'Thêm vào Yêu thích!',
-            style: HAppStyle.label2Bold
-                .copyWith(color: HAppColor.hBluePrimaryColor),
-          ),
-          RichText(
-              text: TextSpan(
-                  style: HAppStyle.paragraph2Regular
-                      .copyWith(color: HAppColor.hGreyColorShade600),
-                  text: 'Bạn đã thêm thành công',
-                  children: [
-                TextSpan(
-                    text: ' ${model.name} ',
-                    style: HAppStyle.paragraph2Regular
-                        .copyWith(color: HAppColor.hBluePrimaryColor)),
-                const TextSpan(text: 'vào Yêu thích.')
-              ])),
-          1,
-          context,
-          const ToastificationCallbacks());
-    } else {
-      HAppUtils.showToastSuccess(
-          Text(
-            'Xóa khỏi Yêu thích!',
-            style: HAppStyle.label2Bold
-                .copyWith(color: HAppColor.hBluePrimaryColor),
-          ),
-          RichText(
-              text: TextSpan(
-                  style: HAppStyle.paragraph2Regular
-                      .copyWith(color: HAppColor.hGreyColorShade600),
-                  text: 'Bạn đã xóa thành công',
-                  children: [
-                TextSpan(
-                    text: ' ${model.name} ',
-                    style: HAppStyle.paragraph2Regular
-                        .copyWith(color: HAppColor.hBluePrimaryColor)),
-                const TextSpan(text: 'khỏi Yêu thích.')
-              ])),
-          1,
-          context,
-          const ToastificationCallbacks());
-    }
+  Future<bool> checkStatusProduct() async {
+    bool status = false;
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(UserController.instance.user.value.id)
+        .collection('RegisteredProducts')
+        .doc(product.id)
+        .get()
+        .then((value) {
+      status = value.exists ? true : false;
+      print(status.toString());
+    });
+    return status;
   }
 
-  void showSnackbarRegisterNotification(
-      BuildContext context, ProductModel model) {
-    if (UserController.instance.user.value.listOfRegisterNotificationProduct!
-        .contains(model.id)) {
-      HAppUtils.showToastSuccess(
-          Text(
-            'Đăng ký nhận thông báo khi có hàng!',
-            style: HAppStyle.label2Bold
-                .copyWith(color: HAppColor.hBluePrimaryColor),
-          ),
-          RichText(
-              text: TextSpan(
-                  style: HAppStyle.paragraph2Regular
-                      .copyWith(color: HAppColor.hGreyColorShade600),
-                  text: 'Chúng tôi sẽ gửi cho bạn thông báo khi sản phẩm',
-                  children: [
-                TextSpan(
-                    text: ' ${model.name} ',
-                    style: HAppStyle.paragraph2Regular
-                        .copyWith(color: HAppColor.hBluePrimaryColor)),
-                const TextSpan(
-                    text:
-                        'có sẵn để đặt hàng. Bạn có thể hủy đăng ký bất cứ lúc nào bằng cách nhấn lại nút thông báo.')
-              ])),
-          5,
-          context,
-          const ToastificationCallbacks());
+  bool checkFollowStore(String storeId) {
+    return UserController.instance.user.value.listOfFavoriteStore!
+        .contains(storeId);
+  }
+
+  Future<void> addAndRemoveFollowStore(String storeId) async {
+    checkStatus.value = checkFollowStore(storeId);
+    setState(() {});
+    final userRepository = Get.put(UserRepository());
+    if (checkStatus.value) {
+      UserController.instance.user.value.listOfFavoriteStore!
+          .removeWhere((element) => element == storeId);
+      UserController.instance.user.refresh();
+      userRepository.updateSingleField({
+        'ListOfFavoriteStore':
+            UserController.instance.user.value.listOfFavoriteStore!
+      }).then((value) {
+        DatabaseReference ref =
+            FirebaseDatabase.instance.ref().child('FollowedStores/$storeId');
+        ref.child(UserController.instance.user.value.id).remove().then((_) {
+          print('Xóa thành công');
+          HAppUtils.showSnackBarSuccess('Hủy nhận thông báo thành công',
+              'Bạn đã hủy nhận thông báo khi cửa hàng có thông báo mới');
+        }).catchError((error) {
+          print('Có lỗi xảy ra: $error');
+        });
+      });
     } else {
-      HAppUtils.showToastSuccess(
-          Text(
-            'Hủy đăng ký nhận thông báo khi có hàng!',
-            style: HAppStyle.label2Bold
-                .copyWith(color: HAppColor.hBluePrimaryColor),
-          ),
-          RichText(
-              text: TextSpan(
-                  style: HAppStyle.paragraph2Regular
-                      .copyWith(color: HAppColor.hGreyColorShade600),
-                  text:
-                      'Bạn đã được gỡ khỏi danh sách nhận thông báo về sản phẩm',
-                  children: [
-                TextSpan(
-                    text: ' ${model.name}',
-                    style: HAppStyle.paragraph2Regular
-                        .copyWith(color: HAppColor.hBluePrimaryColor)),
-                const TextSpan(
-                    text:
-                        '. Nếu bạn muốn đăng ký lại, bạn có thể nhấn vào nút chuông bất cứ lúc nào.')
-              ])),
-          5,
-          context,
-          const ToastificationCallbacks());
+      UserController.instance.user.value.listOfFavoriteStore!.add(storeId);
+      UserController.instance.user.refresh();
+      userRepository.updateSingleField({
+        'ListOfFavoriteStore':
+            UserController.instance.user.value.listOfFavoriteStore!
+      }).then((value) {
+        DatabaseReference ref =
+            FirebaseDatabase.instance.ref().child('FollowedStores/$storeId');
+        ref.update({
+          UserController.instance.user.value.id:
+              UserController.instance.user.value.cloudMessagingToken
+        }).then((_) {
+          print('Cập nhật thành công');
+          HAppUtils.showSnackBarSuccess('Đăng ký nhận thông báo thành công',
+              'Chúng tôi sẽ gửi cho bạn thông báo khi cửa hàng có thông báo mới');
+        }).catchError((error) {
+          print('Có lỗi xảy ra: $error');
+        });
+      });
     }
   }
 }

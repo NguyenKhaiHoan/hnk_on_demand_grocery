@@ -1,20 +1,13 @@
-import 'package:another_stepper/another_stepper.dart';
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_layout_infomation_screen_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
-import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class CompleteCheckoutScreen extends StatefulWidget {
   const CompleteCheckoutScreen({super.key});

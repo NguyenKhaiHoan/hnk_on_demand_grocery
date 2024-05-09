@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
@@ -7,12 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/store_address_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_location_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/repositories/address_repository.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 

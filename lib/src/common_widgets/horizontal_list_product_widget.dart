@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item.dart';
 
 class HorizontalListProductWidget extends StatelessWidget {
@@ -11,12 +13,16 @@ class HorizontalListProductWidget extends StatelessWidget {
       required this.list,
       required this.compare,
       this.quantity,
-      this.modelCompare});
+      this.modelCompare,
+      this.wishlistCheck,
+      this.wishlist});
 
   final List<ProductModel> list;
   final bool compare;
   final int? quantity;
   final ProductModel? modelCompare;
+  final bool? wishlistCheck;
+  final WishlistModel? wishlist;
 
   final cartController = Get.put(CartController());
 
@@ -55,6 +61,16 @@ class HorizontalListProductWidget extends StatelessWidget {
                 quantity: quantity,
               );
             }
+            if (wishlist != null ||
+                (wishlistCheck != null && !wishlistCheck!)) {
+              print('Vào các sản phẩm wishlist');
+              return ProductItemWidget(
+                model: list[indexPrivate],
+                compare: compare,
+                wishlistCheck: wishlistCheck,
+                wishlist: wishlist,
+              );
+            }
             return ProductItemWidget(
               model: list[indexPrivate],
               compare: compare,
@@ -79,7 +95,7 @@ class ShimmerHorizontalListProductWidget extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemCount: 5,
           itemBuilder: (BuildContext context, indexPrivate) {
-            return ShimmerProductItemWidget();
+            return const ShimmerProductItemWidget();
           },
           separatorBuilder: (BuildContext context, int index) => gapW10,
         ));

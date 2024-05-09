@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/result_wishlist_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
-import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/repositories/user_repository.dart';
 import 'package:on_demand_grocery/src/repositories/wishlist_repository.dart';
@@ -199,9 +194,7 @@ class WishlistController extends GetxController
 
   Future<List<ProductModel>> fetchAllRegisterNotificationProductList() async {
     try {
-      final listIds =
-          userController.user.value.listOfRegisterNotificationProduct;
-      final products = await productRepository.getProductsFromListIds(listIds!);
+      final products = await productRepository.getProductsRegistration();
       return products;
     } catch (e) {
       HAppUtils.showSnackBarError('Lỗi', e.toString());
@@ -209,31 +202,31 @@ class WishlistController extends GetxController
     }
   }
 
-  void addOrRemoveProductInRegisterNotificationList(String productId) async {
-    try {
-      final listIds =
-          userController.user.value.listOfRegisterNotificationProduct;
-      if (!listIds!.contains(productId)) {
-        userController.user.value.listOfRegisterNotificationProduct!
-            .add(productId);
-      } else {
-        userController.user.value.listOfRegisterNotificationProduct!
-            .remove(productId);
-      }
-      final isConnected = await NetworkController.instance.isConnected();
-      if (!isConnected) {
-        return;
-      }
-      userController.user.refresh();
-      await UserRepository.instance.updateSingleField({
-        'ListOfRegisterNotificationProduct':
-            userController.user.value.listOfRegisterNotificationProduct
-      });
-      refreshRegisterNotificationData.toggle();
-    } catch (e) {
-      HAppUtils.showSnackBarError('Lỗi', e.toString());
-    }
-  }
+  // void addOrRemoveProductInRegisterNotificationList(String productId) async {
+  //   try {
+  //     final listIds =
+  //         userController.user.value.listOfRegisterNotificationProduct;
+  //     if (!listIds!.contains(productId)) {
+  //       userController.user.value.listOfRegisterNotificationProduct!
+  //           .add(productId);
+  //     } else {
+  //       userController.user.value.listOfRegisterNotificationProduct!
+  //           .remove(productId);
+  //     }
+  //     final isConnected = await NetworkController.instance.isConnected();
+  //     if (!isConnected) {
+  //       return;
+  //     }
+  //     userController.user.refresh();
+  //     await UserRepository.instance.updateSingleField({
+  //       'ListOfRegisterNotificationProduct':
+  //           userController.user.value.listOfRegisterNotificationProduct
+  //     });
+  //     refreshRegisterNotificationData.toggle();
+  //   } catch (e) {
+  //     HAppUtils.showSnackBarError('Lỗi', e.toString());
+  //   }
+  // }
 
   Future<List<WishlistModel>> fetchAllWishlist() async {
     try {
@@ -289,15 +282,15 @@ class WishlistController extends GetxController
     }
   }
 
-  void addToCart(List<ProductModel> list) {
+  Future<void> addToCart(List<ProductModel> list) async {
     final cartController = Get.put(CartController());
     for (var element in list) {
       final cartProduct = cartController.convertToCartProduct(element, 1);
-      cartController.addSingleProductInCart(cartProduct);
+      await cartController.addSingleProductInCart(cartProduct);
     }
   }
 
-  void checkAddWishList(List<ProductModel> list, bool check) {
+  Future<void> checkAddWishList(List<ProductModel> list, bool check) async {
     final cartController = Get.put(CartController());
     if (!check) {
       showDialog(
@@ -318,10 +311,10 @@ class WishlistController extends GetxController
                 ]),
             actions: [
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   Get.back();
                   cartController.clearCart();
-                  addToCart(list);
+                  await addToCart(list);
                 },
                 child: Text(
                   'Có',
@@ -330,11 +323,11 @@ class WishlistController extends GetxController
                 ),
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   Get.back();
                   Get.back();
                   cartController.clearCart();
-                  addToCart(list);
+                  await addToCart(list);
                 },
                 child: Text(
                   'Không',
@@ -349,7 +342,7 @@ class WishlistController extends GetxController
     } else {
       Get.back();
       cartController.clearCart();
-      addToCart(list);
+      await addToCart(list);
     }
   }
 }

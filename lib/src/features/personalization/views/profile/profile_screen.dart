@@ -8,13 +8,13 @@ import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart'
 import 'package:on_demand_grocery/src/common_widgets/user_image_logo.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/change_name_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/change_password_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/change_phone_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/all_chat_screen.dart';
+import 'package:on_demand_grocery/src/features/shop/views/notification/notification_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/all_voucher_screen.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
@@ -188,13 +188,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                           ),
                         ),
                       ),
-                      const ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: Icon(EvaIcons.bellOutline),
-                        title: Text('Thông báo'),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 15,
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(const NotificationScreen());
+                        },
+                        child: const ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(EvaIcons.bellOutline),
+                          title: Text('Thông báo'),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 15,
+                          ),
                         ),
                       ),
                       const ListTile(

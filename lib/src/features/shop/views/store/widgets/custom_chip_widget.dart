@@ -17,7 +17,7 @@ class CustomChipWidget extends StatelessWidget {
       onTap: onTap,
       child: Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
           ),
           child: Text(title, style: HAppStyle.label3Regular)),

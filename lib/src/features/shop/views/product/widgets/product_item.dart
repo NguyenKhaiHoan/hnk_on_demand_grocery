@@ -5,20 +5,18 @@ import 'package:image_network/image_network.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
-import 'package:toastification/toastification.dart';
 
 class ProductItemWidget extends StatelessWidget {
   ProductItemWidget(
@@ -29,7 +27,9 @@ class ProductItemWidget extends StatelessWidget {
       this.differentText,
       this.compareOperator,
       this.comparePrice,
-      this.quantity});
+      this.quantity,
+      this.wishlistCheck,
+      this.wishlist});
   final ProductModel model;
   final ProductModel? modelCompare;
   final bool compare;
@@ -43,14 +43,20 @@ class ProductItemWidget extends StatelessWidget {
   final cartController = Get.put(CartController());
 
   var choose = false.obs;
+  final bool? wishlistCheck;
+  final WishlistModel? wishlist;
 
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration.zero).then(
       (value) {
         if (compare) {
-          choose.value =
-              cartController.checkReplaceProduct(modelCompare!.id, model);
+          if (modelCompare != null) {
+            choose.value =
+                cartController.checkReplaceProduct(modelCompare!.id, model);
+          } else {
+            choose.value = wishlist!.listIds.contains(model.id);
+          }
         }
       },
     );
@@ -366,107 +372,147 @@ class ProductItemWidget extends StatelessWidget {
             bottom: 10,
             right: 10,
             child: !compare
-                ? Visibility(
-                    visible: model.status == "Còn hàng" ? true : false,
-                    child: Obx(() {
-                      final productQuantityInCart =
-                          cartController.getProductQuantity(model.id);
-                      return AnimatedCrossFade(
-                        crossFadeState: cartController.toggleAnimation.value &&
-                                cartController.listIdToggleAnimation
-                                    .contains(model.id)
-                            ? CrossFadeState.showSecond
-                            : CrossFadeState.showFirst,
-                        duration: const Duration(milliseconds: 300),
-                        firstCurve: Curves.easeOutQuart,
-                        secondCurve: Curves.easeOutQuart,
-                        firstChild: Container(
-                            height: 45,
-                            width: 45,
-                            decoration: const BoxDecoration(
-                              color: HAppColor.hBluePrimaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: GestureDetector(
-                                onTap: () async {
-                                  cartController.animationButtonAdd(model);
-                                  final cartProduct = cartController
-                                      .convertToCartProduct(model, 1);
-                                  cartController
-                                      .addSingleProductInCart(cartProduct);
-                                },
-                                child: productQuantityInCart > 0
-                                    ? Center(
-                                        child: Text(
-                                          productQuantityInCart.toString(),
-                                          style: HAppStyle.paragraph1Bold
-                                              .copyWith(
-                                                  color: HAppColor.hWhiteColor),
-                                        ),
-                                      )
-                                    : const Icon(
-                                        EvaIcons.plus,
-                                        color: HAppColor.hWhiteColor,
-                                      ))),
-                        secondChild: Container(
-                            height: 45,
-                            decoration: BoxDecoration(
-                                color: HAppColor.hBluePrimaryColor,
-                                borderRadius: BorderRadius.circular(100)),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                    onPressed: () {
-                                      cartController.animationButtonAdd(model);
-                                      final cartProduct = cartController
-                                          .convertToCartProduct(model, 1);
-                                      cartController.removeSingleProductInCart(
-                                          cartProduct);
-                                    },
-                                    icon: const Icon(
-                                      EvaIcons.minus,
-                                      color: HAppColor.hWhiteColor,
-                                    )),
-                                gapW4,
-                                Text(
-                                  productQuantityInCart.toString(),
-                                  style: HAppStyle.paragraph1Bold
-                                      .copyWith(color: HAppColor.hWhiteColor),
+                ? wishlistCheck == null
+                    ? Visibility(
+                        visible: model.status == "Còn hàng" ? true : false,
+                        child: Obx(() {
+                          final productQuantityInCart =
+                              cartController.getProductQuantity(model.id);
+                          return AnimatedCrossFade(
+                            crossFadeState:
+                                cartController.toggleAnimation.value &&
+                                        cartController.listIdToggleAnimation
+                                            .contains(model.id)
+                                    ? CrossFadeState.showSecond
+                                    : CrossFadeState.showFirst,
+                            duration: const Duration(milliseconds: 300),
+                            firstCurve: Curves.easeOutQuart,
+                            secondCurve: Curves.easeOutQuart,
+                            firstChild: Container(
+                                height: 45,
+                                width: 45,
+                                decoration: const BoxDecoration(
+                                  color: HAppColor.hBluePrimaryColor,
+                                  shape: BoxShape.circle,
                                 ),
-                                gapW4,
-                                IconButton(
-                                    onPressed: () {
+                                child: GestureDetector(
+                                    onTap: () async {
                                       cartController.animationButtonAdd(model);
                                       final cartProduct = cartController
                                           .convertToCartProduct(model, 1);
-                                      cartController
+                                      await cartController
                                           .addSingleProductInCart(cartProduct);
                                     },
-                                    icon: const Icon(
-                                      EvaIcons.plus,
-                                      color: HAppColor.hWhiteColor,
-                                    ))
-                              ],
-                            )),
-                        layoutBuilder: (Widget topChild, Key topChildKey,
-                            Widget bottomChild, Key bottomChildKey) {
-                          return Stack(
-                            alignment: Alignment.centerRight,
-                            children: <Widget>[
-                              Positioned(
-                                key: bottomChildKey,
-                                child: bottomChild,
-                              ),
-                              Positioned(
-                                key: topChildKey,
-                                child: topChild,
-                              ),
-                            ],
+                                    child: productQuantityInCart > 0
+                                        ? Center(
+                                            child: Text(
+                                              productQuantityInCart.toString(),
+                                              style: HAppStyle.paragraph1Bold
+                                                  .copyWith(
+                                                      color: HAppColor
+                                                          .hWhiteColor),
+                                            ),
+                                          )
+                                        : const Icon(
+                                            EvaIcons.plus,
+                                            color: HAppColor.hWhiteColor,
+                                          ))),
+                            secondChild: Container(
+                                height: 45,
+                                decoration: BoxDecoration(
+                                    color: HAppColor.hBluePrimaryColor,
+                                    borderRadius: BorderRadius.circular(100)),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          cartController
+                                              .animationButtonAdd(model);
+                                          final cartProduct = cartController
+                                              .convertToCartProduct(model, 1);
+                                          cartController
+                                              .removeSingleProductInCart(
+                                                  cartProduct);
+                                        },
+                                        icon: const Icon(
+                                          EvaIcons.minus,
+                                          color: HAppColor.hWhiteColor,
+                                        )),
+                                    gapW4,
+                                    Text(
+                                      productQuantityInCart.toString(),
+                                      style: HAppStyle.paragraph1Bold.copyWith(
+                                          color: HAppColor.hWhiteColor),
+                                    ),
+                                    gapW4,
+                                    IconButton(
+                                        onPressed: () async {
+                                          cartController
+                                              .animationButtonAdd(model);
+                                          final cartProduct = cartController
+                                              .convertToCartProduct(model, 1);
+                                          await cartController
+                                              .addSingleProductInCart(
+                                                  cartProduct);
+                                        },
+                                        icon: const Icon(
+                                          EvaIcons.plus,
+                                          color: HAppColor.hWhiteColor,
+                                        ))
+                                  ],
+                                )),
+                            layoutBuilder: (Widget topChild, Key topChildKey,
+                                Widget bottomChild, Key bottomChildKey) {
+                              return Stack(
+                                alignment: Alignment.centerRight,
+                                children: <Widget>[
+                                  Positioned(
+                                    key: bottomChildKey,
+                                    child: bottomChild,
+                                  ),
+                                  Positioned(
+                                    key: topChildKey,
+                                    child: topChild,
+                                  ),
+                                ],
+                              );
+                            },
                           );
+                        }))
+                    : GestureDetector(
+                        onTap: () {
+                          print('Vào đây');
+                          if (wishlist != null) {
+                            if (wishlist!.listIds.contains(model.id)) {
+                              choose.value = true;
+                              wishlist!.listIds.remove(model.id);
+                            } else {
+                              choose.value = false;
+                              wishlist!.listIds.add(model.id);
+                            }
+                            wishlistController.addOrRemoveProductInWishlist(
+                                wishlist!.id, wishlist!.listIds);
+                            wishlistController.refreshWishlistData.toggle();
+                          }
                         },
-                      );
-                    }))
+                        child: Obx(() => Container(
+                              height: 45,
+                              width: 45,
+                              decoration: BoxDecoration(
+                                color: choose.value
+                                    ? HAppColor.hBluePrimaryColor
+                                    : HAppColor.hDarkColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  EvaIcons.checkmark,
+                                  color: HAppColor.hWhiteColor,
+                                ),
+                              ),
+                            )),
+                      )
                 : GestureDetector(
                     onTap: () {
                       print('Vào đây');

@@ -1,7 +1,11 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/custom_layout_widget.dart';
+import 'package:on_demand_grocery/src/common_widgets/horizontal_list_product_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
@@ -10,7 +14,9 @@ import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
+import 'package:on_demand_grocery/src/features/shop/views/explore/widgets/list_product_explore_builder.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item_horizal_widget.dart';
+import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
@@ -38,8 +44,20 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
         actions: [
           Padding(
             padding: hAppDefaultPaddingR,
-            child: CartCircle(),
-          )
+            child: GestureDetector(
+              onTap: () {
+                var listProductName = list.map((e) => e.name).toList();
+                for (var name in listProductName) {
+                  print(name);
+                }
+                Get.to(GenerateRecipeScreen(),
+                    arguments: {'listProductName': listProductName});
+              },
+              child: const Icon(Icons.auto_awesome),
+            ),
+          ),
+          CartCircle(),
+          gapW16
         ],
         title: Text(
             list.isEmpty ? model.title : "${model.title} (${list.length})"),
@@ -172,9 +190,10 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
                                       ),
                                     ),
                                     TextButton(
-                                      onPressed: () {
+                                      onPressed: () async {
                                         Get.back();
-                                        wishlistController.addToCart(list);
+                                        await wishlistController
+                                            .addToCart(list);
                                       },
                                       child: Text(
                                         'Không',
@@ -227,5 +246,134 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
         ),
       ),
     );
+  }
+}
+
+class GenerateRecipeScreen extends StatelessWidget {
+  GenerateRecipeScreen({super.key});
+
+  final List<String> listProductName = Get.arguments['listProductName'] ?? [];
+
+  final Gemini gemini = Gemini.instance;
+  final recipe = ''.obs;
+  final anotherProduct = ''.obs;
+  final WishlistModel model = Get.arguments['model'];
+
+  @override
+  Widget build(BuildContext context) {
+    Future.delayed(Duration.zero).then((value) async {
+      await generateRecipe();
+    });
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tạo công thức'),
+        centerTitle: true,
+        toolbarHeight: 80,
+        leadingWidth: 80,
+        leading: Row(children: [
+          gapW16,
+          GestureDetector(
+            onTap: () {
+              Get.back();
+              Get.back();
+            },
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: HAppColor.hGreyColorShade300,
+                    width: 1.5,
+                  ),
+                  color: HAppColor.hBackgroundColor),
+              child: const Center(
+                child: Icon(
+                  EvaIcons.arrowBackOutline,
+                ),
+              ),
+            ),
+          ),
+        ]),
+      ),
+      body: SingleChildScrollView(
+        padding: hAppDefaultPaddingLR,
+        child: Column(children: [
+          Obx(() => recipe.value == ''
+              ? const Center(
+                  child: CircularProgressIndicator(
+                      color: HAppColor.hBluePrimaryColor),
+                )
+              : Markdown(
+                  data: recipe.value,
+                  selectable: true,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  physics: const NeverScrollableScrollPhysics(),
+                )),
+          gapH12,
+          Obx(() => anotherProduct.value == ''
+              ? Container()
+              : FutureBuilder(
+                  future: ProductRepository.instance
+                      .fetchProductsByName(anotherProduct.value.split(', ')),
+                  builder: ((context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CustomLayoutWidget(
+                        widget: const ShimmerListProductExploreBuilder(),
+                        subWidget: Container(),
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return const Text(
+                          'Đã xảy ra sự cố. Xin vui lòng thử lại sau.');
+                    }
+
+                    if (!snapshot.hasData ||
+                        snapshot.data == null ||
+                        snapshot.data!.isEmpty) {
+                      return Text(
+                          '${anotherProduct.value}. Không tìm thấy các sản phẩm liên quan tại ứng dụng.');
+                    } else {
+                      final data = snapshot.data!;
+                      return HorizontalListProductWidget(
+                          list: data,
+                          compare: false,
+                          wishlistCheck: false,
+                          wishlist: model);
+                    }
+                  }))),
+          gapH12,
+        ]),
+      ),
+    );
+  }
+
+  Future<void> generateRecipe() async {
+    try {
+      recipe.value = '';
+      HAppUtils.loadingOverlays();
+      await gemini
+          .text(
+              'Tạo một công thức nấu ăn đơn giản từ một danh sách đầy đủ các thành phần (nguyên liệu) sau: ${listProductName.join(', ')} và Sữa với mẫu sau: Tên, Thành phần và Cách làm')
+          .then((value) {
+        recipe.value = value?.output ?? '';
+        HAppUtils.stopLoading();
+      }).catchError((e) {
+        HAppUtils.stopLoading();
+        HAppUtils.showSnackBarError(
+            'Lỗi', 'Không thể tạo được công thức! ${e.toString()}');
+      });
+      await gemini
+          .text(
+              'Từ các thành phần trong công thức này ${recipe.value}, hãy viết lại các thành phần (chỉ lấy tên các sản phẩm trong đó và viết lại chữ cái đầu của từng thành phần thành chữ cái in hoa, ví dụ: chuối, sữa thành Chuối, Sữa) thành một danh sách ngăn cách nhau bằng dấu (, ) ngoại từ các thành phần này (${listProductName.join(', ')})')
+          .then((value) {
+        anotherProduct.value = value?.output ?? '';
+      }).catchError((e) {
+        HAppUtils.showSnackBarError(
+            'Lỗi', 'Không thể tìm được các sản phẩm khác! ${e.toString()}');
+      });
+    } catch (e) {}
   }
 }

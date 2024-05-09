@@ -1,27 +1,17 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:image_network/image_network.dart';
 import 'package:intl/intl.dart';
-import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
-import 'package:on_demand_grocery/src/common_widgets/swipe_action_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/chat_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/chat_message_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
-import 'package:on_demand_grocery/src/features/shop/views/chat/widgets/message.dart';
-import 'package:on_demand_grocery/src/repositories/chat_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
-import 'package:on_demand_grocery/src/utils/utils.dart';
 
 // class ChatScreen extends StatefulWidget {
 //   const ChatScreen({super.key});
@@ -374,15 +364,9 @@ import 'package:on_demand_grocery/src/utils/utils.dart';
 
 import 'dart:convert';
 
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:on_demand_grocery/src/constants/app_colors.dart';
-import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:uuid/uuid.dart';
 
@@ -402,7 +386,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   final chatController = Get.put(ChatController());
 
-  List<types.Message> _messages = [];
+  final List<types.Message> _messages = [];
   final _user = types.User(
       id: UserController.instance.user.value.id,
       firstName: UserController.instance.user.value.name.substring(

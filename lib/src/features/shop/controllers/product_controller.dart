@@ -1,16 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:on_demand_grocery/src/data/dummy_data.dart';
-import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/check_box_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/tag_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
-import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class ProductController extends GetxController {
@@ -149,18 +143,19 @@ class ProductController extends GetxController {
 
   getFutureQuery(int index) {
     Query baseQuery = FirebaseFirestore.instance.collection('Products');
-    return filterProductSort(baseQuery);
+    return getProductCategory(index, baseQuery);
   }
 
   getProductCategory(int index, Query query) {
+    Query baseQuery = query;
     switch (index) {
       case 0:
-        query = query
+        query = baseQuery
             .where('CountBuyed', isGreaterThanOrEqualTo: 100)
             .orderBy('CountBuyed', descending: true);
         break;
       case 1:
-        query = query
+        query = baseQuery
             .where('SalePersent', isNotEqualTo: 0)
             .orderBy('SalePersent', descending: true);
         break;
@@ -182,22 +177,29 @@ class ProductController extends GetxController {
       case 17:
       case 18:
       case 19:
-        query = query
-            .where('CategoryId', isEqualTo: (index - 2).toString())
-            .orderBy('CategoryId');
+        if (index >= 2) {
+          query =
+              baseQuery.where('CategoryId', isEqualTo: (index - 2).toString());
+          print((index - 2).toString());
+        }
         break;
       default:
-        query = query;
+        // query = baseQuery;
         break;
     }
+    print('Vào get');
+    print(query.parameters.toString());
     return filterProductSort(query);
   }
 
   filterProduct(Query query, int index) {
+    Query baseQuery = query;
     if (tagsProductObs[0].active) {
-      final listIds =
-          nearbyProduct.map((product) => product.id).take(10).toList();
-      query = query.where(FieldPath.documentId, whereIn: listIds);
+      if (nearbyProduct.isNotEmpty) {
+        final listIds =
+            nearbyProduct.map((product) => product.id).take(10).toList();
+        query = baseQuery.where(FieldPath.documentId, whereIn: listIds);
+      }
     }
     if (tagsProductObs[1].active) {
       query = query
@@ -205,23 +207,28 @@ class ProductController extends GetxController {
           .orderBy('Rating', descending: true);
     }
     if (tagsProductObs[2].active) {
-      query = query.where('Origin', isNotEqualTo: 'Việt Nam').orderBy('Origin');
+      query =
+          baseQuery.where('Origin', isNotEqualTo: 'Việt Nam').orderBy('Origin');
     }
+    print('Vào filter');
+    print(query.parameters.toString());
     return getProductCategory(index, query);
   }
 
   filterProductSort(Query query) {
+    Query baseQuery = query;
     if (selectedValueSort.value == 'Mới nhất') {
-      query = query.orderBy('UploadTime', descending: true);
+      query = baseQuery.orderBy('UploadTime', descending: true);
     } else if (selectedValueSort.value == 'A - Z') {
-      query = query.orderBy('Name');
+      query = baseQuery.orderBy('Name');
     } else if (selectedValueSort.value == 'Z - A') {
-      query = query.orderBy('Name', descending: true);
+      query = baseQuery.orderBy('Name', descending: true);
     } else if (selectedValueSort.value == 'Thấp - Cao') {
-      query = query.orderBy('PriceSale');
+      query = baseQuery.orderBy('PriceSale');
     } else if (selectedValueSort.value == 'Cao - Thấp') {
-      query = query.orderBy('PriceSale', descending: true);
+      query = baseQuery.orderBy('PriceSale', descending: true);
     }
+    print('Vào filter sort');
     print(query.parameters.toString());
     return query.limit(10);
   }

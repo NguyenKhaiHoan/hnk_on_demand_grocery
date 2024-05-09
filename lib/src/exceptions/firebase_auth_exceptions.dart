@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 class HFirebaseAuthException implements Exception {
   final String code;

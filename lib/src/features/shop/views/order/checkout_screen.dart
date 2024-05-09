@@ -1,39 +1,24 @@
-import 'dart:convert';
-import 'dart:math';
 
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
-import 'package:on_demand_grocery/src/constants/app_keys.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/check_out_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/date_delivery_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/type_button_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/voucher_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/payment_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/product_list_stack.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/widgets/type_button.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/widgets/voucher_widget.dart';
-import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
-import 'package:on_demand_grocery/src/services/payment_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:http/http.dart' as http;
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -441,7 +426,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     )),
                 ElevatedButton(
                   onPressed: () async {
-                    orderController.processOrder();
+                    await orderController.processOrder();
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(HAppSize.deviceWidth * 0.45, 50),

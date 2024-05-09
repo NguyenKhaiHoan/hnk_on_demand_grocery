@@ -9,17 +9,19 @@ import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/type_button_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/voucher_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/notification_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/payment_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_address_model.dart';
+import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_note_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/voucher_model.dart';
 import 'package:on_demand_grocery/src/repositories/address_repository.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
+import 'package:on_demand_grocery/src/repositories/notification_repository.dart';
 import 'package:on_demand_grocery/src/repositories/order_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/repositories/voucher_repository.dart';
@@ -72,7 +74,7 @@ class CartController extends GetxController {
     String text = '';
     if (productIndex < 0) {
       cartProducts.add(productInCart);
-      addProductToCartMap(productInCart);
+      await addProductToCartMap(productInCart);
       text = 'thêm';
       storeOrderMap[product.storeId] = StoreOrderModel(
         storeId: product.storeId,
@@ -118,12 +120,12 @@ class CartController extends GetxController {
     numberOfCart.value = number;
   }
 
-  void addSingleProductInCart(ProductInCartModel productInCart) {
+  Future<void> addSingleProductInCart(ProductInCartModel productInCart) async {
     int productIndex = findIndexProductInCart(productInCart);
 
     if (productIndex < 0) {
       cartProducts.add(productInCart);
-      addProductToCartMap(productInCart);
+      await addProductToCartMap(productInCart);
       updateCart();
     } else {
       cartProducts[productIndex].quantity += 1;
@@ -201,9 +203,13 @@ class CartController extends GetxController {
 
   void loadCartData() {
     productQuantityInCart.value = 0;
-    cartProducts.clear();
-    productInCartMap.clear();
-    storeOrderMap.clear();
+    if (cartProducts.isNotEmpty &&
+        productInCartMap.isNotEmpty &&
+        storeOrderMap.isNotEmpty) {
+      cartProducts.clear();
+      productInCartMap.clear();
+      storeOrderMap.clear();
+    }
 
     final cartData =
         HLocalService.instance().getData<List<dynamic>>('CartProducts');
@@ -233,30 +239,55 @@ class CartController extends GetxController {
     calculateCart();
   }
 
-  void loadCartFromOrder(OrderModel order) {
-    clearCart();
+  Future<void> loadCartFromOrder(OrderModel order) async {
+    try {
+      clearCart();
 
-    final cartData = order.orderProducts;
-    cartProducts.assignAll(cartData);
-    for (var product in cartProducts) {
-      if (productInCartMap.containsKey(product.storeId)) {
-        productInCartMap[product.storeId]!.add(product);
-      } else {
-        productInCartMap[product.storeId] = [product];
+      final cartData = order.orderProducts;
+      cartProducts.assignAll(cartData);
+      List<String> storeIds = [];
+
+      List<String> listStoreNames = [];
+      List<String> listStoreAddessess = [];
+      for (var product in cartProducts) {
+        if (productInCartMap.containsKey(product.storeId)) {
+          productInCartMap[product.storeId]!.add(product);
+        } else {
+          productInCartMap[product.storeId] = [product];
+        }
+        String storeAddress = '';
+        String storeName = '';
+        if (!storeIds.contains(product.storeId)) {
+          storeIds.add(product.storeId);
+          StoreModel store = await StoreRepository.instance
+              .getStoreInformation(product.storeId);
+          storeName = store.name;
+          listStoreNames.add(storeName);
+          List<StoreAddressModel> storeAddresses =
+              await AddressRepository.instance.getStoreAddress(product.storeId);
+          storeAddress = storeAddresses.first.toString();
+          listStoreAddessess.add(storeAddress);
+        } else {
+          int index = storeIds.indexOf(product.storeId);
+          storeName = listStoreNames[index];
+          storeAddress = listStoreAddessess[index];
+        }
+
+        storeOrderMap.addIf(
+            !storeOrderMap.keys.contains(product.storeId),
+            product.storeId,
+            StoreOrderModel(
+              storeId: product.storeId,
+              name: storeName,
+              address: storeAddress,
+              checkChooseInCart: true,
+            ));
       }
 
-      storeOrderMap.addIf(
-          !storeOrderMap.keys.contains(product.storeId),
-          product.storeId,
-          StoreOrderModel(
-            storeId: product.storeId,
-            name: product.storeName ?? '',
-            address: product.storeAddress ?? '',
-            checkChooseInCart: true,
-          ));
+      calculateCart();
+    } catch (e) {
+      HAppUtils.showSnackBarError('Lỗi', 'Không thể đặt lại đơn hàng.');
     }
-
-    calculateCart();
   }
 
   ProductModel convertToProductModel(ProductInCartModel product) {
@@ -346,7 +377,9 @@ class CartController extends GetxController {
     update();
   }
 
-  void processOrder(String paymentMethod, String paymentStatus,
+  final notificationRepository = Get.put(NotificationRepository());
+
+  Future<void> processOrder(String paymentMethod, String paymentStatus,
       String orderType, String timeOrder) async {
     try {
       HAppUtils.loadingOverlays();
@@ -416,10 +449,27 @@ class CartController extends GetxController {
           .child('Orders/${order.oderId}')
           .set(order.toJson())
           .then((value) async {
-        HNotificationService.sendNotificationToStore(productInOrder,
-            storeOrders, AddressController.instance.selectedAddress.value);
-        HAppUtils.showSnackBarSuccess(
-            'Thành công', 'Bạn đã đặt hàng thành công');
+        await HNotificationService.sendNotificationToStore(productInOrder,
+                storeOrders, AddressController.instance.selectedAddress.value)
+            .then((value) async {
+          var uuid = Uuid();
+
+          String title =
+              'Đặt thành công mã đơn hàng #${uid.substring(0, 4)}...';
+          String body = 'Bạn đã đặt đơn hàng thành công!';
+
+          HNotificationService.showNotification(
+              title: title, body: body, payload: '');
+          await notificationRepository.addNotification(
+            NotificationModel(
+                id: uuid.v1(),
+                title: 'Đặt thành công mã đơn hàng #${uid.substring(0, 4)}...',
+                body: 'Bạn đã đặt đơn hàng thành công!',
+                time: DateTime.now(),
+                type: 'order'),
+          );
+        });
+
         clearCartWhenCompleteOrder();
         if (voucherController.selectedVoucher.value != '' &&
             voucherController.useVoucher.value.id != '') {
@@ -428,10 +478,9 @@ class CartController extends GetxController {
         }
         voucherController.resetVoucher();
         HAppUtils.stopLoading();
-        Get.toNamed(HAppRoutes.complete, arguments: {'order': order});
+        Get.offNamed(HAppRoutes.complete, arguments: {'order': order});
       }).onError((error, stackTrace) {
         HAppUtils.stopLoading();
-        print(error.toString());
         HAppUtils.showSnackBarSuccess('Thất bại',
             'Đã xảy ra sự cố trong quá trình tải đơn hàng lên hệ thống: ${error.toString()}');
       });
@@ -444,19 +493,23 @@ class CartController extends GetxController {
   var productInCartMap = <String, List<ProductInCartModel>>{}.obs;
   var storeOrderMap = <String, StoreOrderModel>{}.obs;
 
-  void addProductToCartMap(ProductInCartModel product) {
-    if (productInCartMap.containsKey(product.storeId)) {
-      productInCartMap[product.storeId]!.add(product);
+  Future<void> addProductToCartMap(ProductInCartModel product) async {
+    var storeId = product.storeId;
+    if (productInCartMap.containsKey(storeId)) {
+      productInCartMap[storeId]!.add(product);
     } else {
-      productInCartMap.addIf(!productInCartMap.keys.contains(product.storeId),
-          product.storeId, [product]);
+      productInCartMap
+          .addIf(!productInCartMap.keys.contains(storeId), storeId, [product]);
+      var store = await StoreRepository.instance.getStoreInformation(storeId);
+      var storeAddress =
+          await AddressRepository.instance.getStoreAddress(storeId);
       storeOrderMap.addIf(
-          !storeOrderMap.keys.contains(product.storeId),
-          product.storeId,
+          !storeOrderMap.keys.contains(storeId),
+          storeId,
           StoreOrderModel(
-            storeId: product.storeId,
-            name: product.storeName ?? '',
-            address: product.storeAddress ?? '',
+            storeId: storeId,
+            name: store.name,
+            address: storeAddress.first.toString(),
             checkChooseInCart: true,
           ));
     }
@@ -646,10 +699,14 @@ class CartController extends GetxController {
   int totalCartValue() {
     int total = 0;
     for (var item in cartProducts) {
-      total +=
-          (item.replacementProduct?.priceSale ?? item.price!) * item.quantity;
-      print(
-          (item.replacementProduct?.priceSale ?? item.price!) * item.quantity);
+      if (storeOrderMap[item.storeId] != null) {
+        if (storeOrderMap[item.storeId]!.checkChooseInCart == true) {
+          total += (item.replacementProduct?.priceSale ?? item.price!) *
+              item.quantity;
+          print((item.replacementProduct?.priceSale ?? item.price!) *
+              item.quantity);
+        }
+      }
     }
     return total;
   }

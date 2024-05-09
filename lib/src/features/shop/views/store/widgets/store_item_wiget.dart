@@ -10,7 +10,6 @@ import 'package:on_demand_grocery/src/features/shop/controllers/store_controller
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_location_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
-import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';

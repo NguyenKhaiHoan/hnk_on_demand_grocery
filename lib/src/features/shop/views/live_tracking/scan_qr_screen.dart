@@ -71,7 +71,7 @@ class ScanQrCodeScreen extends StatelessWidget {
                   content: Image(
                     image: MemoryImage(image),
                   ),
-                  actions: [],
+                  actions: const [],
                 );
               },
             );

@@ -1,25 +1,13 @@
 import 'package:another_stepper/dto/stepper_data.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
-import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/user_model.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/type_button_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/voucher_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
-import 'package:on_demand_grocery/src/repositories/order_repository.dart';
-import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/services/payment_service.dart';
-import 'package:on_demand_grocery/src/utils/utils.dart';
 
 import '../repositories/order_repository_test.dart';
 import 'cart_controller_test.dart';

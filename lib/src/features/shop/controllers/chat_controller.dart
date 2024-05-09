@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/shop/models/chat_model.dart';
 import 'package:on_demand_grocery/src/repositories/chat_repository.dart';

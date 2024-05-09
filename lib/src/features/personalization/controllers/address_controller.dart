@@ -2,14 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/network_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/district_ward_model.dart';
 import 'package:on_demand_grocery/src/repositories/address_repository.dart';
-import 'package:on_demand_grocery/src/repositories/user_repository.dart';
 import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 

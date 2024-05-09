@@ -1,11 +1,6 @@
-import 'dart:convert';
-
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:geocode/geocode.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
@@ -14,6 +9,19 @@ import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:toastification/toastification.dart';
 
 class HAppUtils {
+  // static String formatTimeAgo(DateTime dateTime) {
+  //   final Duration difference = DateTime.now().difference(dateTime);
+  //   if (difference.inDays > 0) {
+  //     return '${difference.inDays} ngày trước';
+  //   } else if (difference.inHours > 0) {
+  //     return '${difference.inHours} giờ trước';
+  //   } else if (difference.inMinutes > 0) {
+  //     return '${difference.inMinutes} phút trước';
+  //   } else {
+  //     return 'Ngay bây giờ';
+  //   }
+  // }
+
   static int roundValue(int value) {
     int lastThreeDigits = value % 1000;
     if (lastThreeDigits >= 500) {
@@ -50,7 +58,7 @@ class HAppUtils {
       case 0:
         return 'Đơn đặt hàng thành công';
       case 1:
-        return 'Cửa hàng xác nhận';
+        return 'Cửa hàng tạp hóa xác nhận';
       case 2:
         return 'Người giao hàng xác nhận';
       case 3:

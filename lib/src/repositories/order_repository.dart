@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:on_demand_grocery/src/exceptions/firebase_exception.dart';
-import 'package:on_demand_grocery/src/features/shop/models/banner_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/repositories/authentication_repository.dart';
 
@@ -16,7 +14,6 @@ class OrderRepository extends GetxController {
       if (userId.isEmpty) {
         throw 'Không có thông tin người dùng';
       }
-      ;
       final orders = await db
           .collection('Orders')
           .where('OrderUserId', isEqualTo: userId)

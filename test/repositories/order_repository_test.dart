@@ -14,7 +14,6 @@ class OrderRepositoryTest extends GetxController {
       if (userId.isEmpty) {
         throw 'Không có thông tin người dùng';
       }
-      ;
       final orders = await db
           .collection('Orders')
           .where('OrderUserId', isEqualTo: userId)

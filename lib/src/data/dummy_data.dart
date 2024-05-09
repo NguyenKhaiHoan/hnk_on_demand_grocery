@@ -1,15 +1,9 @@
 import 'dart:math';
 
-import 'package:get/get.dart';
-import 'package:lorem_ipsum/lorem_ipsum.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/category_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/voucher_model.dart';
-import 'package:on_demand_grocery/src/repositories/product_repository.dart';
-import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 
 class DummyData {
   static Random random = Random();

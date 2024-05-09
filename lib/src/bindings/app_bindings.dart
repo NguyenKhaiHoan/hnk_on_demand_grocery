@@ -68,8 +68,7 @@ class HAppBinding extends Bindings {
     Get.put<WishlistController>(WishlistController(), permanent: true);
     Get.put<AllStoreController>(AllStoreController(), permanent: true);
     Get.lazyPut(() => ForgetPasswordController(), fenix: true);
-    Get.put<AuthenticationRepository>(AuthenticationRepository(),
-        permanent: true);
+    Get.lazyPut(() => AuthenticationRepository(), fenix: true);
     Get.lazyPut(() => UserRepository(), fenix: true);
     Get.lazyPut(() => StoreRepository(), fenix: true);
     Get.lazyPut(() => BannerRepository(), fenix: true);

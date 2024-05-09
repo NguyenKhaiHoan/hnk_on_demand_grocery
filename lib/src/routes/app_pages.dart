@@ -12,7 +12,6 @@ import 'package:on_demand_grocery/src/features/personalization/views/change_name
 import 'package:on_demand_grocery/src/features/personalization/views/change_phone_number/change_phone_screen.dart';
 import 'package:on_demand_grocery/src/features/personalization/views/no_deliver/no_deliver_screen.dart';
 import 'package:on_demand_grocery/src/features/personalization/views/profile/profile_detail.dart';
-import 'package:on_demand_grocery/src/features/personalization/views/select_delivery_address/select_delivery_address_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/chat/chat_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/add_address_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/delivery_infomation/all_address_screen.dart';
@@ -250,7 +249,7 @@ abstract class HAppPages {
     ),
     GetPage(
       name: HAppRoutes.liveTracking,
-      page: () => LiveTrackingScreen(),
+      page: () => const LiveTrackingScreen(),
       transitionDuration: const Duration(milliseconds: 500),
       curve: Curves.easeOut,
       transition: Transition.rightToLeftWithFade,

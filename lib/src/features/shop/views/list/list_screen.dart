@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/cart_cirle_widget.dart';
-import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/end_custom_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/horizontal_list_product_with_title_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/horizontal_list_store_with_title_widget.dart';
@@ -16,18 +15,12 @@ import 'package:on_demand_grocery/src/features/shop/controllers/product_controll
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/models/result_wishlist_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/wishlist_model.dart';
-import 'package:on_demand_grocery/src/features/shop/views/home/widgets/product_list_stack.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/widgets/list_bottom_appbar.dart';
 import 'package:on_demand_grocery/src/features/shop/views/list/widgets/wishlist_item_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/product/widgets/product_item_horizal_widget.dart';
 import 'package:on_demand_grocery/src/features/shop/views/store/widgets/store_item_wiget.dart';
-import 'package:on_demand_grocery/src/repositories/wishlist_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
-import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class ListScreen extends StatefulWidget {
   const ListScreen({super.key});
@@ -144,8 +137,7 @@ class _ListScreenState extends State<ListScreen>
               ];
             },
             body: Padding(
-              padding:
-                  const EdgeInsets.only(top: hAppDefaultPadding, bottom: 100),
+              padding: const EdgeInsets.only(top: hAppDefaultPadding),
               child: TabBarView(
                   controller: wishlistController.tabController,
                   children: [
@@ -217,7 +209,8 @@ class _ListScreenState extends State<ListScreen>
                                       storeIcon: true,
                                       title: 'Có thể bạn sẽ thích',
                                     ),
-                                    gapH100,
+                                    gapH40,
+                                    gapH40
                                   ]),
                             );
                           } else {
@@ -351,7 +344,7 @@ class _ListScreenState extends State<ListScreen>
                                     itemBuilder: (context, index) {
                                       return const ShimmerWishlistItemWidget();
                                     }),
-                                subWidget: Container());
+                                subWidget: const EndCustomWidget());
                           }
 
                           if (snapshot.hasError) {
@@ -383,7 +376,7 @@ class _ListScreenState extends State<ListScreen>
                                       return WishlistItemWidget(
                                           model: data[index]);
                                     }),
-                                subWidget: gapH100);
+                                subWidget: const EndCustomWidget());
                           }
                         }))),
                     Obx(() => FutureBuilder(
@@ -460,27 +453,27 @@ class _ListScreenState extends State<ListScreen>
                   ]),
             ),
           ),
-          floatingActionButton: ValueListenableBuilder<bool>(
-            valueListenable: _showFab,
-            builder: (context, value, child) {
-              return value
-                  ? Container(
-                      margin: const EdgeInsets.only(bottom: 70),
-                      child: FloatingActionButton(
-                        backgroundColor: Colors.blue,
-                        shape: const CircleBorder(),
-                        onPressed: () {
-                          wishlistController.openCreateFormWishlish();
-                        },
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
-                  : Container();
-            },
-          ),
+          // floatingActionButton: ValueListenableBuilder<bool>(
+          //   valueListenable: _showFab,
+          //   builder: (context, value, child) {
+          //     return value
+          //         ? Container(
+          //             margin: const EdgeInsets.only(bottom: 70),
+          //             child: FloatingActionButton(
+          //               backgroundColor: Colors.blue,
+          //               shape: const CircleBorder(),
+          //               onPressed: () {
+          //                 wishlistController.openCreateFormWishlish();
+          //               },
+          //               child: const Icon(
+          //                 Icons.add,
+          //                 color: Colors.white,
+          //               ),
+          //             ),
+          //           )
+          //         : Container();
+          //   },
+          // ),
         ));
   }
 }

@@ -1,24 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/change_name_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/change_password_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/change_phone_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/views/profile/profile_screen.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/banner_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/chat_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/date_delivery_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/explore_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/filter_store_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/home_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/views/explore/explore_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/home_screen.dart';
 import 'package:on_demand_grocery/src/features/shop/views/root/gesture_detector_screen.dart';
@@ -51,8 +37,8 @@ class _RootScreenState extends State<RootScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       HLocationService.getNearbyStoresAndProducts();
+      await _messagingService.init(context);
     });
-    _messagingService.init(context);
   }
 
   final rootController = RootController.instance;

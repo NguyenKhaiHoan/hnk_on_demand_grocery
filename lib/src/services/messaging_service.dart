@@ -2,20 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:image_network/image_network.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_keys.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
-import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/personalization/models/address_model.dart';
-import 'package:on_demand_grocery/src/features/personalization/models/user_model.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/delivery_person_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/controllers/notification_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/order_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/delivery_person_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
@@ -42,6 +41,7 @@ class HNotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
   final userRepository = Get.put(UserRepository());
+  final notificationController = Get.put(NotificationController());
 
   Future<void> init(BuildContext context) async {
     NotificationSettings settings = await _fcm.requestPermission(
@@ -54,6 +54,8 @@ class HNotificationService {
       sound: true,
     );
 
+    await initLocalNotification();
+
     debugPrint(
         'User granted notifications permission: ${settings.authorizationStatus}');
 
@@ -63,7 +65,7 @@ class HNotificationService {
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       debugPrint('Got a message whilst in the foreground!');
       debugPrint('Message data: ${message.notification!.title.toString()}');
 
@@ -150,97 +152,121 @@ class HNotificationService {
           }
           if (notificationData['reject'] != null) {
             final orderController = OrderController.instance;
-            OrderModel orderData =
-                OrderModel.fromJson(json.decode(notificationData['order']));
-            if (notificationData['store']
-                .toString()
-                .contains('Bị từ chối tất cả')) {
-              showDialog(
-                context: Get.overlayContext!,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text(message.notification!.title!),
-                    content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            message.notification!.body!,
-                            style: HAppStyle.paragraph2Regular
-                                .copyWith(color: HAppColor.hGreyColorShade600),
+            String orderId = notificationData['order'];
+            await FirebaseDatabase.instance
+                .ref()
+                .child('Orders/$orderId')
+                .once()
+                .then((value) {
+              OrderModel orderData = OrderModel.fromJson(
+                  jsonDecode(jsonEncode(value.snapshot.value)));
+
+              if (notificationData['reject']
+                  .toString()
+                  .contains('Bị từ chối tất cả')) {
+                showDialog(
+                  context: Get.overlayContext!,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(message.notification!.title!),
+                      content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              message.notification!.body!,
+                              style: HAppStyle.paragraph2Regular.copyWith(
+                                  color: HAppColor.hGreyColorShade600),
+                            ),
+                          ]),
+                      actions: [
+                        TextButton(
+                          onPressed: () async {
+                            await orderController.saveOrder(
+                                order: orderData,
+                                status: 'Hủy',
+                                activeStep: orderData.activeStep);
+                            await orderController.removeOrder(orderData.oderId);
+                            Get.back();
+                          },
+                          child: Text(
+                            'Hủy',
+                            style: HAppStyle.label4Bold
+                                .copyWith(color: HAppColor.hRedColor),
                           ),
-                        ]),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          orderController.removeOrder(orderData.oderId);
-                          orderController.saveOrder(
-                              order: orderData,
-                              status: 'Hủy',
-                              activeStep: orderData.activeStep);
-                          Get.back();
-                        },
-                        child: Text(
-                          'Hủy',
-                          style: HAppStyle.label4Bold
-                              .copyWith(color: HAppColor.hRedColor),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              );
-            } else if (notificationData['reject']
-                .toString()
-                .contains('Bị từ chối')) {
-              showDialog(
-                context: Get.overlayContext!,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text(message.notification!.title!),
-                    content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            message.notification!.body!,
-                            style: HAppStyle.paragraph2Regular
-                                .copyWith(color: HAppColor.hGreyColorShade600),
+                      ],
+                    );
+                  },
+                );
+              } else if (notificationData['reject']
+                  .toString()
+                  .contains('Bị từ chối')) {
+                showDialog(
+                  context: Get.overlayContext!,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(message.notification!.title!),
+                      content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              message.notification!.body!,
+                              style: HAppStyle.paragraph2Regular.copyWith(
+                                  color: HAppColor.hGreyColorShade600),
+                            ),
+                          ]),
+                      actions: [
+                        TextButton(
+                          onPressed: () async {
+                            Get.back();
+                            await orderController.saveOrder(
+                                order: orderData,
+                                status: 'Hủy',
+                                activeStep: orderData.activeStep);
+                            await orderController.removeOrder(orderData.oderId);
+                          },
+                          child: Text(
+                            'Hủy đơn hàng',
+                            style: HAppStyle.label4Bold
+                                .copyWith(color: HAppColor.hRedColor),
                           ),
-                        ]),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          orderController.removeOrder(orderData.oderId);
-                          orderController.saveOrder(
-                              order: orderData,
-                              status: 'Hủy',
-                              activeStep: orderData.activeStep);
-                          Get.back();
-                        },
-                        child: Text(
-                          'Hủy đơn hàng',
-                          style: HAppStyle.label4Bold
-                              .copyWith(color: HAppColor.hRedColor),
                         ),
-                      ),
-                      TextButton(
-                        onPressed: () => Get.back(),
-                        child: Text(
-                          'Tiếp tục đơn hàng',
-                          style: HAppStyle.label4Bold
-                              .copyWith(color: HAppColor.hBluePrimaryColor),
+                        TextButton(
+                          onPressed: () => Get.back(),
+                          child: Text(
+                            'Tiếp tục đơn hàng',
+                            style: HAppStyle.label4Bold
+                                .copyWith(color: HAppColor.hBluePrimaryColor),
+                          ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              );
+                      ],
+                    );
+                  },
+                );
+              }
+            });
+          }
+          if (notificationData['reject'] != null) {
+            notificationController.refreshDataAllNotification.toggle();
+            if (notificationData['type'] == 'product') {
+              notificationController.refreshDataProduct.toggle();
+            } else if (notificationData['type'] == 'order') {
+              notificationController.refreshDataOrder.toggle();
+            } else if (notificationData['type'] == 'store') {
+              notificationController.refreshDataStore.toggle();
             }
           }
+          showNotification(
+              title: message.notification!.title!,
+              body: message.notification!.body!,
+              payload: '');
         }
+        // HAppUtils.showSnackBarSuccess(
+        //     message.notification!.title!, message.notification!.body!);
       }
     });
 
@@ -266,7 +292,7 @@ class HNotificationService {
     }
   }
 
-  static sendNotificationToStore(List<ProductInCartModel> products,
+  static Future<void> sendNotificationToStore(List<ProductInCartModel> products,
       List<StoreOrderModel> stores, AddressModel userAddress) async {
     for (var store in stores) {
       try {
@@ -279,12 +305,16 @@ class HNotificationService {
           numberOfCart += product.quantity;
         }
         const postUrl = 'https://fcm.googleapis.com/fcm/send';
+
+        String title = 'Có đơn mới';
+        String body =
+            'Có đơn mới được đặt với $numberOfCart sản phẩm từ người dùng: ${userAddress.name}';
+
         final data = {
           "to": storeData.cloudMessagingToken,
           "notification": {
-            "title": 'Có đơn mới',
-            "body":
-                'Có đơn mới được đặt với $numberOfCart sản phẩm từ người dùng: ${userAddress.name}',
+            "title": title,
+            "body": body,
           },
           "data": {'user': userAddress.toJson()}
         };
@@ -312,6 +342,45 @@ class HNotificationService {
         throw Exception(e);
       }
     }
+  }
+
+  static final FlutterLocalNotificationsPlugin
+      _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  Future<void> initLocalNotification() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    final DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
+      onDidReceiveLocalNotification: (id, title, body, payload) {},
+    );
+    final LinuxInitializationSettings initializationSettingsLinux =
+        LinuxInitializationSettings(defaultActionName: 'Mở thông báo');
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+            android: initializationSettingsAndroid,
+            iOS: initializationSettingsDarwin,
+            linux: initializationSettingsLinux);
+    _flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (details) {},
+    );
+  }
+
+  static Future showNotification(
+      {required String title,
+      required String body,
+      required String payload}) async {
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await _flutterLocalNotificationsPlugin
+        .show(0, title, body, notificationDetails, payload: payload);
   }
 }
 

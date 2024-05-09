@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,20 +7,16 @@ import 'package:on_demand_grocery/src/common_widgets/horizontal_list_product_wit
 import 'package:on_demand_grocery/src/common_widgets/swipe_action_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
-import 'package:on_demand_grocery/src/data/dummy_data.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/category_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/detail_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/store_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
-import 'package:on_demand_grocery/src/features/shop/models/product_model.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
-import 'package:toastification/toastification.dart';
 
 class ProductCartWidget extends StatelessWidget {
   ProductCartWidget({
@@ -209,7 +204,7 @@ class ProductCartWidget extends StatelessWidget {
                                                 if (!snapshot.hasData ||
                                                     snapshot.data == null ||
                                                     snapshot.data!.isEmpty) {
-                                                  return Text(
+                                                  return const Text(
                                                       'Không có sản phẩm tương tự');
                                                 } else {
                                                   final products =
@@ -266,7 +261,7 @@ class ProductCartWidget extends StatelessWidget {
                         style: HAppStyle.heading4Style
                             .copyWith(overflow: TextOverflow.ellipsis),
                       ),
-                      Spacer()
+                      const Spacer()
                     ],
                   ),
                   gapH6,
@@ -303,8 +298,9 @@ class ProductCartWidget extends StatelessWidget {
                           ),
                           gapW6,
                           GestureDetector(
-                            onTap: () {
-                              cartController.addSingleProductInCart(model);
+                            onTap: () async {
+                              await cartController
+                                  .addSingleProductInCart(model);
                             },
                             child: Container(
                                 height: 25,

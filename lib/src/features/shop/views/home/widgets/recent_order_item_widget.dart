@@ -9,20 +9,20 @@ import 'package:on_demand_grocery/src/features/shop/controllers/order_controller
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/views/home/widgets/product_list_stack.dart';
 import 'package:on_demand_grocery/src/features/shop/views/live_tracking/live_tracking_screen.dart';
-import 'package:on_demand_grocery/src/features/shop/views/order/order_detail_screen.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class RecentOrderItemWidget extends StatelessWidget {
   final Function() onTap;
-
   final OrderModel model;
+  final double width;
 
   const RecentOrderItemWidget({
     super.key,
     required this.onTap,
     required this.model,
+    required this.width,
   });
 
   @override
@@ -30,12 +30,13 @@ class RecentOrderItemWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 250,
+        width: width,
+        height: 200,
         decoration: BoxDecoration(
           color: HAppColor.hWhiteColor,
           borderRadius: BorderRadius.circular(20),
         ),
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        padding: const EdgeInsets.all(hAppDefaultPadding),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,13 +64,13 @@ class RecentOrderItemWidget extends StatelessWidget {
                       style: HAppStyle.label4Regular
                           .copyWith(color: HAppColor.hWhiteColor))),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
                   if (model.orderStatus == 'Hoàn thành' ||
                       model.orderStatus == 'Từ chối' ||
                       model.orderStatus == "Hủy") {
                     final cartController = Get.put(CartController());
                     cartController.isReorder.value = true;
-                    cartController.loadCartFromOrder(model);
+                    await cartController.loadCartFromOrder(model);
                     Get.toNamed(HAppRoutes.cart);
                   } else {
                     var stepperData =

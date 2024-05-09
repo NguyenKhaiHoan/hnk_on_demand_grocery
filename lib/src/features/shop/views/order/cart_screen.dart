@@ -5,12 +5,13 @@ import 'package:image_network/image_network.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/views/order/widgets/product_cart.dart';
-import 'package:on_demand_grocery/src/features/shop/views/order/widgets/voucher_widget.dart';
 import 'package:on_demand_grocery/src/repositories/store_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
+import 'package:on_demand_grocery/src/services/local_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
 
@@ -40,6 +41,8 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                           PopupMenuItem(
                             child: const Text("Xóa tất cả"),
                             onTap: () {
+                              HLocalService.instance().deleteData(
+                                  UserController.instance.user.value.id);
                               cartController.clearCart();
                               cartController.updateCart();
                               HAppUtils.showSnackBarSuccess('Xóa khỏi giỏ hàng',
@@ -187,119 +190,94 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                       shrinkWrap: true,
                       itemCount: cartController.productInCartMap.keys.length,
                       itemBuilder: (context, index) {
-                        return FutureBuilder(
-                            future: StoreRepository.instance
-                                .getStoreInformation(cartController
-                                    .productInCartMap.keys
-                                    .elementAt(index)),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Container();
-                              }
-
-                              if (snapshot.hasError) {
-                                return const Center(
-                                  child: Text(
-                                      'Đã xảy ra sự cố. Xin vui lòng thử lại sau.'),
-                                );
-                              }
-
-                              if (!snapshot.hasData || snapshot.data == null) {
-                                return Container();
-                              } else {
-                                final store = snapshot.data!;
-                                return ExpansionTile(
-                                  childrenPadding: EdgeInsets.zero,
-                                  initiallyExpanded: true,
-                                  tilePadding: EdgeInsets.zero,
-                                  shape: const Border(),
-                                  leading: ImageNetwork(
-                                    height: 40,
-                                    width: 40,
-                                    image: store.storeImage,
-                                    onLoading:
-                                        const CustomShimmerWidget.circular(
-                                            width: 40, height: 40),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  title: Row(children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(store.name),
-                                        GestureDetector(
-                                          onTap: () => cartController
-                                              .showModalBottomSheetStoreOrder(
-                                                  context,
-                                                  cartController.storeOrderMap[
-                                                      store.id]!),
-                                          child: Row(children: [
-                                            Icon(
-                                              EvaIcons.edit2Outline,
-                                              size: 10,
-                                              color:
-                                                  HAppColor.hGreyColorShade600,
-                                            ),
-                                            gapW4,
-                                            Text(
-                                              'Thêm ghi chú',
-                                              style: HAppStyle.paragraph2Regular
-                                                  .copyWith(
-                                                      color: HAppColor
-                                                          .hGreyColorShade600),
-                                            ),
-                                          ]),
-                                        )
-                                      ],
+                        var storeId = cartController.productInCartMap.keys
+                            .elementAt(index);
+                        var storeOrder = cartController.storeOrderMap[storeId]!;
+                        return ExpansionTile(
+                          childrenPadding: EdgeInsets.zero,
+                          initiallyExpanded: true,
+                          tilePadding: EdgeInsets.zero,
+                          shape: const Border(),
+                          // leading: ImageNetwork(
+                          //   height: 40,
+                          //   width: 40,
+                          //   image: store.storeImage,
+                          //   onLoading: const CustomShimmerWidget.circular(
+                          //       width: 40, height: 40),
+                          //   borderRadius: BorderRadius.circular(20),
+                          // ),
+                          leading: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: HAppColor.hGreyColorShade300),
+                            child: const Center(child: Icon(Icons.storefront)),
+                          ),
+                          title: Row(children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(storeOrder.name),
+                                GestureDetector(
+                                  onTap: () => cartController
+                                      .showModalBottomSheetStoreOrder(
+                                          context, storeOrder),
+                                  child: Row(children: [
+                                    Icon(
+                                      EvaIcons.edit2Outline,
+                                      size: 10,
+                                      color: HAppColor.hGreyColorShade600,
                                     ),
-                                    const Spacer(),
-                                    Obx(() {
-                                      RxBool check = cartController
-                                          .storeOrderMap[store.id]!
-                                          .checkChooseInCart
-                                          .obs;
-                                      return Checkbox(
-                                          activeColor:
-                                              HAppColor.hBluePrimaryColor,
-                                          value: check.value,
-                                          onChanged: (value) {
-                                            check.value = value!;
-                                            cartController
-                                                .storeOrderMap[store.id]!
-                                                .checkChooseInCart = value;
-                                            cartController.updateCart();
-                                          });
-                                    })
+                                    gapW4,
+                                    Text(
+                                      'Thêm ghi chú',
+                                      style: HAppStyle.paragraph2Regular
+                                          .copyWith(
+                                              color:
+                                                  HAppColor.hGreyColorShade600),
+                                    ),
                                   ]),
-                                  children: [
-                                    ListView.separated(
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: cartController
-                                            .productInCartMap.values
-                                            .elementAt(index)
-                                            .length,
-                                        itemBuilder: (context, index2) {
-                                          return ProductCartWidget(
-                                              model: cartController
-                                                  .productInCartMap.values
-                                                  .elementAt(index)
-                                                  .elementAt(index2));
-                                        },
-                                        separatorBuilder:
-                                            (BuildContext context, int index) =>
-                                                gapH12),
-                                    // Text(cartController.productInCartMap.values
-                                    //     .elementAt(index)
-                                    //     .toString()),
-                                    gapH12,
-                                  ],
-                                );
-                              }
-                            });
+                                )
+                              ],
+                            ),
+                            const Spacer(),
+                            Obx(() {
+                              RxBool check = storeOrder.checkChooseInCart.obs;
+                              return Checkbox(
+                                  activeColor: HAppColor.hBluePrimaryColor,
+                                  value: check.value,
+                                  onChanged: (value) {
+                                    check.value = value!;
+                                    storeOrder.checkChooseInCart = value;
+                                    cartController.updateCart();
+                                  });
+                            })
+                          ]),
+                          children: [
+                            ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: cartController
+                                    .productInCartMap.values
+                                    .elementAt(index)
+                                    .length,
+                                itemBuilder: (context, index2) {
+                                  return ProductCartWidget(
+                                      model: cartController
+                                          .productInCartMap.values
+                                          .elementAt(index)
+                                          .elementAt(index2));
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) =>
+                                        gapH12),
+                            // Text(cartController.productInCartMap.values
+                            //     .elementAt(index)
+                            //     .toString()),
+                            gapH12,
+                          ],
+                        );
                       }),
                 );
                 // return SingleChildScrollView(

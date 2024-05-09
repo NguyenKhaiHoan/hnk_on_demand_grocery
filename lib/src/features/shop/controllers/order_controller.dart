@@ -1,6 +1,5 @@
 import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,13 +8,16 @@ import 'package:on_demand_grocery/src/features/authentication/controller/network
 import 'package:on_demand_grocery/src/features/personalization/controllers/address_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/type_button_controller.dart';
-import 'package:on_demand_grocery/src/features/shop/controllers/voucher_controller.dart';
+import 'package:on_demand_grocery/src/features/shop/models/notification_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/oder_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/product_in_cart_model.dart';
+import 'package:on_demand_grocery/src/repositories/notification_repository.dart';
 import 'package:on_demand_grocery/src/repositories/order_repository.dart';
 import 'package:on_demand_grocery/src/repositories/product_repository.dart';
+import 'package:on_demand_grocery/src/services/messaging_service.dart';
 import 'package:on_demand_grocery/src/services/payment_service.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
+import 'package:uuid/uuid.dart';
 
 class OrderController extends GetxController {
   static OrderController get instance => Get.find();
@@ -83,6 +85,8 @@ class OrderController extends GetxController {
     return stepperData;
   }
 
+  var isOnLiveTracking = false.obs;
+
   OrderModel updateOrder(
       {required OrderModel order,
       required String status,
@@ -97,9 +101,9 @@ class OrderController extends GetxController {
     return order;
   }
 
-  removeOrder(String orderId) {
-    FirebaseDatabase.instance.ref().child('Orders/$orderId').remove();
-    FirebaseDatabase.instance.ref().child('Charts/$orderId').remove();
+  Future<dynamic> removeOrder(String orderId) async {
+    await FirebaseDatabase.instance.ref().child('Orders/$orderId').remove();
+    await FirebaseDatabase.instance.ref().child('Charts/$orderId').remove();
     isFirstTimeRequest.value = false;
   }
 
@@ -127,8 +131,8 @@ class OrderController extends GetxController {
       await orderRepository
           .updateOrderField(orderNew.oderId, {'OrderId': orderNew.oderId});
 
-      removeOrder(presentId);
-      await fetchAllOrders();
+      // removeOrder(presentId);
+      // await fetchAllOrders();
 
       if (orderNew.orderStatus == 'Hoàn thành') {
         Future.forEach(orderNew.orderProducts, (productInCart) async {
@@ -137,11 +141,28 @@ class OrderController extends GetxController {
           await ProductRepository.instance.updateSingleField(
               productInCart.productId,
               {'CountBuyed': product.countBuyed + productInCart.quantity});
+        }).then((value) {
+          final notification = Get.put(NotificationRepository());
+          var uid = const Uuid();
+          String title =
+              'Hoàn thành đơn hàng với mã #${orderNew.oderId.substring(0, 4)}...';
+          String body =
+              'Bạn đã nhận đơn hàng thành công, hãy đánh giá cảm nghĩ của bạn về sản phẩm nhé';
+          HNotificationService.showNotification(
+              title: title, body: body, payload: '');
+          notification.addNotification(NotificationModel(
+              id: uid.v1(),
+              title: title,
+              body: body,
+              time: DateTime.now(),
+              type: 'order'));
         });
       }
 
-      removeOrder(presentId);
-      await fetchAllOrders();
+      await removeOrder(presentId).then((value) async {
+        await fetchAllOrders();
+      });
+
       resetToggle.toggle();
       HAppUtils.stopLoading();
     } catch (e) {
@@ -188,7 +209,7 @@ class OrderController extends GetxController {
           }
         }
 
-        cartController.processOrder(
+        await cartController.processOrder(
             typeButtonController.paymentMethodType,
             status ? 'Đã thanh toán' : 'Chưa thanh toán',
             typeButtonController.orderType,
