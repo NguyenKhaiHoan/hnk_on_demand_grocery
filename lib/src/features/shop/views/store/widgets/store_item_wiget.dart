@@ -1,4 +1,5 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/common_widgets/custom_shimmer_widget.dart';
@@ -10,6 +11,7 @@ import 'package:on_demand_grocery/src/features/shop/controllers/store_controller
 import 'package:on_demand_grocery/src/features/shop/controllers/wishlist_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_location_model.dart';
 import 'package:on_demand_grocery/src/features/shop/models/store_model.dart';
+import 'package:on_demand_grocery/src/repositories/user_repository.dart';
 import 'package:on_demand_grocery/src/services/location_service.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 import 'package:on_demand_grocery/src/utils/utils.dart';
@@ -26,8 +28,58 @@ class _StoreItemWidgetState extends State<StoreItemWidget> {
   var storeLocation = StoreLocationModel.empty().obs;
 
   final storeController = Get.put(StoreController());
-
   final wishlistController = Get.put(WishlistController());
+
+  var checkStatus = false.obs;
+
+  bool checkFollowStore(String storeId) {
+    return UserController.instance.user.value.listOfFavoriteStore!
+        .contains(storeId);
+  }
+
+  Future<void> addAndRemoveFollowStore(String storeId) async {
+    checkStatus.value = checkFollowStore(storeId);
+    final userRepository = Get.put(UserRepository());
+    if (checkStatus.value) {
+      UserController.instance.user.value.listOfFavoriteStore!
+          .removeWhere((element) => element == storeId);
+      UserController.instance.user.refresh();
+      userRepository.updateSingleField({
+        'ListOfFavoriteStore':
+            UserController.instance.user.value.listOfFavoriteStore!
+      }).then((value) {
+        DatabaseReference ref =
+            FirebaseDatabase.instance.ref().child('FollowedStores/$storeId');
+        ref.child(UserController.instance.user.value.id).remove().then((_) {
+          print('Xóa thành công');
+          HAppUtils.showSnackBarSuccess('Hủy nhận thông báo thành công',
+              'Bạn đã hủy nhận thông báo khi cửa hàng có thông báo mới');
+        }).catchError((error) {
+          print('Có lỗi xảy ra: $error');
+        });
+      });
+    } else {
+      UserController.instance.user.value.listOfFavoriteStore!.add(storeId);
+      UserController.instance.user.refresh();
+      userRepository.updateSingleField({
+        'ListOfFavoriteStore':
+            UserController.instance.user.value.listOfFavoriteStore!
+      }).then((value) {
+        DatabaseReference ref =
+            FirebaseDatabase.instance.ref().child('FollowedStores/$storeId');
+        ref.update({
+          UserController.instance.user.value.id:
+              UserController.instance.user.value.cloudMessagingToken
+        }).then((_) {
+          print('Cập nhật thành công');
+          HAppUtils.showSnackBarSuccess('Đăng ký nhận thông báo thành công',
+              'Chúng tôi sẽ gửi cho bạn thông báo khi cửa hàng có thông báo mới');
+        }).catchError((error) {
+          print('Có lỗi xảy ra: $error');
+        });
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -64,8 +116,7 @@ class _StoreItemWidgetState extends State<StoreItemWidget> {
                 top: 5,
                 left: 5,
                 child: GestureDetector(
-                  onTap: () => wishlistController
-                      .addOrRemoveStoreInFavoriteList(widget.model.id),
+                  onTap: () => addAndRemoveFollowStore(widget.model.id),
                   child: Container(
                     width: 32,
                     height: 32,

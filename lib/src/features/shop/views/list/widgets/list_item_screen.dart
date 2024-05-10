@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
@@ -8,6 +9,7 @@ import 'package:on_demand_grocery/src/common_widgets/custom_layout_widget.dart';
 import 'package:on_demand_grocery/src/common_widgets/horizontal_list_product_widget.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
+import 'package:on_demand_grocery/src/features/personalization/controllers/user_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/cart_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/product_controller.dart';
 import 'package:on_demand_grocery/src/features/shop/controllers/root_controller.dart';
@@ -36,6 +38,27 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
 
   final WishlistModel model = Get.arguments['model'];
   final List<ProductModel> list = Get.arguments['list'];
+
+  var firstPart = ''.obs;
+  var secondPart = ''.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    firstPart.value = model.description;
+    if (model.description.contains('Tên') &&
+        model.description.contains('Thành phần') &&
+        model.description.contains('Cách làm') &&
+        model.description.contains('-recipe-')) {
+      List<String> parts = model.description.split('-recipe-');
+
+      if (parts.length >= 2) {
+        firstPart.value = parts[0];
+        secondPart.value = parts[1];
+        print('Công thức$secondPart');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,19 +113,42 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
       body: SingleChildScrollView(
         padding: hAppDefaultPaddingLR,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text.rich(TextSpan(
-              style: HAppStyle.heading4Style,
-              text: "Mô tả: ",
-              children: [
-                TextSpan(
-                    text: model.description,
-                    style: HAppStyle.paragraph2Regular
-                        .copyWith(color: HAppColor.hGreyColorShade600))
-              ])),
+          Obx(() => Text.rich(TextSpan(
+                  style: HAppStyle.heading4Style,
+                  text: "Mô tả: ",
+                  children: [
+                    TextSpan(
+                        text: firstPart.value,
+                        style: HAppStyle.paragraph2Regular
+                            .copyWith(color: HAppColor.hGreyColorShade600))
+                  ]))),
+          Obx(
+            () => secondPart.value == ''
+                ? Container()
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      gapH10,
+                      const Text(
+                        'Công thức: ',
+                        style: HAppStyle.heading4Style,
+                      ),
+                      gapH6,
+                      Markdown(
+                        data: secondPart.value,
+                        selectable: true,
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                      )
+                    ],
+                  ),
+          ),
           gapH10,
           GridView.builder(
             shrinkWrap: true,
             itemCount: list.length,
+            physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1,
               crossAxisSpacing: 10.0,
@@ -345,6 +391,116 @@ class GenerateRecipeScreen extends StatelessWidget {
                     }
                   }))),
           gapH12,
+          Obx(() => recipe.value != ''
+              ? ElevatedButton(
+                  onPressed: () async {
+                    print('Vào đây NBBBBB');
+                    try {
+                      if (model.description.contains('Tên') &&
+                          model.description.contains('Thành phần') &&
+                          model.description.contains('Cách làm') &&
+                          model.description.contains('-recipe-')) {
+                        print('Vào đây iff');
+
+                        showDialog(
+                          context: Get.overlayContext!,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Đã tồn tại công thức'),
+                              content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Trong danh sách mong ước này đã có công thức, bạn có muốn thay thế công thức mới không?',
+                                      style: HAppStyle.paragraph2Regular
+                                          .copyWith(
+                                              color:
+                                                  HAppColor.hGreyColorShade600),
+                                    ),
+                                  ]),
+                              actions: [
+                                TextButton(
+                                  onPressed: () async {
+                                    Get.back();
+                                  },
+                                  child: Text(
+                                    'Không',
+                                    style: HAppStyle.label4Bold
+                                        .copyWith(color: HAppColor.hRedColor),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    List<String> parts =
+                                        model.description.split('-recipe-');
+                                    String firstPart = '';
+                                    String secondPart = '';
+                                    if (parts.length >= 2) {
+                                      firstPart = parts[0];
+                                      secondPart = parts[1];
+                                    }
+
+                                    await FirebaseFirestore.instance
+                                        .collection('Users')
+                                        .doc(UserController
+                                            .instance.user.value.id)
+                                        .collection('Wishlists')
+                                        .doc(model.id)
+                                        .update({
+                                      'Description':
+                                          '$firstPart-recipe-${recipe.value}'
+                                    }).onError((error, stackTrace) {
+                                      HAppUtils.showSnackBarError(
+                                          'Lỗi', 'Không thể lưu trữ công thức');
+                                    });
+                                    Get.back();
+                                    Get.back();
+                                    Get.back();
+                                  },
+                                  child: Text(
+                                    'Có',
+                                    style: HAppStyle.label4Bold
+                                        .copyWith(color: HAppColor.hRedColor),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        await FirebaseFirestore.instance
+                            .collection('Users')
+                            .doc(UserController.instance.user.value.id)
+                            .collection('Wishlists')
+                            .doc(model.id)
+                            .update({
+                          'Description':
+                              '${model.description}-recipe-${recipe.value}'
+                        }).onError((error, stackTrace) {
+                          HAppUtils.showSnackBarError(
+                              'Lỗi', 'Không thể lưu trữ công thức');
+                        });
+                        Get.back();
+                        Get.back();
+                        Get.back();
+                      }
+                    } catch (e) {
+                      print(e.toString());
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: HAppColor.hBluePrimaryColor,
+                      fixedSize: Size(
+                          HAppSize.deviceWidth - hAppDefaultPadding * 2, 50),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50))),
+                  child: Text("Lưu công thức",
+                      style: HAppStyle.label2Bold
+                          .copyWith(color: HAppColor.hWhiteColor)),
+                )
+              : Container())
         ]),
       ),
     );
@@ -374,6 +530,8 @@ class GenerateRecipeScreen extends StatelessWidget {
         HAppUtils.showSnackBarError(
             'Lỗi', 'Không thể tìm được các sản phẩm khác! ${e.toString()}');
       });
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

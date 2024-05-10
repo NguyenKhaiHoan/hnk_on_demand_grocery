@@ -11,13 +11,38 @@ import 'package:on_demand_grocery/src/repositories/product_repository.dart';
 import 'package:on_demand_grocery/src/routes/app_pages.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
 
-class WishlistItemWidget extends StatelessWidget {
+class WishlistItemWidget extends StatefulWidget {
   const WishlistItemWidget({
     super.key,
     required this.model,
   });
 
   final WishlistModel model;
+
+  @override
+  State<WishlistItemWidget> createState() => _WishlistItemWidgetState();
+}
+
+class _WishlistItemWidgetState extends State<WishlistItemWidget> {
+  var firstPart = ''.obs;
+  var secondPart = ''.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    firstPart.value = widget.model.description;
+    if (widget.model.description.contains('Tên') &&
+        widget.model.description.contains('Thành phần') &&
+        widget.model.description.contains('Cách làm') &&
+        widget.model.description.contains('-recipe-')) {
+      List<String> parts = widget.model.description.split('-recipe-');
+
+      if (parts.length >= 2) {
+        firstPart.value = parts[0];
+        secondPart.value = parts[1];
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +58,20 @@ class WishlistItemWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  model.title,
+                  widget.model.title,
                   style: HAppStyle.heading4Style,
                 ),
                 gapH4,
-                Text(
-                  model.description,
-                  style: HAppStyle.paragraph3Regular
-                      .copyWith(color: HAppColor.hGreyColorShade600),
-                ),
+                Obx(() => Text(
+                      firstPart.value,
+                      style: HAppStyle.paragraph3Regular
+                          .copyWith(color: HAppColor.hGreyColorShade600),
+                    )),
                 Obx(() => FutureBuilder(
                     key: Key(
                         'WishlistItem${WishlistController.instance.refreshWishlistItemData.value.toString()}'),
                     future: ProductRepository.instance
-                        .getProductsFromListIds(model.listIds),
+                        .getProductsFromListIds(widget.model.listIds),
                     builder: ((context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return CustomShimmerWidget.rectangular(height: 60);
@@ -81,7 +106,7 @@ class WishlistItemWidget extends StatelessWidget {
             )),
             GestureDetector(
               onTap: () => Get.toNamed(HAppRoutes.wishlistItem,
-                  arguments: {'model': model, 'list': list}),
+                  arguments: {'model': widget.model, 'list': list}),
               child: Text(
                 'Xem tất cả',
                 style: HAppStyle.paragraph3Regular

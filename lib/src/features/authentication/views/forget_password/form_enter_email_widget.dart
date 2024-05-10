@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:on_demand_grocery/src/constants/app_colors.dart';
 import 'package:on_demand_grocery/src/constants/app_sizes.dart';
 import 'package:on_demand_grocery/src/features/authentication/controller/forget_password_controller.dart';
 import 'package:on_demand_grocery/src/utils/theme/app_style.dart';
+import 'package:on_demand_grocery/src/utils/utils.dart';
 
 class FormEnterEmailWidget extends StatelessWidget {
   FormEnterEmailWidget({
     super.key,
   });
 
-  final forgetPasswordController = ForgetPasswordController.instance;
+  final forgetPasswordController = Get.put(ForgetPasswordController());
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,28 @@ class FormEnterEmailWidget extends StatelessWidget {
                 style: HAppStyle.paragraph2Regular
                     .copyWith(color: HAppColor.hGreyColorShade600),
                 children: const [],
+              ),
+            ),
+            gapH12,
+            TextFormField(
+              keyboardType: TextInputType.emailAddress,
+              enableSuggestions: true,
+              autocorrect: true,
+              controller: forgetPasswordController.emailController,
+              validator: (value) => HAppUtils.validateEmail(value),
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: HAppColor.hGreyColorShade300, width: 1),
+                    borderRadius: BorderRadius.circular(10)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: HAppColor.hGreyColorShade300, width: 1),
+                    borderRadius: BorderRadius.circular(10)),
+                hintText: 'Nhập email của bạn',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
             gapH12,

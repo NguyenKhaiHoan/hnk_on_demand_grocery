@@ -34,7 +34,7 @@ class _SentPasswordScreenState extends State<SentPasswordScreen> {
         title: 'Đặt lại mật khẩu',
         widget1: ElevatedButton(
           onPressed: () {
-            Get.toNamed(HAppRoutes.login);
+            Get.offAllNamed(HAppRoutes.login);
           },
           style: ElevatedButton.styleFrom(
             minimumSize: Size(HAppSize.deviceWidth * 0.5, 50),
