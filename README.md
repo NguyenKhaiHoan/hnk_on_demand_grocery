@@ -1,16 +1,15 @@
-# on_demand_grocery
+# Dự án cá nhân Khóa luận tốt nghiệp tại trường Đại học Công Nghệ (UET - VNU)
 
-A new Flutter project.
+**Sinh viên**
+- Nguyễn Khải Hoàn
 
-## Getting Started
+## Đề tài: GroFast - Ứng dụng di động mua sắm tạp hóa theo yêu cầu
 
-This project is a starting point for a Flutter application.
+**Mô tả:** Xây dựng chuỗi ứng dụng phục vụ mục đích mua sắm tạp hóa theo yêu cầu tại thị trường Hà Nội, Việt Nam
 
-A few resources to get you started if this is your first Flutter project:
+**Các tính năng**
+- Đang cập nhật ...
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Doc, demo và video
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Tài liệu chi tiết, demo ứng dụng truy cập ở đây 
