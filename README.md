@@ -37,8 +37,10 @@
 ## Video và hình ảnh demo
 
 **Các video và hình ảnh đầy đủ mới nhất ngày 10/5**
+
 ... Đang cập nhật ...
 
 **Trước ngày 15/4**
+
 Video demo (cũ, chưa đầy đủ chức năng trước ngày 15/4) và một số ảnh demo (cho 1 số chức năng chính từ phía người dùng và 1 ít phía người cửa hàng, người giao hàng được cắt từ một phần doc và slide bảo vệ KLTN) [tại đây](https://drive.google.com/drive/folders/1-4u3ClwEwDi5jzwFoE2HYTNPb-zzKvgW?usp=drive_link). 
 
