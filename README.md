@@ -10,7 +10,8 @@
 - Sử dụng Flutter, Firebase, GetX và kết hợp một số package khác như Geolocator, GetStorage, Local Notification, Flutter Gemini, Google Map, ...
 - Áp dụng mô hình MVVM kết hợp với cấu trúc thư mục Feature-First
 
-**Các tính năng**
+**Các tính năng chính**
+- [x] Đăng nhập/Đăng ký: bao gồm đăng nhập, đăng ký theo tài khoản, mật khẩu, đăng nhập nhanh bằng Google, xác minh tài khoản qua email, quên mật khẩu.
 - [x] Tìm kiếm: bao gồm tìm kiếm theo tên sản phẩm hoặc cửa hàng tạp hóa và tìm kiếm nâng cao như vị trí, giới hạn giá cả, lượng đánh giá cao, …
 - [x] Thêm danh sách: bao gồm lập danh sách các sản phẩm, cửa hàng yêu thích, danh sách mong ước và các sản phẩm nhận đăng ký khi có hàng trở lại. 
 - [x] Đặt hàng: bao gồm thêm/sửa số lượng sản phẩm trong giỏ hàng, chọn/thêm địa chỉ, chọn các phương thức giao hàng, thanh toán (sử dụng Stripe ở chế dộ Test Mode), ưu đãi và xác nhận đã nhận hàng.
