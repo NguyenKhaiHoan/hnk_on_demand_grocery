@@ -25,12 +25,14 @@
 - Một số code logic chưa được tách biệt với View
 
 ## Các phần liên quan
+
 **GroFast - Store**
-Mô tả: Là ứng dụng dành cho cửa hàng tạp hóa được phát triển để phụ trợ cho ứng dụng chính GroFast.
-Git: [link](https://github.com/NguyenKhaiHoan/hnk_on_demand_grocery_store).
+- Mô tả: Là ứng dụng dành cho cửa hàng tạp hóa được phát triển để phụ trợ cho ứng dụng chính GroFast.
+- Git: [link](https://github.com/NguyenKhaiHoan/hnk_on_demand_grocery_store).
+
 **GroFast - Delivery**
-Mô tả: Là ứng dụng dành cho người giao hàng được phát triển để phụ trợ cho ứng dụng chính GroFast.
-Git: [link](https://github.com/NguyenKhaiHoan/hnk_on_demand_grocery_deliver).
+- Mô tả: Là ứng dụng dành cho người giao hàng được phát triển để phụ trợ cho ứng dụng chính GroFast.
+- Git: [link](https://github.com/NguyenKhaiHoan/hnk_on_demand_grocery_deliver).
 
 ## Video và hình ảnh demo
 
