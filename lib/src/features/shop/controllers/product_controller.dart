@@ -156,7 +156,7 @@ class ProductController extends GetxController {
         break;
       case 1:
         query = baseQuery
-            .where('SalePersent', isNotEqualTo: 0)
+            .where('SalePersent', isGreaterThan: 0)
             .orderBy('SalePersent', descending: true);
         break;
       case 2:
@@ -192,28 +192,28 @@ class ProductController extends GetxController {
     return filterProductSort(query);
   }
 
-  filterProduct(Query query, int index) {
-    Query baseQuery = query;
-    if (tagsProductObs[0].active) {
-      if (nearbyProduct.isNotEmpty) {
-        final listIds =
-            nearbyProduct.map((product) => product.id).take(10).toList();
-        query = baseQuery.where(FieldPath.documentId, whereIn: listIds);
-      }
-    }
-    if (tagsProductObs[1].active) {
-      query = query
-          .where('Rating', isGreaterThanOrEqualTo: 4.0)
-          .orderBy('Rating', descending: true);
-    }
-    if (tagsProductObs[2].active) {
-      query =
-          baseQuery.where('Origin', isNotEqualTo: 'Việt Nam').orderBy('Origin');
-    }
-    print('Vào filter');
-    print(query.parameters.toString());
-    return getProductCategory(index, query);
-  }
+  // filterProduct(Query query, int index) {
+  //   Query baseQuery = query;
+  //   if (tagsProductObs[0].active) {
+  //     if (nearbyProduct.isNotEmpty) {
+  //       final listIds =
+  //           nearbyProduct.map((product) => product.id).take(10).toList();
+  //       query = baseQuery.where(FieldPath.documentId, whereIn: listIds);
+  //     }
+  //   }
+  //   if (tagsProductObs[1].active) {
+  //     query = query
+  //         .where('Rating', isGreaterThanOrEqualTo: 4.0)
+  //         .orderBy('Rating', descending: true);
+  //   }
+  //   if (tagsProductObs[2].active) {
+  //     query =
+  //         baseQuery.where('Origin', isNotEqualTo: 'Việt Nam').orderBy('Origin');
+  //   }
+  //   print('Vào filter');
+  //   print(query.parameters.toString());
+  //   return getProductCategory(index, query);
+  // }
 
   filterProductSort(Query query) {
     Query baseQuery = query;

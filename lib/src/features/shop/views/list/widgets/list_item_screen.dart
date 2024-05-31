@@ -45,19 +45,27 @@ class _WishlistItemScreenState extends State<WishlistItemScreen> {
   @override
   void initState() {
     super.initState();
-    firstPart.value = model.description;
-    if (model.description.contains('Tên') &&
-        model.description.contains('Thành phần') &&
-        model.description.contains('Cách làm') &&
-        model.description.contains('-recipe-')) {
-      List<String> parts = model.description.split('-recipe-');
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      firstPart.value = model.description;
+      if (model.description.contains('Tên') &&
+          model.description.contains('Thành phần') &&
+          model.description.contains('Cách làm') &&
+          model.description.contains('-recipe-')) {
+        List<String> parts = model.description.split('-recipe-');
 
-      if (parts.length >= 2) {
-        firstPart.value = parts[0];
-        secondPart.value = parts[1];
-        print('Công thức$secondPart');
+        if (parts.length >= 2) {
+          firstPart.value = parts[0];
+          secondPart.value = parts[1];
+          print(firstPart);
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(firstPart.value),
+            ),
+          );
+        }
       }
-    }
+    });
   }
 
   @override
@@ -512,7 +520,7 @@ class GenerateRecipeScreen extends StatelessWidget {
       HAppUtils.loadingOverlays();
       await gemini
           .text(
-              'Tạo một công thức nấu ăn đơn giản từ một danh sách đầy đủ các thành phần (nguyên liệu) sau: ${listProductName.join(', ')} và Sữa với mẫu sau: Tên, Thành phần và Cách làm')
+              'Tạo một công thức nấu ăn đơn giản từ một danh sách đầy đủ các thành phần (nguyên liệu) sau: Xoài và Sữa với mẫu sau: Tên, Thành phần và Cách làm')
           .then((value) {
         recipe.value = value?.output ?? '';
         HAppUtils.stopLoading();

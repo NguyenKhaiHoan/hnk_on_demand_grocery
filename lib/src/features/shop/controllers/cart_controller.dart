@@ -481,7 +481,7 @@ class CartController extends GetxController {
         Get.offNamed(HAppRoutes.complete, arguments: {'order': order});
       }).onError((error, stackTrace) {
         HAppUtils.stopLoading();
-        HAppUtils.showSnackBarSuccess('Thất bại',
+        HAppUtils.showSnackBarError('Thất bại',
             'Đã xảy ra sự cố trong quá trình tải đơn hàng lên hệ thống: ${error.toString()}');
       });
     } catch (e) {

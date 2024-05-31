@@ -30,18 +30,27 @@ class _WishlistItemWidgetState extends State<WishlistItemWidget> {
   @override
   void initState() {
     super.initState();
-    firstPart.value = widget.model.description;
-    if (widget.model.description.contains('Tên') &&
-        widget.model.description.contains('Thành phần') &&
-        widget.model.description.contains('Cách làm') &&
-        widget.model.description.contains('-recipe-')) {
-      List<String> parts = widget.model.description.split('-recipe-');
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      firstPart.value = widget.model.description;
+      if (widget.model.description.contains('Tên') &&
+          widget.model.description.contains('Thành phần') &&
+          widget.model.description.contains('Cách làm') &&
+          widget.model.description.contains('-recipe-')) {
+        List<String> parts = widget.model.description.split('-recipe-');
 
-      if (parts.length >= 2) {
-        firstPart.value = parts[0];
-        secondPart.value = parts[1];
+        if (parts.length >= 2) {
+          firstPart.value = parts[0];
+          secondPart.value = parts[1];
+          print(firstPart);
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(firstPart.value),
+            ),
+          );
+        }
       }
-    }
+    });
   }
 
   @override

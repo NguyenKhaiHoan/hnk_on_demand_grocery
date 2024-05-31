@@ -24,13 +24,6 @@ class NetworkController extends GetxController {
       if (Get.isSnackbarOpen) {
         Get.closeCurrentSnackbar();
       }
-      // if (connectivityResult == ConnectivityResult.wifi) {
-      //   HAppUtils.showConnectedToMobileData('Đã kết nối qua Wifi',
-      //       'Giờ đây, bạn có thể tiếp tục truy cập đầy đủ và trải nghiệm ứng dụng.');
-      // } else if (connectivityResult == ConnectivityResult.mobile) {
-      //   HAppUtils.showConnectedToMobileData('Đã kết nối qua dữ liệu di động',
-      //       'Giờ đây, bạn có thể tiếp tục truy cập đầy đủ và trải nghiệm ứng dụng.');
-      // }
     }
   }
 
